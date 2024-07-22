@@ -8,13 +8,13 @@ import clientPromise from "@/lib/db";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GitHub({
-      clientId: process.env.NEXT_PUBLIC_AUTH_GITHUB_ID,
-      clientSecret: process.env.NEXT_PUBLIC_AUTH_GITHUB_SECRET,
+      clientId: process.env.AUTH_GITHUB_ID,
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
     GoogleProvider({
-      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
     CredentialsProvider({
@@ -31,5 +31,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   adapter: MongoDBAdapter(clientPromise),
-  secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
 });

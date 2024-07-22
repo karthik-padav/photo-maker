@@ -301,5 +301,20 @@ const constants = {
       color: "linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85))",
     },
   ],
+
+  pngBgCollections: [
+    {
+      id: uid(16),
+      url: "/images/png_files/shadow_1.png",
+    },
+    {
+      id: uid(16),
+      url: "/images/png_files/shadow_2.png",
+    },
+    {
+      id: uid(16),
+      url: "/images/png_files/shadow_3.png",
+    },
+  ],
 };
 export default constants;

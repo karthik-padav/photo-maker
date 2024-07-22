@@ -62,3 +62,49 @@ export function editImageControlers(controlerValue: {
     },
   };
 }
+
+export function sideMenuControlers(controlerValue: {
+  [key: string]: string | number;
+}) {
+  return {
+    rotate: {
+      label: "Rotate",
+      valuePrefix: "%",
+      attr: {
+        type: "range",
+        min: 0,
+        max: 360,
+        step: 20,
+        value: controlerValue.rotate,
+        className: "w-full slider dark:bg-accent bg-gray-200",
+      },
+    },
+    scale: {
+      label: "Scale",
+      valuePrefix: "",
+      attr: {
+        type: "range",
+        min: 0.5,
+        max: 2,
+        defaultValue: 1,
+        value: controlerValue.scale,
+        step: 0.1,
+        className: "w-full slider dark:bg-accent bg-gray-200",
+      },
+    },
+  };
+}
+
+export function getImageStyle(controlerValue: { [key: string]: string }) {
+  let imageStyle: { [key: string]: string } = {};
+  if (controlerValue?.scale) imageStyle["scale"] = controlerValue.scale;
+  if (controlerValue?.rotate && controlerValue?.transform)
+    imageStyle[
+      "transform"
+    ] = `${controlerValue.transform} rotate(${controlerValue.rotate}deg)`;
+  else if (controlerValue?.rotate)
+    imageStyle["transform"] = `rotate(${controlerValue.rotate}deg)`;
+  else if (controlerValue?.transform)
+    imageStyle["transform"] = controlerValue.transform;
+  return imageStyle;
+}

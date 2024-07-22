@@ -5,7 +5,7 @@ import { useAppProvider } from "@/components/app-provider";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { client } from "@gradio/client";
-import { rembg } from "@/lib/common";
+import { getImageStyle, rembg } from "@/lib/common";
 import { useUploadThing } from "@/lib/uploadthing";
 import { uid } from "uid";
 import { fetchImages, updateImage } from "@/lib/actions/image.actions";
@@ -140,20 +140,55 @@ export default function Generate() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-12">
+                {constants.pngBgCollections.map((item) => {
+                  let imageStyle = getImageStyle(controlerValue);
+                  return (
+                    <div
+                      key={item.id}
+                      className={`${controlerValue.border.value} overflow-hidden relative border-white border-8 hover:drop-shadow-md transition duration-300`}
+                    >
+                      <Button
+                        onClick={() => onDownload(item.id)}
+                        variant="ghost"
+                        className="hover:bg-black hover:bg-opacity-50 z-50 absolute w-full h-full transition-opacity duration-300 group"
+                      >
+                        <Download className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white" />
+                      </Button>
+                      <div
+                        className={`${controlerValue.border.value} w-full relative overflow-hidden`}
+                        ref={(e: HTMLDivElement) => {
+                          imageWrapperRef.current["main"][item.id] = e;
+                        }}
+                        style={{
+                          height: downloadableImageSize,
+                        }}
+                      >
+                        <Image
+                          placeholder="blur"
+                          blurDataURL={constants.blurDataURL}
+                          loading="lazy"
+                          src={currentImage.imageURL}
+                          layout="fill"
+                          objectFit="cover"
+                          className=""
+                          alt="profile pic"
+                          style={imageStyle}
+                          onLoadingComplete={() => {
+                            const height =
+                              imageWrapperRef?.current?.["main"]?.[item.id]
+                                ?.offsetWidth;
+                            if (height && !downloadableImageSize) {
+                              setDownloadableImageSize(height);
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+
                 {constants.gradientColorCollection.map((item) => {
-                  let imageStyle: { [key: string]: string } = {};
-                  if (controlerValue?.scale)
-                    imageStyle["scale"] = controlerValue.scale;
-                  if (controlerValue?.rotate && controlerValue?.transform)
-                    imageStyle[
-                      "transform"
-                    ] = `${controlerValue.transform} rotate(${controlerValue.rotate}deg)`;
-                  else if (controlerValue?.rotate)
-                    imageStyle[
-                      "transform"
-                    ] = `rotate(${controlerValue.rotate}deg)`;
-                  else if (controlerValue?.transform)
-                    imageStyle["transform"] = controlerValue.transform;
+                  let imageStyle = getImageStyle(controlerValue);
                   return (
                     <div
                       key={item.id}

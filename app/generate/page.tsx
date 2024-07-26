@@ -5,7 +5,7 @@ import { useAppProvider } from "@/components/app-provider";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { client } from "@gradio/client";
-import { getImageStyle, rembg } from "@/lib/common";
+import { rembg, getImageBgStyle } from "@/lib/common";
 import { useUploadThing } from "@/lib/uploadthing";
 import { uid } from "uid";
 import { fetchImages, updateImage } from "@/lib/actions/image.actions";
@@ -15,20 +15,21 @@ import constants from "@/lib/constants";
 import EditBar from "@/components/editBar";
 import { Button } from "@/components/ui/button";
 import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
+import DownloadImage from "@/components/downloadImage";
+import ColorPicker from "@/components/customize";
 
 interface SessionData {
   user: { email: string; photos: string[] };
 }
 
 export default function Generate() {
-  const { setCurrentImage, currentImage, controlerValue } = useAppProvider();
+  const { setCurrentImage, currentImage, controlerValue, setControlerValue } =
+    useAppProvider();
   const imageWrapperRef = useRef<{
     [key: string]: { [key: string]: HTMLDivElement };
   }>({ sideList: {}, main: {} });
   const { data: session } = useSession() as { data: SessionData | null };
-  const [loader, setLoader] = useState<Boolean>(false);
-  const [downloadableImageSize, setDownloadableImageSize] = useState<number>();
-  const [myImageSize, setMyImageSize] = useState<number>();
+  const [loader, setLoader] = useState<boolean>(false);
   const { startUpload } = useUploadThing("imageUploader");
   const [myImages, setMyImages] = useState<{
     loader: boolean;
@@ -36,8 +37,10 @@ export default function Generate() {
   }>(() => {
     return { loader: true, data: [] };
   });
-
-  console.log(imageWrapperRef, "imageWrapperRef123");
+  const [customImage, setCustomImage] = useState<{
+    id: string;
+    url?: string;
+  } | null>(null);
 
   useEffect(() => {
     getImages();
@@ -100,34 +103,26 @@ export default function Generate() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-0 md:gap-2">
         <div className="col-span-1 p-4 rounded-md mb-4 md:mb-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[...myImages.data].map((i) => (
-              <div
-                key={i._id}
-                className="bg-red-100 rounded-full w-full relative overflow-hidden border-white border-6 drop-shadow-md"
-                ref={(e: HTMLDivElement) => {
-                  imageWrapperRef.current["sideList"][i._id] = e;
-                }}
-                style={{ height: myImageSize }}
-                onClick={() => setCurrentImage(i)}
-              >
-                <Image
-                  placeholder="blur"
-                  blurDataURL={constants.blurDataURL}
-                  src={i.imageURL}
-                  loading="lazy"
-                  layout="fill"
-                  objectFit="cover"
-                  className="hover:scale-125 transition-all duration-500 cursor-pointer"
-                  alt="profile pic"
-                  onLoadingComplete={() => {
-                    const height =
-                      imageWrapperRef?.current?.["sideList"]?.[i._id]
-                        ?.offsetWidth;
-                    if (height && !myImageSize) {
-                      setMyImageSize(height);
-                    }
+            {[...myImages.data].map((item) => (
+              <div key={item._id} className="aspect-w-1 aspect-h-1 relative">
+                <div
+                  className={`rounded-full w-full h-full overflow-hidden border-white border-4 drop-shadow-md transition duration-300`}
+                  onClick={() => setCurrentImage(item)}
+                  ref={(e: HTMLDivElement) => {
+                    imageWrapperRef.current["sideList"][item._id] = e;
                   }}
-                />
+                >
+                  <Image
+                    placeholder="blur"
+                    blurDataURL={constants.blurDataURL}
+                    src={item.imageURL}
+                    loading="lazy"
+                    layout="fill"
+                    objectFit="cover"
+                    className="hover:scale-125 transition-all duration-500 cursor-pointer"
+                    alt="profile pic"
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -140,97 +135,36 @@ export default function Generate() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-12">
-                {constants.pngBgCollections.map((item) => {
-                  let imageStyle = getImageStyle(controlerValue);
-                  return (
-                    <div
-                      key={item.id}
-                      className={`${controlerValue.border.value} overflow-hidden relative border-white border-8 hover:drop-shadow-md transition duration-300`}
-                    >
-                      <Button
-                        onClick={() => onDownload(item.id)}
-                        variant="ghost"
-                        className="hover:bg-black hover:bg-opacity-50 z-50 absolute w-full h-full transition-opacity duration-300 group"
-                      >
-                        <Download className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white" />
-                      </Button>
-                      <div
-                        className={`${controlerValue.border.value} w-full relative overflow-hidden`}
-                        ref={(e: HTMLDivElement) => {
-                          imageWrapperRef.current["main"][item.id] = e;
-                        }}
-                        style={{
-                          height: downloadableImageSize,
-                        }}
-                      >
-                        <Image
-                          placeholder="blur"
-                          blurDataURL={constants.blurDataURL}
-                          loading="lazy"
-                          src={currentImage.imageURL}
-                          layout="fill"
-                          objectFit="cover"
-                          className=""
-                          alt="profile pic"
-                          style={imageStyle}
-                          onLoadingComplete={() => {
-                            const height =
-                              imageWrapperRef?.current?.["main"]?.[item.id]
-                                ?.offsetWidth;
-                            if (height && !downloadableImageSize) {
-                              setDownloadableImageSize(height);
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+                {[
+                  ...constants.pngBgCollections,
+                  ...constants.pngBgCollections,
+                  ...constants.pngBgCollections,
+                  ...constants.pngBgCollections,
+                ].map((item: { id: string; url?: string }) => {
+                  let imageBgStyle = getImageBgStyle({
+                    item,
+                    controlerValue,
+                  });
 
-                {constants.gradientColorCollection.map((item) => {
-                  let imageStyle = getImageStyle(controlerValue);
                   return (
                     <div
                       key={item.id}
-                      className={`${controlerValue.border.value} overflow-hidden relative border-white border-8 hover:drop-shadow-md transition duration-300`}
+                      className="aspect-w-1 aspect-h-1 relative"
                     >
-                      <Button
-                        onClick={() => onDownload(item.id)}
-                        variant="ghost"
-                        className="hover:bg-black hover:bg-opacity-50 z-50 absolute w-full h-full transition-opacity duration-300 group"
-                      >
-                        <Download className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white" />
-                      </Button>
-                      <div
-                        className={`${controlerValue.border.value} w-full relative overflow-hidden`}
-                        ref={(e: HTMLDivElement) => {
+                      <DownloadImage
+                        selectedImage={currentImage}
+                        imageBgStyle={imageBgStyle}
+                        onDownload={onDownload}
+                        assignRef={(e: HTMLDivElement) => {
                           imageWrapperRef.current["main"][item.id] = e;
                         }}
-                        style={{
-                          height: downloadableImageSize,
-                          background: item.color,
-                        }}
-                      >
-                        <Image
-                          placeholder="blur"
-                          blurDataURL={constants.blurDataURL}
-                          loading="lazy"
-                          src={currentImage.imageURL}
-                          layout="fill"
-                          objectFit="cover"
-                          className=""
-                          alt="profile pic"
-                          style={imageStyle}
-                          onLoadingComplete={() => {
-                            const height =
-                              imageWrapperRef?.current?.["main"]?.[item.id]
-                                ?.offsetWidth;
-                            if (height && !downloadableImageSize) {
-                              setDownloadableImageSize(height);
-                            }
-                          }}
-                        />
-                      </div>
+                        imageData={item}
+                        controlerValue={controlerValue}
+                      />
+
+                      <Button onClick={() => setCustomImage(item)}>
+                        Border
+                      </Button>
                     </div>
                   );
                 })}
@@ -243,6 +177,10 @@ export default function Generate() {
           )}
         </div>
       </div>
+      <ColorPicker
+        customImage={customImage}
+        onClose={() => setCustomImage(null)}
+      />
     </main>
   );
 }

@@ -15,7 +15,6 @@ export async function updateImage({
 }) {
   try {
     await connectToDB();
-    console.log({ imageURL, email }, "asdasdasd");
     const img = await Image.create({ email, imageURL });
     await User.findOneAndUpdate(
       { email },

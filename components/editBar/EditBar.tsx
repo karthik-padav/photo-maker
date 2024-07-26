@@ -46,9 +46,9 @@ export default function EditBar() {
             className="border-white drop-shadow-2xl rounded-full p-6"
           >
             <div
-              className={`${controlerValue.border.value} h-6 w-6 border-dotted border-2 border-black mr-2`}
+              className={`${controlerValue?.border?.value} h-6 w-6 border-dotted border-2 border-black mr-2`}
             />
-            {controlerValue.border.title}
+            {controlerValue?.border?.title}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">

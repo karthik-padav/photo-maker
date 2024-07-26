@@ -1,28 +1,17 @@
 "use client";
 
 import { getControler } from "@/lib/common";
+import { ControlerValue, CurrentImage } from "@/lib/interfaces";
 import * as React from "react";
 import { createContext, useContext, useState } from "react";
 
 type Theme = {
   showLogin: boolean;
   toggleLogin: () => void;
-  currentImage: {
-    _id: string;
-    imageURL: string;
-    email: string;
-  } | null;
-  setCurrentImage: ({
-    _id,
-    imageURL,
-    email,
-  }: {
-    _id: string;
-    imageURL: string;
-    email: string;
-  }) => void;
-  setControlerValue: (value: { [key: string]: any }) => void;
-  controlerValue: any;
+  currentImage: CurrentImage | null;
+  setCurrentImage: ({ _id, imageURL, email }: CurrentImage) => void;
+  setControlerValue: (value: ControlerValue) => void;
+  controlerValue: ControlerValue;
 };
 
 const defaultValue: Theme = {
@@ -30,7 +19,10 @@ const defaultValue: Theme = {
   toggleLogin: () => {},
   setCurrentImage: () => {},
   setControlerValue: () => {},
-  controlerValue: { border: { title: "Round", value: "rounded-full" } },
+  controlerValue: {
+    border: { title: "Round", value: "rounded-full" },
+    pngShadow: "2",
+  },
   currentImage: {
     email: "karthikpadav@gmail.com",
     imageURL:
@@ -50,19 +42,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setShowLogin((prevShowLogin) => !prevShowLogin);
   };
 
-  const setCurrentImage = ({
-    _id,
-    imageURL,
-    email,
-  }: {
-    _id: string;
-    imageURL: string;
-    email: string;
-  }) => {
+  const setCurrentImage = ({ _id, imageURL, email }: CurrentImage) => {
     _setCurrentImage({ _id, imageURL, email });
   };
 
-  const setControlerValue = (value: { [key: string]: string }) => {
+  const setControlerValue = (value: ControlerValue) => {
     _setControler((prev: any) => {
       return { ...prev, ...value };
     });

@@ -22,5 +22,12 @@ interface Session {
 }
 
 export default async function Home() {
-  return <main className="text-black body-font container">Home</main>;
+  return (
+    <main className="text-black body-font container">
+      Home
+      <Link href={process.env.STRIPE_PRODUCT_LINK || "/"} target="_blank">
+        PAY
+      </Link>
+    </main>
+  );
 }

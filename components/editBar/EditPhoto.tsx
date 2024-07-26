@@ -12,18 +12,7 @@ import { useAppProvider } from "../app-provider";
 import constants from "@/lib/constants";
 import { editImageControlers } from "@/lib/common";
 import Draggable from "react-draggable";
-
-const style_1 = {
-  "--stroke-pos": "3px",
-  "--stroke-neg": "-3px",
-  "--stroke-color": "rgba(0, 255, 0, 0.2)",
-  filter:
-    "drop-shadow(var(--stroke-pos) 0 0 var(--stroke-color)) drop-shadow(var(--stroke-neg) 0 var(--stroke-color)) drop-shadow(0 var(--stroke-pos) 0 var(--stroke-color)) drop-shadow(0 var(--stroke-neg) 0 var(--stroke-color)) drop-shadow(var(--stroke-pos) var(--stroke-pos) 0 var(--stroke-color)) drop-shadow(var(--stroke-pos) var(--stroke-neg) 0 var(--stroke-color)) drop-shadow(var(--stroke-neg) var(--stroke-pos) 0 var(--stroke-color)) drop-shadow(var(--stroke-neg) var(--stroke-neg) 0 var(--stroke-color))",
-};
-
-const style_2 = {
-  filter: "drop-shadow(0 0 14px rgba(0, 0, 0, 1))",
-};
+import { ScrollArea } from "../ui/scroll-area";
 
 const extractValues = (input: string) => {
   const regex = /translate\(([-\d.]+)%, ([-\d.]+)%\)/;
@@ -38,7 +27,7 @@ export default function EditPhoto() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { currentImage, controlerValue, setControlerValue } = useAppProvider();
   const [localControlerValue, setLocalControlerValue] = useState<{
-    [key: string]: string;
+    [key: string]: string | undefined | number;
   }>({
     rotate: controlerValue?.rotate || 0,
     scale: controlerValue?.scale || 1,
@@ -96,95 +85,103 @@ export default function EditPhoto() {
       </Button>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
-            </DialogDescription>
-          </DialogHeader>
-
-          {currentImage && (
-            <>
-              <div className="w-full min-h-96 bg-gray-100 relative overflow-hidden rounded-full">
-                <Draggable
-                  defaultPosition={{
-                    x:
-                      (extractValues(controlerValue?.transform)?.[0] *
-                        imageWrapperSize) /
-                        100 || 0,
-                    y:
-                      (extractValues(controlerValue?.transform)?.[1] *
-                        imageWrapperSize) /
-                        100 || 0,
-                  }}
-                  onStop={handleDrop}
-                  bounds={{
-                    top: -(imageWrapperSize - 462 * (30 / 100)),
-                    left: -(imageWrapperSize - 462 * (30 / 100)),
-                    right: imageWrapperSize - 462 * (30 / 100),
-                    bottom: imageWrapperSize - 462 * (30 / 100),
-                  }}
-                >
-                  <div
-                    className="w-full h-full relative cursor-move outline-2 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]"
-                    style={{ height: imageWrapperSize }}
-                    ref={imageWrapperRef}
+          <ScrollArea className="max-h-screen w-full">
+            {currentImage && (
+              <div className="aspect-w-1 aspect-h-1">
+                <div className="w-full h-full bg-gray-100 overflow-hidden rounded-full">
+                  <Draggable
+                    defaultPosition={{
+                      x:
+                        (extractValues(controlerValue?.transform || "")?.[0] *
+                          imageWrapperSize) /
+                          100 || 0,
+                      y:
+                        (extractValues(controlerValue?.transform || "")?.[1] *
+                          imageWrapperSize) /
+                          100 || 0,
+                    }}
+                    onStop={handleDrop}
+                    bounds={{
+                      top: -(imageWrapperSize - 462 * (30 / 100)),
+                      left: -(imageWrapperSize - 462 * (30 / 100)),
+                      right: imageWrapperSize - 462 * (30 / 100),
+                      bottom: imageWrapperSize - 462 * (30 / 100),
+                    }}
                   >
-                    <div className="absolute top-0 bottom-0 right-0 left-0 z-10" />
-                    <div className="relative h-full w-full">
-                      <Image
-                        placeholder="blur"
-                        blurDataURL={constants.blurDataURL}
-                        src={currentImage.imageURL}
-                        layout="fill"
-                        objectFit="cover"
-                        alt="profile pic"
-                        loading="lazy"
-                        style={{ ...style_2, ...imageStyle }}
-                        onLoadingComplete={handleImageLoad}
-                      />
+                    <div
+                      className="w-full h-full relative cursor-move outline-2 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]"
+                      style={{ height: imageWrapperSize }}
+                      ref={imageWrapperRef}
+                    >
+                      <div className="absolute top-0 bottom-0 right-0 left-0 z-10" />
+                      <div className="relative h-full w-full">
+                        <Image
+                          placeholder="blur"
+                          blurDataURL={constants.blurDataURL}
+                          src={currentImage.imageURL}
+                          layout="fill"
+                          objectFit="cover"
+                          alt="profile pic"
+                          loading="lazy"
+                          style={imageStyle}
+                          onLoadingComplete={handleImageLoad}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </Draggable>
+                  </Draggable>
+                </div>
               </div>
-            </>
-          )}
+            )}
 
-          {Object.keys(controler).map((key: string) => {
-            const data = controler[key];
-            return (
-              <div className="border-white drop-shadow-md" key={key}>
-                <p className="flex justify-between mb-1">
-                  {data.label}
-                  <span>
-                    {localControlerValue?.[key] || 0}
-                    {data.valuePrefix}
-                  </span>
-                </p>
-                <input
-                  onChange={(e) =>
-                    setLocalControlerValue((prev) => {
-                      return { ...prev, [key]: e.target.value };
-                    })
-                  }
-                  {...data.attr}
-                  value={localControlerValue?.[key] || 0}
-                />
-              </div>
-            );
-          })}
-
-          <Button
-            variant="outline"
-            className={`border-white drop-shadow-2xl rounded-full p-6`}
-            onClick={() => {
-              setControlerValue({ ...localControlerValue });
-              setIsOpen(false);
-            }}
-          >
-            Save Photo
-          </Button>
+            {Object.keys(controler).map((key: string) => {
+              const data = controler[key];
+              return (
+                <div className="border-white drop-shadow-md pt-4" key={key}>
+                  <p className="flex justify-between mb-1">
+                    {data.label}
+                    <span>
+                      {localControlerValue?.[key] || 0}
+                      {data.valuePrefix}
+                    </span>
+                  </p>
+                  <input
+                    onChange={(e) =>
+                      setLocalControlerValue((prev) => {
+                        return { ...prev, [key]: e.target.value };
+                      })
+                    }
+                    {...data.attr}
+                    value={localControlerValue?.[key] || 0}
+                  />
+                </div>
+              );
+            })}
+            <div className="text-center py-6">
+              <Button
+                variant="outline"
+                className={`border-white drop-shadow-xl rounded-full p-6 mr-4`}
+                onClick={() => {
+                  setLocalControlerValue({
+                    rotate: controlerValue?.rotate || 0,
+                    scale: controlerValue?.scale || 1,
+                    transform: controlerValue?.transform,
+                  });
+                }}
+              >
+                Reset
+              </Button>
+              <Button
+                variant="outline"
+                className={`border-white drop-shadow-xl rounded-full p-6 `}
+                onClick={() => {
+                  setControlerValue({ ...localControlerValue });
+                  setIsOpen(false);
+                }}
+              >
+                Save Photo
+              </Button>
+            </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </>

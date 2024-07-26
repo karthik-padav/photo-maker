@@ -302,7 +302,27 @@ const constants = {
     },
   ],
 
+  solidColorCollection: [
+    { id: uid(16), color: "rgb(195, 200, 215)" },
+    { id: uid(16), color: "rgb(102, 124, 137)" },
+    { id: uid(16), color: "rgb(237, 99, 55)" },
+    { id: uid(16), color: "rgb(255, 65, 108)" },
+    { id: uid(16), color: "rgb(255, 137, 0)" },
+    { id: uid(16), color: "rgb(255, 228, 0)" },
+    { id: uid(16), color: "rgb(165, 234, 32)" },
+    { id: uid(16), color: "rgb(96, 246, 173)" },
+    { id: uid(16), color: "rgb(70, 230, 209)" },
+    { id: uid(16), color: "rgb(186, 225, 255)" },
+    { id: uid(16), color: "rgb(76, 137, 248)" },
+    { id: uid(16), color: "rgb(120, 68, 233)" },
+    { id: uid(16), color: "rgb(63, 43, 150)" },
+    { id: uid(16), color: "rgb(205, 90, 236)" },
+  ],
+
   pngBgCollections: [
+    {
+      id: uid(16),
+    },
     {
       id: uid(16),
       url: "/images/png_files/shadow_1.png",

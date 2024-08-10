@@ -13,14 +13,6 @@ import { Image } from "lucide-react";
 import { fetchImages } from "@/lib/actions/image.actions";
 import { auth } from "./api/auth/[...nextauth]";
 
-interface Session {
-  data: {
-    user: {
-      photos: [string];
-    };
-  };
-}
-
 export default async function Home() {
   return (
     <main className="text-black body-font container">

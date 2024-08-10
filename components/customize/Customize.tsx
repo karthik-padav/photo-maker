@@ -7,8 +7,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import DownloadImage from "../downloadImage";
-import { getImageBgStyle, customImageControlers } from "@/lib/common";
-import { useAppProvider } from "../app-provider";
+import { getImageBgStyle } from "@/lib/common";
+import { useAppProvider } from "../../lib/app-provider";
 import constants from "@/lib/constants";
 import { ScrollArea } from "../ui/scroll-area";
 import {
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ControlerValue, CustomImageControlers } from "@/lib/interfaces";
+import { ControlerValue } from "@/lib/interfaces";
 import { useState } from "react";
 import ColorPicker from "../colorPicker";
 
@@ -47,9 +47,6 @@ export default function Customize({
   const [activeTab, setActiveTab] = useState<string>(tabs[0].code);
   const [localControlerValue, setLocalControlerValue] =
     useState<ControlerValue>(controlerValue);
-
-  const controler: CustomImageControlers =
-    customImageControlers(controlerValue);
 
   let imageBgStyle = getImageBgStyle({
     item: customImage,
@@ -84,7 +81,7 @@ export default function Customize({
                 <div className="aspect-w-1 aspect-h-1 relative">
                   {currentImage && (
                     <DownloadImage
-                      onHoverEffect={false}
+                      className="drop-shadow-md border-white border-8"
                       imageBgStyle={imageBgStyle}
                       selectedImage={currentImage}
                       controlerValue={localControlerValue}
@@ -122,37 +119,6 @@ export default function Customize({
                 <ScrollArea className="h-[70vh] w-full p-4">
                   {activeTab === "BORDER" && (
                     <>
-                      {Object.keys(controler).map((key: string) => {
-                        const typedKey = key as keyof CustomImageControlers;
-                        const data: any = controler[typedKey];
-                        return (
-                          <div
-                            className={`${
-                              data?.className || ""
-                            } border-white drop-shadow-md`}
-                            key={key}
-                          >
-                            <p className="flex justify-between mb-1">
-                              {data.label}
-                              <span>
-                                {controlerValue?.[typedKey] || 0}
-                                {data.valuePrefix}
-                              </span>
-                            </p>
-                            <input
-                              data-vaul-no-drag={true}
-                              onChange={(e) =>
-                                setLocalControlerValue({
-                                  ...localControlerValue,
-                                  [key]: e.target.value,
-                                })
-                              }
-                              {...data.attr}
-                              value={localControlerValue?.[typedKey] || 0}
-                            />
-                          </div>
-                        );
-                      })}
                       <ColorPicker
                         onClick={(obj: { [key: string]: string }) =>
                           setLocalControlerValue({

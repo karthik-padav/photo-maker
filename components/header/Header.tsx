@@ -21,7 +21,7 @@ import Link from "next/link";
 import constants from "@/lib/constants";
 import dynamic from "next/dynamic";
 import { signOut, useSession } from "next-auth/react";
-import { useAppProvider } from "@/components/app-provider";
+import { useAppProvider } from "@/lib/app-provider";
 
 export default function Header() {
   const { setTheme } = useTheme();

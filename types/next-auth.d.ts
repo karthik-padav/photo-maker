@@ -5,6 +5,7 @@ declare module "next-auth" {
     data: {
       user: {
         photos?: string[];
+        accessToken: string;
       };
     };
   }

@@ -2,7 +2,7 @@
 
 import { Image as LucideImage, LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
-import { useAppProvider } from "../app-provider";
+import { useAppProvider } from "../../lib/app-provider";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { client } from "@gradio/client";

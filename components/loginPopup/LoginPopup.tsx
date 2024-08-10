@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { signIn } from "next-auth/react";
-import { useAppProvider } from "@/components/app-provider";
+import { useAppProvider } from "@/lib/app-provider";
 import constants from "@/lib/constants";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";

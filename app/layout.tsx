@@ -7,17 +7,18 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/lib/theme-provider";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/app/api/auth/[...nextauth]";
 import { SessionProvider } from "next-auth/react";
-import { AppProvider } from "@/components/app-provider";
+import { AppProvider } from "@/lib/app-provider";
 import LoginPopup from "@/components/loginPopup";
 import constants from "@/lib/constants";
 import Script from "next/script";
+import { cookies } from "next/headers";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -35,7 +36,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  console.log(session, "session123");
+  const cookieStore = cookies();
+  const userId = cookieStore.getAll("user_id");
+  console.log(userId, "userId123");
   return (
     <html lang="en">
       <body

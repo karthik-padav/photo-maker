@@ -2,7 +2,7 @@
 
 import { Image as LucideImage, LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
-import { useAppProvider } from "../app-provider";
+import { useAppProvider } from "../../lib/app-provider";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { client } from "@gradio/client";
@@ -21,6 +21,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import constants from "@/lib/constants";
 import EditPhoto from "./EditPhoto";
+import { getCookie } from "@/lib/actions/server.action";
+import axios from "axios";
+import DrawerWrapper from "@/components/drawerWrapper";
+import MyPhotos from "./MyPhotos";
 
 interface SessionData {
   user: { email: string; photos: string[] };
@@ -35,15 +39,59 @@ const borders = [
 export default function EditBar() {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const { data: session } = useSession() as { data: SessionData | null };
-  const { controlerValue, setControlerValue } = useAppProvider();
+  const { controlerValue, setControlerValue, toggleLogin } = useAppProvider();
+  const [loader, setLoader] = useState<{ imageGenerator: boolean }>({
+    imageGenerator: false,
+  });
+
+  async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
+    const cookies = await getCookie();
+    let file: File | null = e?.target?.files?.[0] || null;
+    if (file) {
+      try {
+        setLoader((prev) => ({ ...prev, imageGenerator: true }));
+        let blob = new Blob([file], { type: file.type });
+        blob = await rembg(blob);
+        if (!blob) throw new Error("'Blob not found");
+        const formData = new FormData();
+        formData.append("file", blob, file.name);
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/generateImage`,
+          formData,
+          { headers: { Authorization: `Bearer ${cookies?.value}` } }
+        );
+        setLoader((prev) => ({ ...prev, imageGenerator: false }));
+      } catch (error) {
+        console.log(error);
+        setLoader((prev) => ({ ...prev, imageGenerator: false }));
+      }
+    }
+  }
+
   return (
     <>
       <EditPhoto />
+      <Button
+        variant="outline"
+        className={`border-white drop-shadow-2xl rounded-full p-6 mr-4`}
+        onClick={() =>
+          session?.user ? inputFileRef?.current?.click() : toggleLogin()
+        }
+        disabled={loader.imageGenerator}
+      >
+        Upload Photo
+        <input
+          hidden
+          type="file"
+          ref={inputFileRef}
+          onChange={onImageGenerate}
+        />
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="border-white drop-shadow-2xl rounded-full p-6"
+            className="border-white drop-shadow-2xl rounded-full p-6 mr-4"
           >
             <div
               className={`${controlerValue?.border?.value} h-6 w-6 border-dotted border-2 border-black mr-2`}
@@ -65,6 +113,7 @@ export default function EditBar() {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+      <MyPhotos />
     </>
   );
 }

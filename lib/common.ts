@@ -1,28 +1,32 @@
 import { client } from "@gradio/client";
 import axios from "axios";
 import { ControlerValue } from "./interfaces";
+import { getHfToken } from "./actions/server.action";
 
 export async function rembg(blob: Blob) {
-  const token = process.env.NEXT_PUBLIC_HF_TOKEN;
-  const app = await client(
-    `${process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL}`,
-    {
+  try {
+    const token = await getHfToken();
+    if (!token) throw new Error("HF token not found.");
+    if (!process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL)
+      throw new Error("HF space URL not found.");
+
+    const app = await client(process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL, {
       hf_token: token as `hf_${string}` | undefined,
-    }
-  );
-  const result: any = await app.predict("/predict", [blob]);
+    });
+    const result: any = await app.predict("/predict", [blob]);
 
-  if (!result?.data?.[0]?.path) return false;
+    if (!result?.data?.[0]?.path) return false;
 
-  const imgURL = `${process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL}file=${result?.data?.[0]?.path}`;
+    const imgURL = `${process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL}file=${result?.data?.[0]?.path}`;
 
-  const response = await axios.get(imgURL, {
-    headers: {
-      Authorization: `Bearer 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`,
-    },
-    responseType: "blob",
-  });
-  return response?.data;
+    const response = await axios.get(imgURL, {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: "blob",
+    });
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export function getControler() {
@@ -41,7 +45,7 @@ export function editImageControlers(controlerValue: ControlerValue) {
         min: 0,
         max: 360,
         step: 20,
-        value: controlerValue.rotate,
+        value: controlerValue.rotate || 0,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
@@ -53,42 +57,11 @@ export function editImageControlers(controlerValue: ControlerValue) {
         min: 0.5,
         max: 2,
         defaultValue: 1,
-        value: controlerValue.scale,
+        value: controlerValue.scale || 1,
         step: 0.1,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
-  };
-}
-
-export function customImageControlers(controlerValue: ControlerValue) {
-  return {
-    // backgroundColor: {
-    //   label: "Border",
-    //   valuePrefix: "px",
-    //   className: "col-span-2",
-    //   attr: {
-    //     type: "color",
-    //     min: 0,
-    //     max: 5,
-    //     step: 1,
-    //     value: controlerValue.pngShadow,
-    //     className: "w-full slider dark:bg-accent bg-gray-200",
-    //   },
-    // },
-    // pngBorderColor: {
-    //   label: "BG Color",
-    //   valuePrefix: "px",
-    //   className: "col-span-2",
-    //   attr: {
-    //     type: "color",
-    //     min: 0,
-    //     max: 5,
-    //     step: 1,
-    //     value: controlerValue.pngShadow,
-    //     className: "w-full slider dark:bg-accent bg-gray-200",
-    //   },
-    // },
     pngShadow: {
       label: "Border Color",
       valuePrefix: "px",
@@ -98,7 +71,7 @@ export function customImageControlers(controlerValue: ControlerValue) {
         min: 0,
         max: 5,
         step: 1,
-        value: controlerValue.pngShadow,
+        value: controlerValue.pngShadow || 2,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
@@ -138,7 +111,7 @@ function getBorderColor(controlerValue: ControlerValue) {
 }
 
 export function getImageStyle(controlerValue: ControlerValue) {
-  let imageStyle: { [key: string]: string | number } = {};
+  let imageStyle: any = {};
   if (controlerValue?.scale) imageStyle["scale"] = controlerValue.scale;
   if (controlerValue?.rotate && controlerValue?.transform)
     imageStyle[
@@ -166,6 +139,15 @@ export function getImageBgStyle({
     imageBgStyle["backgroundColor"] = controlerValue.backgroundColor.color;
   else if (controlerValue?.backgroundColor?.type === "bgg")
     bgImage.push(controlerValue.backgroundColor.color);
-  imageBgStyle["backgroundImage"] = bgImage.join(",");
+  if (bgImage.length) imageBgStyle["backgroundImage"] = bgImage.join(",");
   return imageBgStyle;
 }
+
+export const getClientSideCookie = (name: string) => {
+  const cookieValue = document.cookie;
+  // .split("; ")
+  // .find((row) => row.startsWith(`${name}=`))
+  // ?.split("=")[1];
+
+  return cookieValue;
+};

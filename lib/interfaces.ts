@@ -13,7 +13,3 @@ export interface CurrentImage {
   imageURL: string;
   email: string;
 }
-
-export interface CustomImageControlers {
-  pngShadow: any;
-}

@@ -4,6 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "@/lib/db";
+import jwt from "jsonwebtoken";
+import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -25,11 +27,35 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  session: { strategy: "jwt" },
+  jwt: {
+    encode: async ({ token, secret }: JWTEncodeParams<JWT>) => {
+      if (!secret || !token) throw new Error("Secret or token is undefined");
+      const encode = jwt.sign(token, secret as jwt.Secret, {
+        algorithm: "HS384",
+      });
+      return encode;
+    },
+    decode: async ({ token, secret }: JWTDecodeParams): Promise<JWT | null> => {
+      if (!secret || !token) throw new Error("Secret or token is undefined");
+      try {
+        const decode = jwt.verify(token, secret as jwt.Secret, {
+          algorithms: ["HS384"],
+        }) as JWT;
+        return decode;
+      } catch (error) {
+        return null;
+      }
+    },
+  },
   callbacks: {
+    // async jwt({ token }) {
+    //   return token;
+    // },
     async session({ session }) {
       return session;
     },
   },
   adapter: MongoDBAdapter(clientPromise),
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.NEXT_AUTH_SECRET,
 });

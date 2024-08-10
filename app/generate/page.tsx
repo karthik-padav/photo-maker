@@ -71,8 +71,8 @@ export default function Generate() {
                 controlerValue,
               });
               return (
-                <div>
-                  <div key={item.id} className="aspect-w-1 aspect-h-1 relative">
+                <div key={item.id}>
+                  <div className="aspect-w-1 aspect-h-1 relative">
                     <DownloadImage
                       className="border-white border-8 hover:drop-shadow-md"
                       selectedImage={currentImage}

@@ -39,6 +39,10 @@ export default function MyPhotos() {
   async function loadMyImage() {
     setImageData((prev) => ({ ...prev, loader: true }));
     const cookies = await getCookie();
+    console.log(
+      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getImage`,
+      "Base URL"
+    );
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getImage`,
       { headers: { Authorization: `Bearer ${cookies?.value}` } }

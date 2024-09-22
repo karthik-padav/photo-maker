@@ -9,7 +9,6 @@ import { client } from "@gradio/client";
 import { rembg } from "@/lib/common";
 import { useUploadThing } from "@/lib/uploadthing";
 import { uid } from "uid";
-import { fetchImages, updateImage } from "@/lib/actions/image.actions";
 import Image from "next/image";
 
 interface SessionData {

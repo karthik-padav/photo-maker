@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import DownloadImage from "../downloadImage";
-import { getImageBgStyle } from "@/lib/common";
+import { getBgStyles } from "@/lib/common";
 import { useAppProvider } from "../../lib/app-provider";
 import constants from "@/lib/constants";
 import { ScrollArea } from "../ui/scroll-area";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ControlerValue } from "@/lib/interfaces";
+import { BgPngImage, ControlerValue } from "@/lib/interfaces";
 import { useState } from "react";
 import ColorPicker from "../colorPicker";
 
@@ -37,18 +37,15 @@ export default function Customize({
   onClose,
 }: {
   onClose: () => void;
-  customImage: {
-    id: string;
-    url?: string;
-  } | null;
+  customImage?: BgPngImage;
 }) {
-  const { setCurrentImage, currentImage, controlerValue, setControlerValue } =
+  const { setSelectedImage, selectedImage, controlerValue, setControlerValue } =
     useAppProvider();
   const [activeTab, setActiveTab] = useState<string>(tabs[0].code);
   const [localControlerValue, setLocalControlerValue] =
     useState<ControlerValue>(controlerValue);
 
-  let imageBgStyle = getImageBgStyle({
+  let imageBgStyle = getBgStyles({
     item: customImage,
     controlerValue: localControlerValue,
   });
@@ -79,11 +76,11 @@ export default function Customize({
             <div className="col-span-1">
               <div className="mx-auto w-full">
                 <div className="aspect-w-1 aspect-h-1 relative">
-                  {currentImage && (
+                  {selectedImage && (
                     <DownloadImage
                       className="drop-shadow-md border-white border-8"
                       imageBgStyle={imageBgStyle}
-                      selectedImage={currentImage}
+                      selectedImage={selectedImage}
                       controlerValue={localControlerValue}
                     />
                   )}

@@ -38,7 +38,6 @@ export default async function RootLayout({
   const session = await auth();
   const cookieStore = cookies();
   const userId = cookieStore.getAll("user_id");
-  console.log(userId, "userId123");
   return (
     <html lang="en">
       <body

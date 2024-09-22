@@ -58,7 +58,7 @@ export default function Header() {
         {constants.headerMenuList.map((item) => (
           <Link
             key={item.code}
-            className="md:mr-6 md:inline md:py-0 py-2 block hover:text-red-400"
+            className="md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500"
             href={item.href}
           >
             {item.title}
@@ -75,7 +75,7 @@ export default function Header() {
             href="/"
             className="flex items-center text-gray-600 dark:text-gray-300"
           >
-            <Zap className="mr-2 text-red-400" />
+            <Zap className="mr-2 text-violet-500" />
             <h1 className="text-base-content text-lg font-bold">
               {process.env.NEXT_PUBLIC_WEBSITE_NAME}
             </h1>
@@ -85,7 +85,7 @@ export default function Header() {
               {renderList()}
             </nav>
             <Button
-              className="md:hidden mr-2 text-accent-foreground hover:text-red-400"
+              className="md:hidden mr-2 text-accent-foreground hover:text-violet-500"
               variant="outline"
               size="icon"
               onClick={() => setNavbarOpen(!navbarOpen)}
@@ -105,7 +105,7 @@ export default function Header() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-accent-foreground hover:text-red-400 rounded-full"
+                    className="text-accent-foreground hover:text-violet-500 rounded-full"
                   >
                     <Settings className="h-[1.3rem] w-[1.3rem] rotate-0 scale-100 transition-all" />
                   </Button>

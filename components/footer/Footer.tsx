@@ -12,7 +12,7 @@ export default function Footer() {
               href="/"
               className="flex items-center text-gray-600 dark:text-gray-300 pb-2"
             >
-              <Zap className="mr-2 text-red-400" />
+              <Zap className="mr-2 text-violet-400" />
               <h1 className="text-base-content text-lg font-bold">
                 {process.env.NEXT_PUBLIC_WEBSITE_NAME}
               </h1>
@@ -32,7 +32,7 @@ export default function Footer() {
                   key={item.code}
                   className="pb-1 text-sm text-gray-600 dark:text-gray-300"
                 >
-                  <Link className="hover:text-red-400" href={item.href}>
+                  <Link className="hover:text-violet-400" href={item.href}>
                     {item.title}
                   </Link>
                 </li>

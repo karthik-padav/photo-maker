@@ -1,7 +1,8 @@
 import { client } from "@gradio/client";
 import axios from "axios";
-import { ControlerValue } from "./interfaces";
-import { getHfToken } from "./actions/server.action";
+import { BgPngImage, ControlerValue } from "./interfaces";
+import { getCookie, getHfToken } from "./actions/server.action";
+import { toPng } from "html-to-image";
 
 export async function rembg(blob: Blob) {
   try {
@@ -35,7 +36,11 @@ export function getControler() {
   };
 }
 
-export function editImageControlers(controlerValue: ControlerValue) {
+export const calcPercentage = (width: number, v: number) => (v / width) * 100;
+
+export const calcPx = (width: number, v: number) => (v * width) / 100;
+
+export function myPhotoControlers(controlerValue: ControlerValue) {
   return {
     rotate: {
       label: "Rotate",
@@ -63,7 +68,7 @@ export function editImageControlers(controlerValue: ControlerValue) {
       },
     },
     pngShadow: {
-      label: "Border Color",
+      label: "Outline",
       valuePrefix: "px",
       className: "col-span-4",
       attr: {
@@ -78,7 +83,68 @@ export function editImageControlers(controlerValue: ControlerValue) {
   };
 }
 
-function getBorderColor(controlerValue: ControlerValue) {
+export function borderControlers(controlerValue: ControlerValue) {
+  return {
+    outerBorderWidth: {
+      label: "Thickness",
+      valuePrefix: "",
+      attr: {
+        type: "range",
+        min: 0,
+        max: 40,
+        step: 5,
+        value: controlerValue.outerBorderWidth || 0,
+        className: "w-full slider dark:bg-accent bg-gray-200",
+      },
+    },
+    outerBorderOpacity: {
+      label: "Opacity",
+      valuePrefix: "",
+      attr: {
+        type: "range",
+        min: 0,
+        max: 1,
+        value: controlerValue.outerBorderOpacity || 1,
+        step: 0.1,
+        className: "w-full slider dark:bg-accent bg-gray-200",
+      },
+    },
+  };
+}
+
+export function bgControlers(controlerValue: ControlerValue) {
+  return {
+    bgSize: {
+      label: "Zoom In",
+      valuePrefix: "",
+      attr: {
+        type: "range",
+        min: 50,
+        max: 200,
+        step: 10,
+        value: controlerValue.bgSize || 100,
+        className: "w-full slider dark:bg-accent bg-gray-200",
+      },
+    },
+  };
+}
+
+export function hexToRgb(hex: string) {
+  hex = hex.replace(/^#/, "");
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 4), 16);
+  let b = parseInt(hex.substring(4, 6), 16);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+function rgbToRgba(rgb: string = "", opacity: string = "1") {
+  const rgbValues = rgb.match(/\d+/g);
+  if (rgbValues?.length)
+    return `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, ${opacity})`;
+  return "";
+}
+
+export function getBorderColor(controlerValue: ControlerValue) {
   const rgbColors = (controlerValue?.pngBorderColor || "").match(
     /rgb\(\d{1,3}, \d{1,3}, \d{1,3}\)/g
   );
@@ -86,7 +152,7 @@ function getBorderColor(controlerValue: ControlerValue) {
   if (!px || px === "0") return {};
   if (rgbColors?.length === 1)
     return {
-      "--stroke-pos": `${px}px`,
+      "--stroke-pos": `${1 + Number(px)}px`,
       "--stroke-neg": `-${px}px`,
       "--stroke-color": rgbColors?.[0] || "rgb(255, 228, 0)",
       filter:
@@ -119,27 +185,56 @@ export function getImageStyle(controlerValue: ControlerValue) {
     ] = `${controlerValue.transform} rotate(${controlerValue.rotate}deg)`;
   else if (controlerValue?.rotate)
     imageStyle["transform"] = `rotate(${controlerValue.rotate}deg)`;
-  else if (controlerValue?.transform)
-    imageStyle["transform"] = controlerValue.transform;
+  // else if (controlerValue?.transform)
+  //   imageStyle["transform"] = controlerValue.transform;
   imageStyle = { ...imageStyle, ...getBorderColor(controlerValue) };
   return imageStyle;
 }
 
-export function getImageBgStyle({
+export function getBorderStyles(controlerValue: ControlerValue) {
+  let borderStyle: { [key: string]: string } = {};
+  if (
+    controlerValue?.outerBorderWidth &&
+    controlerValue.outerBorderWidth !== "0"
+  ) {
+    borderStyle["borderWidth"] = `${controlerValue.outerBorderWidth}px`;
+    borderStyle["borderWidth"] = `${controlerValue.outerBorderWidth}px`;
+  }
+  if (controlerValue?.outerBorderColor)
+    borderStyle["borderColor"] = rgbToRgba(
+      controlerValue.outerBorderColor,
+      controlerValue.outerBorderOpacity || "1"
+    );
+  return borderStyle;
+}
+
+export function getBgStyles({
   item,
   controlerValue,
 }: {
-  item?: { [key: string]: string } | null;
+  item?: BgPngImage;
   controlerValue: ControlerValue;
 }) {
   let imageBgStyle: { [key: string]: string } = {};
   let bgImage = [];
-  if (item?.url) bgImage.push(`url(${item.url})`);
+  let _bgImage = controlerValue?.bgImage || item?.bgImage;
+  if (_bgImage) bgImage.push(`url(${_bgImage})`);
+  if (controlerValue?.bgSize) {
+    imageBgStyle[
+      "backgroundSize"
+    ] = `${controlerValue.bgSize}% ${controlerValue.bgSize}%`;
+    imageBgStyle["backgroundRepeat"] = "no-repeat";
+    imageBgStyle["backgroundPosition"] = "center center";
+  }
   if (controlerValue?.backgroundColor?.type === "bg")
     imageBgStyle["backgroundColor"] = controlerValue.backgroundColor.color;
   else if (controlerValue?.backgroundColor?.type === "bgg")
     bgImage.push(controlerValue.backgroundColor.color);
   if (bgImage.length) imageBgStyle["backgroundImage"] = bgImage.join(",");
+  // if (controlerValue?.transform)
+  //   imageBgStyle["transform"] = controlerValue.transform;
+
+  console.log(imageBgStyle, "imageBgStyle123");
   return imageBgStyle;
 }
 
@@ -150,4 +245,32 @@ export const getClientSideCookie = (name: string) => {
   // ?.split("=")[1];
 
   return cookieValue;
+};
+
+export const extractValues = (input: string) => {
+  const regex = /translate\(([-\d.]+)%, ([-\d.]+)%\)/;
+  const matches = input?.match(regex);
+  if (matches) {
+    return [parseFloat(matches[1]), parseFloat(matches[2])];
+  }
+  return [];
+};
+
+export const onDownload = (el: HTMLDivElement | null) => {
+  if (el) {
+    toPng(el, {
+      cacheBust: true,
+      quality: 1,
+      pixelRatio: 5,
+    })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.download = "my-image-name.png";
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };

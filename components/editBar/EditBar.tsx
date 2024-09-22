@@ -9,7 +9,6 @@ import { client } from "@gradio/client";
 import { rembg } from "@/lib/common";
 import { useUploadThing } from "@/lib/uploadthing";
 import { uid } from "uid";
-import { fetchImages, updateImage } from "@/lib/actions/image.actions";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -29,12 +28,6 @@ import MyPhotos from "./MyPhotos";
 interface SessionData {
   user: { email: string; photos: string[] };
 }
-
-const borders = [
-  { title: "Round", value: "rounded-full" },
-  { title: "Rounded Corners", value: "rounded-3xl" },
-  { title: "Square", value: "" },
-];
 
 export default function EditBar() {
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -100,7 +93,7 @@ export default function EditBar() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          {borders.map((i) => (
+          {constants.borders.map((i) => (
             <DropdownMenuItem
               key={i.value}
               onClick={() => setControlerValue({ border: i })}

@@ -10,39 +10,40 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useAppProvider } from "../../lib/app-provider";
 import constants from "@/lib/constants";
-import { editImageControlers } from "@/lib/common";
+import { myPhotoControlers } from "@/lib/common";
 import Draggable from "react-draggable";
 import { ScrollArea } from "../ui/scroll-area";
 import DrawerWrapper from "../drawerWrapper";
-import { getCookie } from "@/lib/actions/server.action";
+import { getCookie, getControler } from "@/lib/actions/server.action";
 import axios from "axios";
 import DownloadImage from "../downloadImage";
-import { CurrentImage } from "@/lib/interfaces";
+import { SelectedImage } from "@/lib/interfaces";
 import { LoaderCircle } from "lucide-react";
 
 export default function MyPhotos() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { setCurrentImage, currentImage, controlerValue, setControlerValue } =
+  const { setSelectedImage, selectedImage, controlerValue, setControlerValue } =
     useAppProvider();
   const [imageData, setImageData] = useState<{
     loader: boolean;
     limit: number;
     offset: number;
-    list: CurrentImage[];
+    list: SelectedImage[];
   }>({ loader: false, limit: 50, offset: 0, list: [] });
 
   useEffect(() => {
-    if (isOpen) loadMyImage();
-    else setImageData({ loader: false, limit: 50, offset: 0, list: [] });
+    if (isOpen) {
+      loadMyImage();
+      console.log("trigged");
+      loadMyControler();
+    } else {
+      setImageData({ loader: false, limit: 50, offset: 0, list: [] });
+    }
   }, [isOpen]);
 
   async function loadMyImage() {
     setImageData((prev) => ({ ...prev, loader: true }));
     const cookies = await getCookie();
-    console.log(
-      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getImage`,
-      "Base URL"
-    );
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getImage`,
       { headers: { Authorization: `Bearer ${cookies?.value}` } }
@@ -54,6 +55,10 @@ export default function MyPhotos() {
       };
       return { ...prev, ...obj };
     });
+  }
+
+  async function loadMyControler() {
+    const resp = await getControler();
   }
 
   return (
@@ -80,7 +85,7 @@ export default function MyPhotos() {
                   className="aspect-w-1 aspect-h-1 relative"
                   onClick={() => {
                     const { _id, imageURL, email } = item;
-                    setCurrentImage({ _id, imageURL, email });
+                    setSelectedImage({ _id, imageURL, email });
                     setIsOpen(false);
                   }}
                 >

@@ -1,56 +1,79 @@
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import constants from "@/lib/constants";
-import { getImageStyle } from "@/lib/common";
+import { calcPx, extractValues, getImageStyle } from "@/lib/common";
 import { useAppProvider } from "../../lib/app-provider";
 import { Button } from "../ui/button";
 import { Download } from "lucide-react";
-import { ControlerValue, CurrentImage } from "@/lib/interfaces";
+import { ControlerValue, SelectedImage } from "@/lib/interfaces";
+import Draggable from "react-draggable";
+import { useRef, useState } from "react";
 
 interface Params {
   imageBgStyle?: {
     [key: string]: string | number | undefined;
   };
-  assignRef?: (e: HTMLDivElement) => void;
   imageData?: { [key: string]: string };
   onHoverEffect?: boolean;
-  selectedImage: CurrentImage;
+  selectedImage: SelectedImage;
   controlerValue: ControlerValue;
   className?: string;
 }
 
 export default function DownloadImage({
   imageBgStyle,
-  assignRef = () => {},
   imageData,
   selectedImage,
   controlerValue,
   className = "",
 }: Params) {
-  const { setCurrentImage, setControlerValue } = useAppProvider();
+  const { setSelectedImage, setControlerValue } = useAppProvider();
   const imageStyle = getImageStyle(controlerValue);
   if (!selectedImage?.imageURL) return null;
   let attr: { [key: string]: any } = {
-    className: `${controlerValue?.border?.value} w-full h-full overflow-hidden bg-cover`,
+    className: `${className} ${controlerValue?.border?.value} w-full h-full overflow-hidden bg-cover`,
     style: { ...imageBgStyle },
   };
-  if (assignRef) attr["ref"] = assignRef;
+  const [imageWrapperSize, setImageWrapperSize] = useState<number>(100);
+  const imageWrapperRef = useRef<HTMLDivElement>(null);
+
+  function handleImageLoad() {
+    if (imageWrapperRef?.current?.offsetWidth) {
+      setImageWrapperSize(imageWrapperRef.current.offsetWidth);
+    }
+  }
   return (
     <div
-      className={`${className} ${controlerValue?.border?.value} w-full h-full overflow-hidden transition duration-300 `}
+      // className="w-full h-full bg-gray-100 overflow-hidden rounded-full"
+      {...attr}
+      ref={imageWrapperRef}
     >
-      <div {...attr}>
-        <Image
-          placeholder="blur"
-          blurDataURL={constants.blurDataURL}
-          loading="lazy"
-          src={selectedImage.imageURL}
-          layout="fill"
-          objectFit="contain"
-          alt="profile pic"
-          style={{ ...imageStyle }}
-        />
-      </div>
+      <Draggable
+        disabled={true}
+        position={{
+          x: controlerValue?.transform?.x
+            ? calcPx(imageWrapperSize, controlerValue.transform.x)
+            : 0,
+          y: controlerValue?.transform?.y
+            ? calcPx(imageWrapperSize, controlerValue.transform.y)
+            : 0,
+        }}
+      >
+        <div className="h-full w-full">
+          {/* <div className="absolute top-0 bottom-0 right-0 left-0 z-10" /> */}
+          <Image
+            style={imageStyle}
+            placeholder="blur"
+            blurDataURL={constants.blurDataURL}
+            src={selectedImage.imageURL}
+            layout="fill"
+            objectFit="contain"
+            alt="profile pic"
+            loading="lazy"
+            onLoadingComplete={handleImageLoad}
+          />
+        </div>
+      </Draggable>
     </div>
   );
 }

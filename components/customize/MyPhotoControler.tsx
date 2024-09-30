@@ -24,7 +24,6 @@ import {
 import { Button } from "../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ControlerValue } from "@/lib/interfaces";
-import { useState } from "react";
 import ColorPicker from "../colorPicker";
 
 export default function MyPhotoControler() {

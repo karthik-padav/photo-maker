@@ -19,11 +19,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import constants from "@/lib/constants";
-import EditPhoto from "./EditPhoto";
 import { getCookie } from "@/lib/actions/server.action";
 import axios from "axios";
 import DrawerWrapper from "@/components/drawerWrapper";
-import MyPhotos from "./MyPhotos";
+// import MyPhotos from "./MyPhotos";
+import Link from "next/link";
+import GenerateImageBtn from "../generateImageBtn";
 
 interface SessionData {
   user: { email: string; photos: string[] };
@@ -32,7 +33,13 @@ interface SessionData {
 export default function EditBar() {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const { data: session } = useSession() as { data: SessionData | null };
-  const { controlerValue, setControlerValue, toggleLogin } = useAppProvider();
+  const {
+    controlerValue,
+    selectedImage,
+    setControlerValue,
+    toggleLogin,
+    setSelectedImage,
+  } = useAppProvider();
   const [loader, setLoader] = useState<{ imageGenerator: boolean }>({
     imageGenerator: false,
   });
@@ -48,11 +55,13 @@ export default function EditBar() {
         if (!blob) throw new Error("'Blob not found");
         const formData = new FormData();
         formData.append("file", blob, file.name);
-        const response = await axios.post(
+        const { data } = await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/generateImage`,
           formData,
           { headers: { Authorization: `Bearer ${cookies?.value}` } }
         );
+        console.log(data, "response123");
+        setSelectedImage(data);
         setLoader((prev) => ({ ...prev, imageGenerator: false }));
       } catch (error) {
         console.log(error);
@@ -63,28 +72,14 @@ export default function EditBar() {
 
   return (
     <>
-      <EditPhoto />
-      <Button
-        variant="outline"
-        className={`border-white drop-shadow-2xl rounded-full p-6 mr-4`}
-        onClick={() =>
-          session?.user ? inputFileRef?.current?.click() : toggleLogin()
-        }
-        disabled={loader.imageGenerator}
-      >
-        Upload Photo
-        <input
-          hidden
-          type="file"
-          ref={inputFileRef}
-          onChange={onImageGenerate}
-        />
-      </Button>
+      <GenerateImageBtn
+        className={`${constants.btnClass} rounded-full mr-4 mr-4 `}
+      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            variant="outline"
-            className="border-white drop-shadow-2xl rounded-full p-6 mr-4"
+            variant="ghost"
+            className={`${constants.btnClass} rounded-full mr-4 `}
           >
             <div
               className={`${controlerValue?.border?.value} h-6 w-6 border-dotted border-2 border-black mr-2`}
@@ -106,7 +101,12 @@ export default function EditBar() {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-      <MyPhotos />
+      <Link
+        className={`${constants.btnClass} rounded-full h-12 px-4 py-2 flex justify-center items-center`}
+        href="/myphotos"
+      >
+        My Photos
+      </Link>
     </>
   );
 }

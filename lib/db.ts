@@ -7,6 +7,9 @@ if (!process.env.MONGODB_URL) {
 
 const uri = process.env.MONGODB_URL;
 const options = {
+  // poolSize: 10,
+  // useNewUrlParser: true,
+  // useUnifiedTopology: true,
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,

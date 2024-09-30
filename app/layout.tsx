@@ -19,6 +19,7 @@ import LoginPopup from "@/components/loginPopup";
 import constants from "@/lib/constants";
 import Script from "next/script";
 import { cookies } from "next/headers";
+import GlobalLoader from "@/components/globalLoader";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -75,6 +76,7 @@ export default async function RootLayout({
               <div className="py-6">{children}</div>
               <LoginPopup />
               <Footer />
+              <GlobalLoader />
             </ThemeProvider>
           </SessionProvider>
         </AppProvider>

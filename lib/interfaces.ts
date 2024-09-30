@@ -10,12 +10,13 @@ export interface ControlerValue {
   outerBorderWidth?: string;
   outerBorderColor?: string;
   bgImage?: string;
-  bgSize?: string;
+  bgSize?: string | number;
+  imageWrapperSize?: number;
 }
 
 export interface SelectedImage {
   _id: string;
-  imageURL: string;
+  imageKey: string;
   email: string;
   bgImage?: string;
 }
@@ -27,4 +28,11 @@ export interface BgPngImage {
 
 export interface SessionData {
   user: { email: string; photos: string[] };
+}
+
+export interface MyContoler {
+  _id: string;
+  controler: ControlerValue;
+  imageId: SelectedImage | null;
+  downloadedImageKey?: string;
 }

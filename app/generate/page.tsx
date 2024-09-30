@@ -3,7 +3,7 @@
 import { CircleDashed, BoxSelect, Download } from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
 import { useSession, getCsrfToken } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { getBgStyles, getClientSideCookie, rembg } from "@/lib/common";
 import { useUploadThing } from "@/lib/uploadthing";
 import { uid } from "uid";
@@ -14,10 +14,9 @@ import EditBar from "@/components/editBar";
 import { Button } from "@/components/ui/button";
 import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
 import DownloadImage from "@/components/downloadImage";
-import ColorPicker from "@/components/customize";
-import { updateControler } from "@/lib/actions/server.action";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createControler } from "@/lib/actions/services";
 
 interface SessionData {
   user: { email: string; photos: string[] };
@@ -26,38 +25,33 @@ interface SessionData {
 
 export default function Generate() {
   const router = useRouter();
-  const { setSelectedImage, selectedImage, controlerValue, setControlerValue } =
-    useAppProvider();
+  const { selectedImage, controlerValue, setControlerValue } = useAppProvider();
   const imageWrapperRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const [customImage, setCustomImage] = useState<{
-    id: string;
-    bgImage?: string;
-  } | null>(null);
+  if (!selectedImage) router.push("/");
 
   console.log(selectedImage, "currentImage123");
-  async function onDownload(id: string) {
-    if (!imageWrapperRef?.current?.[id]) return;
-    toPng(imageWrapperRef.current[id], {
-      cacheBust: true,
-      quality: 1,
-      pixelRatio: 5,
-    })
-      .then((dataUrl) => {
-        const link = document.createElement("a");
-        link.download = "my-image-name.png";
-        link.href = dataUrl;
-        link.click();
-        if (selectedImage?._id)
-          updateControler({
-            controler: controlerValue,
-            controlerKey: "123321",
-            imageId: selectedImage._id,
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  // async function onDownload(id: string) {
+  //   if (!imageWrapperRef?.current?.[id]) return;
+  //   toPng(imageWrapperRef.current[id], {
+  //     cacheBust: true,
+  //     quality: 1,
+  //     pixelRatio: 5,
+  //   })
+  //     .then((dataUrl) => {
+  //       const link = document.createElement("a");
+  //       link.download = "my-image-name.png";
+  //       link.href = dataUrl;
+  //       link.click();
+  //       if (selectedImage?._id)
+  //         createControler({
+  //           controler: controlerValue,
+  //           imageId: selectedImage._id,
+  //         });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
 
   function handleRedirect(item: { id: string; bgImage?: string }) {
     if (item?.bgImage)
@@ -65,6 +59,9 @@ export default function Generate() {
     router.push("/customize");
   }
 
+  const borderRadius = controlerValue?.border?.value
+    ? controlerValue.border.value
+    : "";
   return (
     <main className="text-black body-font container">
       {selectedImage && (
@@ -76,10 +73,6 @@ export default function Generate() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-12">
             {constants.pngBgCollections.map(
               (item: { id: string; bgImage?: string }) => {
-                let imageBgStyle = getBgStyles({
-                  item,
-                  controlerValue,
-                });
                 return (
                   <div key={item.id}>
                     <div
@@ -90,13 +83,35 @@ export default function Generate() {
                         }
                       }}
                     >
-                      <DownloadImage
-                        className="border-white border-4 drop-shadow-2xl"
-                        selectedImage={selectedImage}
-                        imageBgStyle={imageBgStyle}
-                        imageData={item}
-                        controlerValue={controlerValue}
-                      />
+                      <div
+                        className={`border-white border-4 drop-shadow-2xl ${borderRadius}`}
+                      >
+                        <DownloadImage
+                          disabled={true}
+                          image={selectedImage}
+                          controler={{
+                            bgImage: item.bgImage,
+                            border: controlerValue?.border,
+                            bgSize: "100",
+                          }}
+                        />
+                      </div>
+                      {/* <div
+                        className={`h-full w-full overflow-hidden ${borderRadius}`}
+                        style={imageBgStyle}
+                      >
+                        <Image
+                          // style={imageStyle}
+                          placeholder="blur"
+                          blurDataURL={constants.blurDataURL}
+                          src={selectedImage.imageURL}
+                          layout="fill"
+                          objectFit="contain"
+                          alt="profile pic"
+                          loading="lazy"
+                          // onLoadingComplete={handleImageLoad}
+                        />
+                      </div> */}
                     </div>
                     <div className="text-center -mt-4">
                       {/* <Button

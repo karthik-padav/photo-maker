@@ -1,17 +1,17 @@
 "use client";
 
-import { getControler } from "@/lib/common";
 import { ControlerValue, SelectedImage } from "@/lib/interfaces";
-import * as React from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 type Theme = {
   showLogin: boolean;
   toggleLogin: () => void;
-  selectedImage: SelectedImage;
-  setSelectedImage: ({ _id, imageURL, email, bgImage }: SelectedImage) => void;
-  setControlerValue: (value: ControlerValue) => void;
-  controlerValue: ControlerValue;
+  setSelectedImage: (value: SelectedImage | null) => void;
+  setControlerValue: (value: ControlerValue | null) => void;
+  setGlobalLoader: (value: boolean) => void;
+  controlerValue: ControlerValue | null;
+  selectedImage: SelectedImage | null;
+  globalLoader: boolean;
 };
 
 const defaultValue: Theme = {
@@ -19,42 +19,57 @@ const defaultValue: Theme = {
   toggleLogin: () => {},
   setSelectedImage: () => {},
   setControlerValue: () => {},
+  setGlobalLoader: () => {},
   controlerValue: {
     border: { title: "Round", value: "rounded-full" },
-    pngShadow: "1",
   },
-  selectedImage: {
-    email: "karthikpadav@gmail.com",
-    imageURL:
-      "https://photo-maker.s3.ap-south-1.amazonaws.com/c36c465966dcfd14.png",
-    _id: "669bf80e25c9f16ccac8ece5",
-  },
+  selectedImage: null,
+  globalLoader: false,
 };
 
 const ThemeContext = createContext<Theme>(defaultValue);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [showLogin, setShowLogin] = useState(defaultValue.showLogin);
-  const [selectedImage, _setSelectedImage] = useState(
-    defaultValue.selectedImage
+  let localStoredData = null;
+  const storage = sessionStorage.getItem(
+    process.env.NEXT_PUBLIC_WEBSITE_CODE || "photoMaker"
   );
-  const [controlerValue, _setControler] = useState(defaultValue.controlerValue);
+  if (storage) localStoredData = JSON.parse(storage);
+  console.log(localStoredData?.selectedImage);
+
+  const [showLogin, setShowLogin] = useState<boolean>(defaultValue.showLogin);
+  const [globalLoader, _setGlobalLoader] = useState<boolean>(
+    defaultValue.globalLoader
+  );
+  const [selectedImage, _setSelectedImage] = useState<SelectedImage | null>(
+    () => localStoredData?.selectedImage || defaultValue.selectedImage
+  );
+  const [controlerValue, _setControler] = useState<ControlerValue | null>(
+    () => localStoredData?.controlerValue || defaultValue.controlerValue
+  );
+
+  useEffect(() => {
+    sessionStorage.setItem(
+      process.env.NEXT_PUBLIC_WEBSITE_CODE || "photoMaker",
+      JSON.stringify({ selectedImage, controlerValue })
+    );
+  }, [selectedImage, controlerValue]);
 
   const toggleLogin = () => {
     setShowLogin((prevShowLogin) => !prevShowLogin);
   };
 
-  const setSelectedImage = ({
-    _id,
-    imageURL,
-    email,
-    bgImage,
-  }: SelectedImage) => {
-    _setSelectedImage({ _id, imageURL, email, bgImage });
+  const setGlobalLoader = () => {
+    _setGlobalLoader((prev) => !prev);
   };
 
-  const setControlerValue = (value: ControlerValue) => {
-    _setControler((prev: any) => {
+  const setSelectedImage = (value: SelectedImage | null) => {
+    _setSelectedImage(value);
+  };
+
+  const setControlerValue = (value: ControlerValue | null) => {
+    _setControler((prev: ControlerValue | null) => {
+      if (!value) return null;
       return { ...prev, ...value };
     });
   };
@@ -68,6 +83,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         selectedImage,
         controlerValue,
         setControlerValue,
+        globalLoader,
+        setGlobalLoader,
       }}
     >
       {children}

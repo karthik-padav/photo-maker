@@ -1,7 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import constants from "@/lib/constants";
-import { calcPx, extractValues, getImageStyle } from "@/lib/common";
+import {
+  calcPercentage,
+  calcPx,
+  extractValues,
+  getBgStyles,
+  getBorderStyles,
+  getImageStyle,
+} from "@/lib/common";
 import { useAppProvider } from "../../lib/app-provider";
 import { Button } from "../ui/button";
 import { Download } from "lucide-react";
@@ -10,70 +19,144 @@ import Draggable from "react-draggable";
 import { useRef, useState } from "react";
 
 interface Params {
-  imageBgStyle?: {
-    [key: string]: string | number | undefined;
-  };
-  imageData?: { [key: string]: string };
-  onHoverEffect?: boolean;
-  selectedImage: SelectedImage;
-  controlerValue: ControlerValue;
-  className?: string;
+  image: SelectedImage;
+  controler?: ControlerValue;
+  disabled?: boolean;
 }
 
 export default function DownloadImage({
-  imageBgStyle,
-  imageData,
-  selectedImage,
-  controlerValue,
-  className = "",
+  image,
+  controler,
+  disabled = false,
 }: Params) {
-  const { setSelectedImage, setControlerValue } = useAppProvider();
-  const imageStyle = getImageStyle(controlerValue);
-  if (!selectedImage?.imageURL) return null;
-  let attr: { [key: string]: any } = {
-    className: `${className} ${controlerValue?.border?.value} w-full h-full overflow-hidden bg-cover`,
-    style: { ...imageBgStyle },
-  };
+  const { setControlerValue } = useAppProvider();
   const [imageWrapperSize, setImageWrapperSize] = useState<number>(100);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
+  if (!image?.imageKey) return null;
+
+  let imageStyle,
+    borderStyle,
+    imageBgStyle = {};
+  if (controler) {
+    const { transform, ...rest } = controler;
+    imageStyle = getImageStyle(rest);
+    imageBgStyle = getBgStyles({
+      controlerValue: controler,
+    });
+    borderStyle = getBorderStyles(
+      controler,
+      imageWrapperRef?.current?.offsetWidth
+    );
+  }
 
   function handleImageLoad() {
     if (imageWrapperRef?.current?.offsetWidth) {
       setImageWrapperSize(imageWrapperRef.current.offsetWidth);
+      setControlerValue({
+        imageWrapperSize: imageWrapperRef.current.offsetWidth,
+      });
     }
   }
+  function handleDrop(e: any, ui: { x: number; y: number }) {
+    setControlerValue({
+      ...controler,
+      ["transform"]: {
+        x: imageWrapperRef?.current?.offsetWidth
+          ? calcPercentage(imageWrapperRef.current.offsetWidth, ui.x)
+          : 0,
+        y: imageWrapperRef?.current?.offsetWidth
+          ? calcPercentage(imageWrapperRef.current.offsetWidth, ui.y)
+          : 0,
+      },
+    });
+  }
+
+  const borderRadius = controler?.border?.value ? controler.border.value : "";
   return (
     <div
-      // className="w-full h-full bg-gray-100 overflow-hidden rounded-full"
-      {...attr}
       ref={imageWrapperRef}
+      className={`relative w-full h-full overflow-hidden ${borderRadius}`}
     >
-      <Draggable
-        disabled={true}
-        position={{
-          x: controlerValue?.transform?.x
-            ? calcPx(imageWrapperSize, controlerValue.transform.x)
-            : 0,
-          y: controlerValue?.transform?.y
-            ? calcPx(imageWrapperSize, controlerValue.transform.y)
-            : 0,
-        }}
+      <div
+        className={`_border absolute top-0 bottom-0 right-0 left-0 z-30 ${borderRadius}`}
+        style={borderStyle}
+      />
+      <div
+        className={`_bg absolute top-0 bottom-0 right-0 left-0 z-20 ${borderRadius}`}
+        style={imageBgStyle}
+      />
+      <div
+        className={`_imageWrapper absolute top-0 bottom-0 right-0 left-0 z-50 ${borderRadius}`}
       >
-        <div className="h-full w-full">
-          {/* <div className="absolute top-0 bottom-0 right-0 left-0 z-10" /> */}
-          <Image
-            style={imageStyle}
-            placeholder="blur"
-            blurDataURL={constants.blurDataURL}
-            src={selectedImage.imageURL}
-            layout="fill"
-            objectFit="contain"
-            alt="profile pic"
-            loading="lazy"
-            onLoadingComplete={handleImageLoad}
-          />
-        </div>
-      </Draggable>
+        <Draggable
+          disabled={disabled}
+          defaultPosition={{
+            x: controler?.transform?.x
+              ? calcPx(imageWrapperSize, controler.transform.x)
+              : 0,
+            y: controler?.transform?.y
+              ? calcPx(imageWrapperSize, controler.transform.y)
+              : 0,
+          }}
+          onStop={handleDrop}
+          bounds={{
+            top: -(imageWrapperSize - 462 * (30 / 100)),
+            left: -(imageWrapperSize - 462 * (30 / 100)),
+            right: imageWrapperSize - 462 * (30 / 100),
+            bottom: imageWrapperSize - 462 * (30 / 100),
+          }}
+        >
+          <div className="relative h-full w-full">
+            <div className="absolute top-0 bottom-0 right-0 left-0 z-50" />
+            <Image
+              className="z-40"
+              style={imageStyle}
+              placeholder="blur"
+              blurDataURL={constants.blurDataURL}
+              src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imageKey}`}
+              layout="fill"
+              objectFit="contain"
+              alt="profile pic"
+              loading="lazy"
+              onLoadingComplete={handleImageLoad}
+            />
+          </div>
+        </Draggable>
+      </div>
     </div>
   );
+  // return (
+  //   <div
+  //     // className="w-full h-full bg-gray-100 overflow-hidden rounded-full"
+  //     {...attr}
+  //     ref={imageWrapperRef}
+  //   >
+  //     <Draggable
+  //       disabled={disabled}
+  //       position={{
+  //         x: controler?.transform?.x
+  //           ? calcPx(imageWrapperSize, controler.transform.x)
+  //           : 0,
+  //         y: controler?.transform?.y
+  //           ? calcPx(imageWrapperSize, controler.transform.y)
+  //           : 0,
+  //       }}
+  //     >
+  //       <div className="h-full w-full">
+  //         {/* <div className="absolute top-0 bottom-0 right-0 left-0 z-10" /> */}
+  //         <Image
+  //           // style={imageStyle}
+  //           placeholder="blur"
+  //           blurDataURL={constants.blurDataURL}
+  //           src={image.imageURL}
+  //           layout="fill"
+  //           objectFit="contain"
+  //           alt="profile pic"
+  //           loading="lazy"
+  //           onLoadingComplete={handleImageLoad}
+  //         />
+  //       </div>
+  //     </Draggable>
+  //   </div>
+  // );
 }

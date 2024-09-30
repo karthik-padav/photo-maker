@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import constants from "@/lib/constants";
-import dynamic from "next/dynamic";
 import { signOut, useSession } from "next-auth/react";
 import { useAppProvider } from "@/lib/app-provider";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -50,20 +50,34 @@ export default function Header() {
   ];
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   const session = useSession();
-  const { toggleLogin } = useAppProvider();
-
+  const { toggleLogin, setSelectedImage, setControlerValue, selectedImage } =
+    useAppProvider();
+  const pathname = usePathname();
+  console.log(pathname, "router123");
   function renderList() {
     return (
       <>
-        {constants.headerMenuList.map((item) => (
-          <Link
-            key={item.code}
-            className="md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500"
-            href={item.href}
-          >
-            {item.title}
-          </Link>
-        ))}
+        {constants.headerMenuList
+          .filter((i) => {
+            switch (i.code) {
+              case "HOME":
+                return pathname !== "/";
+              case "GENERATE":
+              case "CUSTOMIZE":
+                return !!selectedImage;
+              default:
+                return true;
+            }
+          })
+          .map((item) => (
+            <Link
+              key={item.code}
+              className="md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500"
+              href={item.href}
+            >
+              {item.title}
+            </Link>
+          ))}
       </>
     );
   }
@@ -97,7 +111,7 @@ export default function Header() {
                 {session?.data?.user?.image ? (
                   <div className="text-accent-foreground rounded-full h-10 w-10 border overflow-hidden">
                     <img
-                      alt={`Profile Picture`}
+                      alt="Profile Picture"
                       src={`${session.data.user.image}`}
                     />
                   </div>
@@ -137,7 +151,11 @@ export default function Header() {
                 <>
                   {session?.data ? (
                     <DropdownMenuItem
-                      onClick={() => signOut({ callbackUrl: "/" })}
+                      onClick={() => {
+                        signOut({ callbackUrl: "/" });
+                        setSelectedImage(null);
+                        setControlerValue(null);
+                      }}
                     >
                       <span className="ml-2 text-sm"> Sign Out</span>
                     </DropdownMenuItem>

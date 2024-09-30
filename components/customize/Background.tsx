@@ -1,37 +1,22 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import DownloadImage from "../downloadImage";
-import { bgControlers, borderControlers, getBgStyles } from "@/lib/common";
+import { bgControlers } from "@/lib/common";
 import { useAppProvider } from "../../lib/app-provider";
 import constants from "@/lib/constants";
 import { Image as LImage } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "../ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ControlerValue } from "@/lib/interfaces";
 import { useState } from "react";
 import ColorPicker from "../colorPicker";
 import Image from "next/image";
 
 export default function Background() {
-  const { setSelectedImage, selectedImage, controlerValue, setControlerValue } =
-    useAppProvider();
+  const { controlerValue, setControlerValue } = useAppProvider();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const controler: any = bgControlers(controlerValue);
 

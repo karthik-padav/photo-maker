@@ -3,6 +3,7 @@ import axios from "axios";
 import { BgPngImage, ControlerValue } from "./interfaces";
 import { getCookie, getHfToken } from "./actions/server.action";
 import { toPng } from "html-to-image";
+import { updateImage } from "./actions/services";
 
 export async function rembg(blob: Blob) {
   try {
@@ -30,27 +31,21 @@ export async function rembg(blob: Blob) {
   }
 }
 
-export function getControler() {
-  return {
-    border: { title: "Round", value: "rounded-full" },
-  };
-}
-
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 
 export const calcPx = (width: number, v: number) => (v * width) / 100;
 
-export function myPhotoControlers(controlerValue: ControlerValue) {
+export function myPhotoControlers(controlerValue: ControlerValue | null) {
   return {
     rotate: {
       label: "Rotate",
-      valuePrefix: "%",
+      valuePrefix: "",
       attr: {
         type: "range",
         min: 0,
         max: 360,
         step: 20,
-        value: controlerValue.rotate || 0,
+        value: controlerValue?.rotate || 0,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
@@ -61,39 +56,39 @@ export function myPhotoControlers(controlerValue: ControlerValue) {
         type: "range",
         min: 0.5,
         max: 2,
-        defaultValue: 1,
-        value: controlerValue.scale || 1,
+        value: controlerValue?.scale || 1,
         step: 0.1,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
     pngShadow: {
       label: "Outline",
-      valuePrefix: "px",
+      valuePrefix: "",
       className: "col-span-4",
       attr: {
         type: "range",
         min: 0,
         max: 5,
         step: 1,
-        value: controlerValue.pngShadow || 2,
+        value: controlerValue?.pngShadow || 0,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
   };
 }
 
-export function borderControlers(controlerValue: ControlerValue) {
+export function borderControlers(controlerValue: ControlerValue | null) {
   return {
     outerBorderWidth: {
       label: "Thickness",
+      convertToPerc: true,
       valuePrefix: "",
       attr: {
         type: "range",
         min: 0,
         max: 40,
         step: 5,
-        value: controlerValue.outerBorderWidth || 0,
+        value: controlerValue?.outerBorderWidth || 0,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
@@ -104,7 +99,7 @@ export function borderControlers(controlerValue: ControlerValue) {
         type: "range",
         min: 0,
         max: 1,
-        value: controlerValue.outerBorderOpacity || 1,
+        value: controlerValue?.outerBorderOpacity || 1,
         step: 0.1,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
@@ -112,7 +107,7 @@ export function borderControlers(controlerValue: ControlerValue) {
   };
 }
 
-export function bgControlers(controlerValue: ControlerValue) {
+export function bgControlers(controlerValue: ControlerValue | null) {
   return {
     bgSize: {
       label: "Zoom In",
@@ -122,7 +117,7 @@ export function bgControlers(controlerValue: ControlerValue) {
         min: 50,
         max: 200,
         step: 10,
-        value: controlerValue.bgSize || 100,
+        value: controlerValue?.bgSize || 100,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
@@ -191,20 +186,30 @@ export function getImageStyle(controlerValue: ControlerValue) {
   return imageStyle;
 }
 
-export function getBorderStyles(controlerValue: ControlerValue) {
+export function getBorderStyles(
+  controlerValue: ControlerValue,
+  currentWidth: number | undefined
+) {
   let borderStyle: { [key: string]: string } = {};
-  if (
+  const outerBorderWidth =
+    controlerValue?.imageWrapperSize &&
     controlerValue?.outerBorderWidth &&
-    controlerValue.outerBorderWidth !== "0"
-  ) {
-    borderStyle["borderWidth"] = `${controlerValue.outerBorderWidth}px`;
-    borderStyle["borderWidth"] = `${controlerValue.outerBorderWidth}px`;
+    currentWidth
+      ? (Number(controlerValue.outerBorderWidth) * currentWidth) /
+        controlerValue.imageWrapperSize
+      : controlerValue?.outerBorderWidth;
+
+  if (outerBorderWidth && outerBorderWidth !== "0") {
+    borderStyle["borderWidth"] = `${outerBorderWidth}px`;
+    borderStyle["borderWidth"] = `${outerBorderWidth}px`;
+
+    if (controlerValue?.outerBorderColor)
+      borderStyle["borderColor"] = rgbToRgba(
+        controlerValue.outerBorderColor,
+        controlerValue.outerBorderOpacity || "1"
+      );
   }
-  if (controlerValue?.outerBorderColor)
-    borderStyle["borderColor"] = rgbToRgba(
-      controlerValue.outerBorderColor,
-      controlerValue.outerBorderOpacity || "1"
-    );
+
   return borderStyle;
 }
 
@@ -219,13 +224,11 @@ export function getBgStyles({
   let bgImage = [];
   let _bgImage = controlerValue?.bgImage || item?.bgImage;
   if (_bgImage) bgImage.push(`url(${_bgImage})`);
-  if (controlerValue?.bgSize) {
-    imageBgStyle[
-      "backgroundSize"
-    ] = `${controlerValue.bgSize}% ${controlerValue.bgSize}%`;
-    imageBgStyle["backgroundRepeat"] = "no-repeat";
-    imageBgStyle["backgroundPosition"] = "center center";
-  }
+  imageBgStyle["backgroundSize"] = `${controlerValue?.bgSize || "100"}% ${
+    controlerValue?.bgSize || "100"
+  }%`;
+  imageBgStyle["backgroundRepeat"] = "no-repeat";
+  imageBgStyle["backgroundPosition"] = "center center";
   if (controlerValue?.backgroundColor?.type === "bg")
     imageBgStyle["backgroundColor"] = controlerValue.backgroundColor.color;
   else if (controlerValue?.backgroundColor?.type === "bgg")
@@ -234,7 +237,6 @@ export function getBgStyles({
   // if (controlerValue?.transform)
   //   imageBgStyle["transform"] = controlerValue.transform;
 
-  console.log(imageBgStyle, "imageBgStyle123");
   return imageBgStyle;
 }
 
@@ -256,7 +258,10 @@ export const extractValues = (input: string) => {
   return [];
 };
 
-export const onDownload = (el: HTMLDivElement | null) => {
+export const onDownload = (
+  el: HTMLDivElement | null,
+  callback = (blob: Blob) => {}
+) => {
   if (el) {
     toPng(el, {
       cacheBust: true,
@@ -264,6 +269,8 @@ export const onDownload = (el: HTMLDivElement | null) => {
       pixelRatio: 5,
     })
       .then((dataUrl) => {
+        const blob = base64ToBlob(dataUrl, "image/png");
+        callback(blob);
         const link = document.createElement("a");
         link.download = "my-image-name.png";
         link.href = dataUrl;
@@ -274,3 +281,35 @@ export const onDownload = (el: HTMLDivElement | null) => {
       });
   }
 };
+
+export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
+  let file: File | null = e?.target?.files?.[0] || null;
+  if (file) {
+    try {
+      let blob = new Blob([file], { type: file.type });
+      blob = await rembg(blob);
+      if (!blob) throw new Error("'Blob not found");
+      return await updateImage({ blob, fileName: file.name });
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
+}
+
+function base64ToBlob(base64: string, mimeType: string) {
+  // Remove the base64 prefix if present (e.g., "data:image/png;base64,")
+  const byteString = atob(base64.split(",")[1] || base64);
+
+  // Create an array buffer to hold the binary data
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const uint8Array = new Uint8Array(arrayBuffer);
+
+  // Convert the binary string to a Uint8Array
+  for (let i = 0; i < byteString.length; i++) {
+    uint8Array[i] = byteString.charCodeAt(i);
+  }
+
+  // Create a Blob object from the ArrayBuffer and define the MIME type
+  return new Blob([arrayBuffer], { type: mimeType });
+}

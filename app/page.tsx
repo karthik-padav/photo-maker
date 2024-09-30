@@ -11,7 +11,11 @@ import ImageWrapper from "@/components/imageWrapper";
 import { Button } from "@/components/ui/button";
 import { auth } from "./api/auth/[...nextauth]";
 import Image from "next/image";
-import { getBorderColor } from "@/lib/common";
+import { getBorderColor, onImageGenerate } from "@/lib/common";
+import GenerateImageBtn from "@/components/generateImageBtn";
+import Lottie from "lottie-react";
+import lottiefilesArrow from "@/assets/lottiefiles/arrow.json";
+import BannerSection from "@/components/bannerSection";
 
 export default async function Home() {
   return (
@@ -23,7 +27,7 @@ export default async function Home() {
         <p className="mx-auto my-4 lg:text-2xl md:text-xl font-normal leading-relaxed text-gray-600 dark:text-gray-300 lg:w-2/3 text-center">
           {constants.landingPage.subtitle}
         </p>
-        <div className="py-20">
+        {/* <div className="py-20">
           <div className="grid grid-cols-3 gap-4">
             <div className="flex justify-end">
               <div className="w-80 h-60 -rotate-12 border-8 border-white drop-shadow-2xl">
@@ -46,9 +50,9 @@ export default async function Home() {
                   />
                 </div>
               </div>
-              <Button className="text-lg h-12 px-8 my-2 text-accent-foreground bg-violet-500 hover:bg-violet-500 text-white rounded-lg drop-shadow-2xl">
-                Upload your photo
-              </Button>
+              <GenerateImageBtn
+                className={`${constants.btnClass} rounded-full mr-4 mr-4 `}
+              />
               <div className="flex justify-end">
                 <div className="w-32 h-32 relative rotate-180 mb-10 mr-10">
                   <Image
@@ -109,8 +113,12 @@ export default async function Home() {
               </div>
             </div>
           </div>
+        </div> */}
+
+        <div className="">
+          <BannerSection />
         </div>
-        <p className="mx-auto my-4 lg:text-2xl md:text-xl font-normal leading-relaxed text-gray-600 dark:text-gray-300 lg:w-2/3 text-center">
+        <p className="mx-auto my-10 lg:text-2xl md:text-xl font-normal leading-relaxed text-gray-600 dark:text-gray-300 lg:w-2/3 text-center">
           Picofme.io helps you create eye-catching profile pictures in just a
           few clicks. Using AI image background removal, our variations of
           backgrounds, outlines, and filters, your profile will look fantastic

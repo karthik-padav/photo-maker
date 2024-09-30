@@ -2,11 +2,14 @@ import { Google, Github, Facebook } from "@/assets/icons";
 import { uid } from "uid";
 
 const constants = {
+  btnClass:
+    "bg-background drop-shadow-2xl dark:text-white hover:text-white hover:bg-violet-500 drop-shadow-2xl",
   blurDataURL:
     "https://hatchet.com.au/static/3b5370e27fd88759edf39a45cb219962/4fb49/codioful-formerly-gradienta-rKv4HduvzIE-unsplash-scaled.jpg",
   headerMenuList: [
     { code: "HOME", title: "Home", href: "/" },
     { code: "GENERATE", title: "Generate", href: "/generate" },
+    { code: "CUSTOMIZE", title: "Customize", href: "/customize" },
   ],
   loginProvider: [
     {

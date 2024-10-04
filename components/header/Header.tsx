@@ -1,5 +1,5 @@
 "use client";
-import * as React from "react";
+
 import {
   Moon,
   Sun,
@@ -9,8 +9,9 @@ import {
   Settings,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-
 import { Button } from "@/components/ui/button";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +22,10 @@ import Link from "next/link";
 import constants from "@/lib/constants";
 import { signOut, useSession } from "next-auth/react";
 import { useAppProvider } from "@/lib/app-provider";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import coinImage from "@/assets/lottiefiles/coin.json";
+import Lottie from "lottie-react";
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -48,41 +52,71 @@ export default function Header() {
       ),
     },
   ];
-  const [navbarOpen, setNavbarOpen] = React.useState(false);
+  const [navbarOpen, setNavbarOpen] = useState(false);
   const session = useSession();
-  const { toggleLogin, setSelectedImage, setControlerValue, selectedImage } =
-    useAppProvider();
+  const {
+    toggleLogin,
+    setSelectedImage,
+    setControlerValue,
+    selectedImage,
+    user,
+  } = useAppProvider();
   const pathname = usePathname();
-  console.log(pathname, "router123");
+  const router = useRouter();
+  const { toast } = useToast();
+
   function renderList() {
     return (
       <>
         {constants.headerMenuList
           .filter((i) => {
             switch (i.code) {
-              case "HOME":
-                return pathname !== "/";
               case "GENERATE":
               case "CUSTOMIZE":
-                return !!selectedImage;
+                return !!session?.data;
               default:
                 return true;
             }
           })
           .map((item) => (
-            <Link
-              key={item.code}
-              className="md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500"
-              href={item.href}
-            >
-              {item.title}
-            </Link>
+            <div key={item.code} className="inline-block">
+              {item?.requireSelectedImage ? (
+                <Button
+                  variant="ghost"
+                  className={`text-md p-0 hover:bg-transparent hover:text-violet-500 md:mr-6 md:inline md:py-0 py-2 h-auto ${
+                    pathname === item.href && "text-violet-500"
+                  }`}
+                  onClick={() =>
+                    selectedImage
+                      ? router.push(item.href)
+                      : toast({ description: "Your message has been sent." })
+                  }
+                >
+                  {item.title}
+                </Button>
+              ) : (
+                <Link
+                  className={`text-md md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500 ${
+                    pathname === item.href && "text-violet-500"
+                  }`}
+                  href={item.href}
+                >
+                  {item.title}
+                </Link>
+              )}
+            </div>
           ))}
       </>
     );
   }
+
+  const showCoin =
+    user &&
+    process.env.NEXT_PUBLIC_ENABLE_PAYMENT == "true" &&
+    (user?.credit || user.credit === 0);
+  console.log(user, "showCoin123");
   return (
-    <header className="text-white body-font">
+    <header className="body-font">
       <div className="container mx-auto p-5">
         <div className="flex justify-between items-center">
           <Link
@@ -98,6 +132,20 @@ export default function Header() {
             <nav className="text-base justify-center font-semibold md:block hidden text-gray-600 dark:text-gray-300">
               {renderList()}
             </nav>
+            {showCoin && (
+              <div className="md:mr-6 pl-2 flex justify-center items-center bg-background drop-shadow-md rounded-full">
+                <p className="-mr-2 text-violet-500 dark:text-white">
+                  {user.credit}
+                </p>
+                <div className="h-8 -mr-2 flex justify-center items-center">
+                  <Lottie
+                    animationData={coinImage}
+                    loop={true}
+                    className="h-12 w-12"
+                  />
+                </div>
+              </div>
+            )}
             <Button
               className="md:hidden mr-2 text-accent-foreground hover:text-violet-500"
               variant="outline"
@@ -149,6 +197,11 @@ export default function Header() {
                 </>
                 <hr className="my-2" />
                 <>
+                  <DropdownMenuItem>
+                    <Link href="/myphotos">
+                      <span className="ml-2 text-sm">My photos</span>
+                    </Link>
+                  </DropdownMenuItem>
                   {session?.data ? (
                     <DropdownMenuItem
                       onClick={() => {

@@ -1,17 +1,21 @@
 "use client";
 
-import { ControlerValue, SelectedImage } from "@/lib/interfaces";
+import { ControlerValue, SelectedImage, User } from "@/lib/interfaces";
 import { createContext, useContext, useState, useEffect } from "react";
+import { geUser } from "./actions/services";
+import { useSession } from "next-auth/react";
 
 type Theme = {
   showLogin: boolean;
   toggleLogin: () => void;
   setSelectedImage: (value: SelectedImage | null) => void;
   setControlerValue: (value: ControlerValue | null) => void;
+  setUserValue: (value: User | null) => void;
   setGlobalLoader: (value: boolean) => void;
   controlerValue: ControlerValue | null;
   selectedImage: SelectedImage | null;
   globalLoader: boolean;
+  user: User | null;
 };
 
 const defaultValue: Theme = {
@@ -20,24 +24,28 @@ const defaultValue: Theme = {
   setSelectedImage: () => {},
   setControlerValue: () => {},
   setGlobalLoader: () => {},
+  setUserValue: () => {},
   controlerValue: {
     border: { title: "Round", value: "rounded-full" },
   },
   selectedImage: null,
   globalLoader: false,
+  user: null,
 };
 
 const ThemeContext = createContext<Theme>(defaultValue);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   let localStoredData = null;
-  const storage = sessionStorage.getItem(
-    process.env.NEXT_PUBLIC_WEBSITE_CODE || "photoMaker"
-  );
+  const storage =
+    typeof window !== "undefined" &&
+    sessionStorage.getItem(
+      process.env.NEXT_PUBLIC_WEBSITE_CODE || "photoMaker"
+    );
   if (storage) localStoredData = JSON.parse(storage);
-  console.log(localStoredData?.selectedImage);
 
   const [showLogin, setShowLogin] = useState<boolean>(defaultValue.showLogin);
+  const [user, _setUser] = useState<User | null>(defaultValue.user);
   const [globalLoader, _setGlobalLoader] = useState<boolean>(
     defaultValue.globalLoader
   );
@@ -47,6 +55,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [controlerValue, _setControler] = useState<ControlerValue | null>(
     () => localStoredData?.controlerValue || defaultValue.controlerValue
   );
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    async function init() {
+      console.log(session, "session123");
+      if (session) {
+        const { data: user } = await geUser();
+        if (user) _setUser(user);
+      }
+    }
+    init();
+  }, [session]);
 
   useEffect(() => {
     sessionStorage.setItem(
@@ -61,6 +81,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const setGlobalLoader = () => {
     _setGlobalLoader((prev) => !prev);
+  };
+
+  const setUserValue = (value: User | null) => {
+    _setUser((prev) => {
+      if (!value) return null;
+      return { ...prev, ...value };
+    });
   };
 
   const setSelectedImage = (value: SelectedImage | null) => {
@@ -85,6 +112,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setControlerValue,
         globalLoader,
         setGlobalLoader,
+        user,
+        setUserValue,
       }}
     >
       {children}

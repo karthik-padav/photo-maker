@@ -1,7 +1,7 @@
 import { client } from "@gradio/client";
 import axios from "axios";
 import { BgPngImage, ControlerValue } from "./interfaces";
-import { getCookie, getHfToken } from "./actions/server.action";
+import { getHfToken } from "./actions/server.action";
 import { toPng } from "html-to-image";
 import { updateImage } from "./actions/services";
 

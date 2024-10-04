@@ -8,8 +8,18 @@ const constants = {
     "https://hatchet.com.au/static/3b5370e27fd88759edf39a45cb219962/4fb49/codioful-formerly-gradienta-rKv4HduvzIE-unsplash-scaled.jpg",
   headerMenuList: [
     { code: "HOME", title: "Home", href: "/" },
-    { code: "GENERATE", title: "Generate", href: "/generate" },
-    { code: "CUSTOMIZE", title: "Customize", href: "/customize" },
+    {
+      code: "GENERATE",
+      title: "Generate",
+      href: "/generate",
+      requireSelectedImage: true,
+    },
+    {
+      code: "CUSTOMIZE",
+      title: "Customize",
+      href: "/customize",
+      requireSelectedImage: true,
+    },
   ],
   loginProvider: [
     {

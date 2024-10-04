@@ -37,27 +37,27 @@ import { ControlerValue, SessionData } from "@/lib/interfaces";
 import MyPhotoControler from "@/components/customize/MyPhotoControler";
 import Border from "@/components/customize/Border";
 import Background from "@/components/customize/Background";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { createControler } from "@/lib/actions/services";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import Link from "next/link";
 
 export default function Customize() {
-  const { selectedImage, controlerValue, setControlerValue, toggleLogin } =
-    useAppProvider();
+  const { selectedImage, controlerValue, user } = useAppProvider();
   const router = useRouter();
-  if (!selectedImage) router.push("/");
+  const session = useSession();
+  if (!selectedImage || !session?.data) router.push("/");
 
-  const [imageWrapperSize, setImageWrapperSize] = useState<number>(100);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
-  // const { data: session } = useSession() as { data: SessionData | null };
 
   const [activeTab, setActiveTab] = useState<string>("MY_PHOTO");
+  const [showDialog, toggleDialog] = useState<boolean>(false);
   const [menu] = useState(() => [
     {
       label: "My Photo",
@@ -84,23 +84,12 @@ export default function Customize() {
     },
   ]);
 
-  // function handleDrop(e: any, ui: { x: number; y: number }) {
-  //   setControlerValue({
-  //     ...controlerValue,
-  //     ["transform"]: {
-  //       x: imageWrapperRef?.current?.offsetWidth
-  //         ? calcPercentage(imageWrapperRef.current.offsetWidth, ui.x)
-  //         : 0,
-  //       y: imageWrapperRef?.current?.offsetWidth
-  //         ? calcPercentage(imageWrapperRef.current.offsetWidth, ui.y)
-  //         : 0,
-  //     },
-  //   });
-  // }
-
   async function downloadImage() {
+    const ENABLE_PAYMENT = process.env.NEXT_PUBLIC_ENABLE_PAYMENT === "true";
+    const credit = process.env.NEXT_PUBLIC_PRICE_PER_DOWNLOAD
+      ? parseInt(process.env.NEXT_PUBLIC_PRICE_PER_DOWNLOAD)
+      : 3;
     function callback(blob: Blob) {
-      console.log(blob, "dataUrl123");
       if (selectedImage?._id && blob && controlerValue)
         createControler({
           controler: controlerValue,
@@ -108,10 +97,10 @@ export default function Customize() {
           blob,
         });
     }
-    await onDownload(imageWrapperRef.current, callback);
+    if (ENABLE_PAYMENT && user?.credit && credit > Number(user.credit)) {
+      toggleDialog(true);
+    } else await onDownload(imageWrapperRef.current, callback);
   }
-
-  console.log(controlerValue, "controlerValue123");
 
   return (
     <main className="text-black body-font container">
@@ -167,6 +156,33 @@ export default function Customize() {
           </div>
         </div>
       </div>
+
+      <AlertDialog open={showDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Low Credit Alert!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your current credit balance is too low to proceed. Please add more
+              credit to continue using the service without interruptions.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => toggleDialog(false)}
+              className="drop-shadow-2xl rounded-full py-4 px-6"
+            >
+              Cancel
+            </Button>
+            <Link
+              href="/"
+              className="text-sm flex justify-center items-center drop-shadow-2xl rounded-full px-6 bg-violet-500 hover:bg-violet-500 text-white relative"
+            >
+              Add Credit
+            </Link>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 }

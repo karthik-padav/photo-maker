@@ -12,7 +12,6 @@ import { MyContoler, SelectedImage } from "@/lib/interfaces";
 import DownloadImage from "@/components/downloadImage";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import List from "./List";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -26,6 +25,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useSession } from "next-auth/react";
+import GenerateImageBtn from "@/components/generateImageBtn";
 
 const tabs = {
   photos: "MY_PHOTOS",
@@ -33,9 +34,9 @@ const tabs = {
 };
 
 export default function MyPhotos() {
-  const imageWrapperRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { setSelectedImage, setControlerValue } = useAppProvider();
+  const { setSelectedImage, setControlerValue, selectedImage } =
+    useAppProvider();
   const [selectedId, toggleDialog] = useState<{
     id: string;
     tab: string;
@@ -43,13 +44,29 @@ export default function MyPhotos() {
   const [loader, setLoader] = useState<boolean>(false);
   const [imageList, setImageList] = useState<SelectedImage[]>(() => []);
   const [controlerList, setControlerList] = useState<MyContoler[]>(() => []);
+  const session = useSession();
+  if (!session?.data) router.push("/");
 
   useEffect(() => {
     async function init() {
-      const { data: myImages } = await getMyImages();
-      const { data: myContolers } = await getControler();
-      setImageList(myImages);
-      setControlerList(myContolers);
+      setLoader(true);
+      const [myImages, myContolers] = await Promise.allSettled([
+        new Promise(async (res, rej) => {
+          const { data } = await getMyImages();
+          if (data) res(data);
+          else rej();
+        }),
+        new Promise(async (res, rej) => {
+          const { data } = await getControler();
+          if (data) res(data);
+          else rej();
+        }),
+      ]);
+      if (myImages?.status === "fulfilled")
+        setImageList(myImages.value as SelectedImage[]);
+      if (myContolers?.status === "fulfilled")
+        setControlerList(myContolers.value as MyContoler[]);
+      setLoader(false);
     }
     init();
   }, []);
@@ -66,7 +83,6 @@ export default function MyPhotos() {
     document.body.removeChild(a);
   };
 
-  console.log(controlerList, "controlerList123");
   async function onDelete() {
     if (selectedId?.id) {
       setLoader(true);
@@ -106,103 +122,151 @@ export default function MyPhotos() {
         </TabsList>
         <TabsContent value={tabs.photos}>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-12">
-            {imageList.map((i) => (
-              <div key={i._id}>
-                <div className="aspect-w-1 aspect-h-1">
-                  <div
-                    className={`border-white border-4 drop-shadow-2xl rounded-full overflow-hidden`}
-                  >
-                    <DownloadImage disabled={true} image={i} />
+            {loader &&
+              [1, 2, 3, 4, 5].map((i) => (
+                <div key={i}>
+                  <div className="aspect-w-1 aspect-h-1">
+                    <div className="animate-pulse border-white border-4 drop-shadow-2xl rounded-full">
+                      <div className="rounded-full bg-slate-100 h-full w-full" />
+                    </div>
                   </div>
                 </div>
-                <div className="text-center -mt-4">
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setSelectedImage(i);
-                      router.push("/customize");
-                    }}
-                    className="h-12 mr-2 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                  >
-                    <Pencil />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={() =>
-                      toggleDialog({ id: i._id, tab: tabs.photos })
-                    }
-                    className="h-12 w-12 p-0 hover:bg-red-500 text-red-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
+          {!loader && !imageList.length ? (
+            <div className="flex flex-col justify-center items-center h-80">
+              <div className="relative md:h-32 md:w-32 h-14 w-14">
+                <Image
+                  placeholder="blur"
+                  blurDataURL={constants.blurDataURL}
+                  src="/images/no-data.png"
+                  layout="fill"
+                  objectFit="contain"
+                  alt="no-data"
+                  loading="lazy"
+                />
+              </div>
+              <p className="my-2">No data found</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-12">
+              {imageList.map((i) => (
+                <div key={i._id}>
+                  <div className="aspect-w-1 aspect-h-1">
+                    <div
+                      className={`border-white border-4 drop-shadow-2xl rounded-full overflow-hidden`}
+                    >
+                      <DownloadImage disabled={true} image={i} />
+                    </div>
+                  </div>
+                  <div className="text-center -mt-7">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        setSelectedImage(i);
+                        router.push("/customize");
+                      }}
+                      className="h-12 mr-2 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                    >
+                      <Pencil />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() =>
+                        toggleDialog({ id: i._id, tab: tabs.photos })
+                      }
+                      className="h-12 w-12 p-0 hover:bg-red-500 text-red-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                    >
+                      <Trash2 />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </TabsContent>
         <TabsContent value={tabs.downloads}>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-12">
-            {controlerList.map((i) => {
-              if (i?.imageId?._id && i?.downloadedImageKey) {
-                const { controler = {}, imageId } = i;
-                const borderRadius = controler?.border?.value
-                  ? controler.border.value
-                  : "";
-                return (
-                  <div key={i._id}>
-                    <div className="aspect-w-1 aspect-h-1">
-                      <div
-                        className={`border-white border-4 drop-shadow-2xl ${borderRadius}`}
-                      >
-                        <Image
-                          className="overflow-hidden"
-                          placeholder="blur"
-                          blurDataURL={constants.blurDataURL}
-                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${i.downloadedImageKey}`}
-                          layout="fill"
-                          objectFit="contain"
-                          alt="profile pic"
-                          loading="lazy"
-                        />
+            {!loader && !controlerList.length ? (
+              <div className="flex flex-col justify-center items-center h-80">
+                <div className="relative md:h-32 md:w-32 h-14 w-14">
+                  <Image
+                    placeholder="blur"
+                    blurDataURL={constants.blurDataURL}
+                    src="/images/no-data.png"
+                    layout="fill"
+                    objectFit="contain"
+                    alt="no-data"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="mt-2">No data found</p>
+              </div>
+            ) : (
+              <>
+                {controlerList.map((i) => {
+                  if (i?.imageId?._id && i?.downloadedImageKey) {
+                    const { controler = {}, imageId } = i;
+                    const borderRadius = controler?.border?.value
+                      ? controler.border.value
+                      : "";
+                    return (
+                      <div key={i._id}>
+                        <div className="aspect-w-1 aspect-h-1">
+                          <div
+                            className={`border-white border-4 drop-shadow-2xl ${borderRadius}`}
+                          >
+                            <Image
+                              className="overflow-hidden"
+                              placeholder="blur"
+                              blurDataURL={constants.blurDataURL}
+                              src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${i.downloadedImageKey}`}
+                              layout="fill"
+                              objectFit="contain"
+                              alt="profile pic"
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                        <div className="text-center -mt-7">
+                          <Button
+                            variant="ghost"
+                            onClick={() => {
+                              setSelectedImage(imageId);
+                              setControlerValue(controler);
+                              router.push("/customize");
+                            }}
+                            className="h-12 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                          >
+                            <Pencil />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            onClick={() =>
+                              toggleDialog({ id: i._id, tab: tabs.downloads })
+                            }
+                            className="h-12 w-12 mx-2 p-0 hover:bg-red-500 text-red-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                          >
+                            <Trash2 />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            onClick={() =>
+                              i.downloadedImageKey &&
+                              downloadImage(i.downloadedImageKey)
+                            }
+                            className="h-12 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                          >
+                            <Download />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-center -mt-4">
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setSelectedImage(imageId);
-                          setControlerValue(controler);
-                          router.push("/customize");
-                        }}
-                        className="h-12 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                      >
-                        <Pencil />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          toggleDialog({ id: i._id, tab: tabs.downloads })
-                        }
-                        className="h-12 w-12 mx-2 p-0 hover:bg-red-500 text-red-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                      >
-                        <Trash2 />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          i.downloadedImageKey &&
-                          downloadImage(i.downloadedImageKey)
-                        }
-                        className="h-12 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                      >
-                        <Download />
-                      </Button>
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })}
+                    );
+                  }
+                  return null;
+                })}
+              </>
+            )}
           </div>
         </TabsContent>
       </Tabs>
@@ -210,10 +274,10 @@ export default function MyPhotos() {
       <AlertDialog open={!!selectedId}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Delete Image?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and remove your data from our servers.
+              This action cannot be undone. It will permanently delete your
+              image from your profile.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

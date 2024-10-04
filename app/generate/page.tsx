@@ -18,16 +18,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createControler } from "@/lib/actions/services";
 
-interface SessionData {
-  user: { email: string; photos: string[] };
-  accessToken: string;
-}
-
 export default function Generate() {
   const router = useRouter();
   const { selectedImage, controlerValue, setControlerValue } = useAppProvider();
   const imageWrapperRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  if (!selectedImage) router.push("/");
+  const session = useSession();
+  if (!selectedImage || !session?.data) router.push("/");
 
   console.log(selectedImage, "currentImage123");
   // async function onDownload(id: string) {
@@ -113,7 +109,7 @@ export default function Generate() {
                         />
                       </div> */}
                     </div>
-                    <div className="text-center -mt-4">
+                    <div className="text-center -mt-7">
                       {/* <Button
                         onClick={() => onDownload(item.id)}
                         variant="outline"

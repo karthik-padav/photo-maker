@@ -44,31 +44,31 @@ export default function EditBar() {
     imageGenerator: false,
   });
 
-  async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
-    const cookies = await getCookie();
-    let file: File | null = e?.target?.files?.[0] || null;
-    if (file) {
-      try {
-        setLoader((prev) => ({ ...prev, imageGenerator: true }));
-        let blob = new Blob([file], { type: file.type });
-        blob = await rembg(blob);
-        if (!blob) throw new Error("'Blob not found");
-        const formData = new FormData();
-        formData.append("file", blob, file.name);
-        const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/generateImage`,
-          formData,
-          { headers: { Authorization: `Bearer ${cookies?.value}` } }
-        );
-        console.log(data, "response123");
-        setSelectedImage(data);
-        setLoader((prev) => ({ ...prev, imageGenerator: false }));
-      } catch (error) {
-        console.log(error);
-        setLoader((prev) => ({ ...prev, imageGenerator: false }));
-      }
-    }
-  }
+  // async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
+  //   const cookies = await getCookie();
+  //   let file: File | null = e?.target?.files?.[0] || null;
+  //   if (file) {
+  //     try {
+  //       setLoader((prev) => ({ ...prev, imageGenerator: true }));
+  //       let blob = new Blob([file], { type: file.type });
+  //       blob = await rembg(blob);
+  //       if (!blob) throw new Error("'Blob not found");
+  //       const formData = new FormData();
+  //       formData.append("file", blob, file.name);
+  //       const { data } = await axios.post(
+  //         `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/generateImage`,
+  //         formData,
+  //         { headers: { Authorization: `Bearer ${cookies?.value}` } }
+  //       );
+  //       console.log(data, "response123");
+  //       setSelectedImage(data);
+  //       setLoader((prev) => ({ ...prev, imageGenerator: false }));
+  //     } catch (error) {
+  //       console.log(error);
+  //       setLoader((prev) => ({ ...prev, imageGenerator: false }));
+  //     }
+  //   }
+  // }
 
   return (
     <>

@@ -36,3 +36,8 @@ export interface MyContoler {
   imageId: SelectedImage | null;
   downloadedImageKey?: string;
 }
+
+export interface User {
+  _id: string;
+  credit: number | string;
+}

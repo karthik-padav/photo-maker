@@ -1,11 +1,5 @@
 "use client";
 
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
 import { Button } from "../ui/button";
 import constants from "@/lib/constants";
 import { useRef, useState } from "react";
@@ -15,6 +9,7 @@ import { useAppProvider } from "@/lib/app-provider";
 import { onImageGenerate } from "@/lib/common";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useToast } from "@/hooks/use-toast";
 
 export default function GenerateImageBtn({
   className = constants.btnClass,
@@ -26,6 +21,7 @@ export default function GenerateImageBtn({
   const router = useRouter();
   const inputFileRef = useRef<HTMLInputElement>(null);
   const { data: session } = useSession() as { data: SessionData | null };
+  console.log(session, "session123");
   const {
     globalLoader,
     selectedImage,
@@ -33,27 +29,20 @@ export default function GenerateImageBtn({
     toggleLogin,
     setSelectedImage,
   } = useAppProvider();
+  const { toast } = useToast();
 
   async function onImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     setGlobalLoader(true);
     const { data } = { ...(await onImageGenerate(e)) };
-    // const data = {
-    //   imageKey: "80ad21e868f90e98.png",
-    //   bucket: "photo-maker",
-    //   email: "karthikpadav@gmail.com",
-    //   active: true,
-    //   _id: "66f58e79559830563f643a0e",
-    //   createdAt: "2024-09-26T16:40:25.633Z",
-    //   updatedAt: "2024-09-26T16:40:25.633Z",
-    //   __v: 0,
-    // };
-    console.log(data, "data123");
     if (data) {
       setSelectedImage(data);
       router.push("/generate");
-    } else {
-      console.log("error");
-    }
+    } else
+      toast({
+        variant: "destructive",
+        description: "Oops Something went worng.",
+      });
+
     setGlobalLoader(false);
   }
   return (

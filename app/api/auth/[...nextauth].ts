@@ -54,5 +54,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   adapter: MongoDBAdapter(clientPromise),
+  events: {
+    async createUser({ user }) {
+      const db = (await clientPromise).db();
+      const creditExist = await db
+        .collection("users")
+        .findOne({ email: user.email, credit: { $exists: true } });
+      if (!creditExist) {
+        await db
+          .collection("users")
+          .updateOne(
+            { email: user.email },
+            { $set: { credit: 100, active: true } }
+          );
+      }
+    },
+  },
   secret: process.env.NEXT_AUTH_SECRET,
 });

@@ -11,7 +11,7 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
 import { auth } from "@/app/api/auth/[...nextauth]";
 import { SessionProvider } from "next-auth/react";
 import { AppProvider } from "@/lib/app-provider";
@@ -37,13 +37,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  const cookieStore = cookies();
-  const userId = cookieStore.getAll("user_id");
   return (
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen dark:bg-gray-900 font-sans antialiased flex flex-col justify-between",
+          "dark:bg-gray-900 font-sans antialiased",
           fontSans.variable
         )}
       >
@@ -63,23 +61,29 @@ export default async function RootLayout({
             </Script>
           </>
         )}
-        <AppProvider>
-          <SessionProvider session={session}>
-            <Toaster />
+        <SessionProvider session={session}>
+          <AppProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
               enableSystem
               disableTransitionOnChange
             >
-              <Header />
-              <div className="py-6">{children}</div>
+              <Toaster />
+              <div className="flex flex-col justify-between min-h-screen">
+                <div className="flex-none">
+                  <Header />
+                </div>
+                <div className="grow py-6">{children}</div>
+                <div className="flex-none">
+                  <Footer />
+                </div>
+              </div>
               <LoginPopup />
-              <Footer />
               <GlobalLoader />
             </ThemeProvider>
-          </SessionProvider>
-        </AppProvider>
+          </AppProvider>
+        </SessionProvider>
       </body>
     </html>
   );

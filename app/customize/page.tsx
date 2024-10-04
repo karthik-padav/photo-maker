@@ -21,7 +21,6 @@ import {
   onDownload,
   getBorderStyles,
 } from "@/lib/common";
-import { useUploadThing } from "@/lib/uploadthing";
 import { uid } from "uid";
 import Image from "next/image";
 import DragAndDrop from "@/components/dragAndDrop";

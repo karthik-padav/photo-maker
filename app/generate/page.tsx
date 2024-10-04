@@ -5,7 +5,6 @@ import { useAppProvider } from "@/lib/app-provider";
 import { useSession, getCsrfToken } from "next-auth/react";
 import { useEffect, useRef } from "react";
 import { getBgStyles, getClientSideCookie, rembg } from "@/lib/common";
-import { useUploadThing } from "@/lib/uploadthing";
 import { uid } from "uid";
 import Image from "next/image";
 import DragAndDrop from "@/components/dragAndDrop";

@@ -48,6 +48,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
   },
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+    callbackUrl: {
+      name: `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-callback-url`,
+      options: {
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
   callbacks: {
     async session({ session }) {
       return session;

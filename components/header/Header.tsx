@@ -53,7 +53,7 @@ export default function Header() {
     },
   ];
   const [navbarOpen, setNavbarOpen] = useState(false);
-  const session = useSession();
+  const { data: session } = useSession();
   const {
     toggleLogin,
     setSelectedImage,
@@ -64,6 +64,7 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
+  const { data, status } = useSession();
 
   function renderList() {
     return (
@@ -73,7 +74,7 @@ export default function Header() {
             switch (i.code) {
               case "GENERATE":
               case "CUSTOMIZE":
-                return !!session?.data;
+                return !!session;
               default:
                 return true;
             }
@@ -114,7 +115,6 @@ export default function Header() {
     user &&
     process.env.NEXT_PUBLIC_ENABLE_PAYMENT == "true" &&
     (user?.credit || user.credit === 0);
-  console.log(user, "showCoin123");
   return (
     <header className="body-font">
       <div className="container mx-auto p-5">
@@ -156,12 +156,9 @@ export default function Header() {
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                {session?.data?.user?.image ? (
+                {session?.user?.image ? (
                   <div className="text-accent-foreground rounded-full h-10 w-10 border overflow-hidden">
-                    <img
-                      alt="Profile Picture"
-                      src={`${session.data.user.image}`}
-                    />
+                    <img alt="Profile Picture" src={`${session.user.image}`} />
                   </div>
                 ) : (
                   <Button
@@ -174,11 +171,11 @@ export default function Header() {
                 )}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {session.data?.user && (
+                {session?.user && (
                   <>
                     <div className="px-2 py-1.5">
-                      <p className="text-md">{session.data.user.name}</p>
-                      <p className="text-xs">{session.data.user.email}</p>
+                      <p className="text-md">{session.user.name}</p>
+                      <p className="text-xs">{session.user.email}</p>
                     </div>
                     <hr className="my-2" />
                   </>
@@ -197,21 +194,23 @@ export default function Header() {
                 </>
                 <hr className="my-2" />
                 <>
-                  <DropdownMenuItem>
-                    <Link href="/myphotos">
-                      <span className="ml-2 text-sm">My photos</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  {session?.data ? (
-                    <DropdownMenuItem
-                      onClick={() => {
-                        signOut({ callbackUrl: "/" });
-                        setSelectedImage(null);
-                        setControlerValue(null);
-                      }}
-                    >
-                      <span className="ml-2 text-sm"> Sign Out</span>
-                    </DropdownMenuItem>
+                  {session ? (
+                    <>
+                      <DropdownMenuItem>
+                        <Link href="/myphotos">
+                          <span className="ml-2 text-sm">My photos</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          signOut({ callbackUrl: "/" });
+                          setSelectedImage(null);
+                          setControlerValue(null);
+                        }}
+                      >
+                        <span className="ml-2 text-sm"> Sign Out</span>
+                      </DropdownMenuItem>
+                    </>
                   ) : (
                     <DropdownMenuItem onClick={toggleLogin}>
                       <span className="ml-2 text-sm"> Sign In</span>

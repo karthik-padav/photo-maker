@@ -24,30 +24,6 @@ export default function Generate() {
   const session = useSession();
   if (!selectedImage || !session?.data) router.push("/");
 
-  console.log(selectedImage, "currentImage123");
-  // async function onDownload(id: string) {
-  //   if (!imageWrapperRef?.current?.[id]) return;
-  //   toPng(imageWrapperRef.current[id], {
-  //     cacheBust: true,
-  //     quality: 1,
-  //     pixelRatio: 5,
-  //   })
-  //     .then((dataUrl) => {
-  //       const link = document.createElement("a");
-  //       link.download = "my-image-name.png";
-  //       link.href = dataUrl;
-  //       link.click();
-  //       if (selectedImage?._id)
-  //         createControler({
-  //           controler: controlerValue,
-  //           imageId: selectedImage._id,
-  //         });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
-
   function handleRedirect(item: { id: string; bgImage?: string }) {
     if (item?.bgImage)
       setControlerValue({ ...controlerValue, bgImage: item.bgImage });

@@ -59,7 +59,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     async function init() {
-      console.log(session, "session123");
       if (session) {
         const { data: user } = await geUser();
         if (user) _setUser(user);

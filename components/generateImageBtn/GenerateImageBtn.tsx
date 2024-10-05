@@ -21,7 +21,6 @@ export default function GenerateImageBtn({
   const router = useRouter();
   const inputFileRef = useRef<HTMLInputElement>(null);
   const { data: session } = useSession() as { data: SessionData | null };
-  console.log(session, "session123");
   const {
     globalLoader,
     selectedImage,

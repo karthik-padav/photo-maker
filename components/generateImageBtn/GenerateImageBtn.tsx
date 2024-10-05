@@ -41,7 +41,7 @@ export default function GenerateImageBtn({
         variant: "destructive",
         description: "Oops Something went worng.",
       });
-
+    if (inputFileRef?.current) inputFileRef.current.value = "";
     setGlobalLoader(false);
   }
   return (

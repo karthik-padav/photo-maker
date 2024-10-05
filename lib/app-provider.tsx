@@ -59,13 +59,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     async function init() {
-      if (session) {
-        const { data: user } = await geUser();
-        if (user) _setUser(user);
+      if (session?.user?.email && !user) {
+        const { data } = await geUser();
+        if (data) _setUser(data);
       }
     }
     init();
-  }, [session]);
+  }, [session?.user?.email]);
 
   useEffect(() => {
     sessionStorage.setItem(

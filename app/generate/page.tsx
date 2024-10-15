@@ -37,11 +37,11 @@ export default function Generate() {
     <main className="text-black body-font container">
       {selectedImage && (
         <>
-          <div className="mb-12 flex">
+          <div className="mb-12 flex flex-wrap gap-2">
             <EditBar />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
             {constants.pngBgCollections.map(
               (item: { id: string; bgImage?: string }) => {
                 return (
@@ -67,34 +67,11 @@ export default function Generate() {
                           }}
                         />
                       </div>
-                      {/* <div
-                        className={`h-full w-full overflow-hidden ${borderRadius}`}
-                        style={imageBgStyle}
-                      >
-                        <Image
-                          // style={imageStyle}
-                          placeholder="blur"
-                          blurDataURL={constants.blurDataURL}
-                          src={selectedImage.imageURL}
-                          layout="fill"
-                          objectFit="contain"
-                          alt="profile pic"
-                          loading="lazy"
-                          // onLoadingComplete={handleImageLoad}
-                        />
-                      </div> */}
                     </div>
-                    <div className="text-center -mt-7">
-                      {/* <Button
-                        onClick={() => onDownload(item.id)}
-                        variant="outline"
-                        className="border-white drop-shadow-2xl rounded-full p-5 border-4 border-violet-100"
-                      >
-                        Download
-                      </Button> */}
+                    <div className="text-center -mt-6 md:-mt-7">
                       <Button
                         onClick={() => handleRedirect(item)}
-                        className="drop-shadow-2xl rounded-full py-4 px-6 bg-violet-500 hover:bg-violet-500 text-white"
+                        className="drop-shadow-2xl rounded-full py-2 px-4 md:py-4 md:px-6 bg-violet-500 hover:bg-violet-500 text-white"
                       >
                         Customize
                       </Button>

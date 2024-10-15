@@ -25,49 +25,32 @@ import DrawerWrapper from "@/components/drawerWrapper";
 import Link from "next/link";
 import GenerateImageBtn from "../generateImageBtn";
 
-interface SessionData {
-  user: { email: string; photos: string[] };
-}
-
 export default function EditBar() {
-  const inputFileRef = useRef<HTMLInputElement>(null);
-  const { data: session } = useSession() as { data: SessionData | null };
-  const {
-    controlerValue,
-    selectedImage,
-    setControlerValue,
-    toggleLogin,
-    setSelectedImage,
-  } = useAppProvider();
-  const [loader, setLoader] = useState<{ imageGenerator: boolean }>({
-    imageGenerator: false,
-  });
+  const { controlerValue, setControlerValue } = useAppProvider();
 
   return (
     <>
-      <GenerateImageBtn
-        className={`${constants.btnClass} rounded-full mr-4 mr-4 `}
-      />
+      <GenerateImageBtn className={`${constants.btnClass} rounded-full`} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className={`${constants.btnClass} rounded-full mr-4 `}
+            className={`${constants.btnClass} rounded-full`}
           >
             <div
-              className={`${controlerValue?.border?.value} h-6 w-6 border-dotted border-2 border-black mr-2`}
+              className={`${controlerValue?.border?.value} h-4 w-4 md:h-6 md:w-6 dark:border-white border-dotted border-2 border-black mr-2`}
             />
             {controlerValue?.border?.title}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
+        <DropdownMenuContent className="w-46 md:w-56">
           {constants.borders.map((i) => (
             <DropdownMenuItem
               key={i.value}
               onClick={() => setControlerValue({ border: i })}
             >
               <div
-                className={`${i.value} h-6 w-6 border-dotted border-2 border-black mr-2`}
+                className={`${i.value} h-4 w-4 md:h-6 md:w-6 dark:border-white border-dotted border-2 border-black mr-2`}
               />
               {i.title}
             </DropdownMenuItem>
@@ -75,7 +58,7 @@ export default function EditBar() {
         </DropdownMenuContent>
       </DropdownMenu>
       <Link
-        className={`${constants.btnClass} rounded-full h-12 px-4 py-2 flex justify-center items-center`}
+        className={`${constants.btnClass} rounded-full flex justify-center items-center`}
         href="/myphotos"
       >
         My Photos

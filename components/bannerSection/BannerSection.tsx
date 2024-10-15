@@ -11,7 +11,7 @@ export default function BannerSection() {
     <>
       <div className="flex justify-center my-10">
         <GenerateImageBtn
-          className={`${constants.btnClass} rounded-full h-14 px-10 bg-violet-500 text-white`}
+          className={`${constants.btnClass} rounded-full h-14 bg-violet-500 text-white`}
         />
         <Lottie
           animationData={lottiefilesArrow}

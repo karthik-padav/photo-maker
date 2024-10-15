@@ -66,7 +66,7 @@ export default function Header() {
   const { toast } = useToast();
   const { data, status } = useSession();
 
-  function renderList() {
+  function renderList(isNav = false) {
     return (
       <>
         {constants.headerMenuList
@@ -80,7 +80,7 @@ export default function Header() {
             }
           })
           .map((item) => (
-            <div key={item.code} className="inline-block">
+            <div key={item.code} className={isNav ? "" : `inline-block`}>
               {item?.requireSelectedImage ? (
                 <Button
                   variant="ghost"
@@ -90,7 +90,10 @@ export default function Header() {
                   onClick={() =>
                     selectedImage
                       ? router.push(item.href)
-                      : toast({ description: "Your message has been sent." })
+                      : toast({
+                          description:
+                            "Please upload an image before proceeding.",
+                        })
                   }
                 >
                   {item.title}
@@ -157,7 +160,7 @@ export default function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 {session?.user?.image ? (
-                  <div className="text-accent-foreground rounded-full h-10 w-10 border overflow-hidden">
+                  <div className="text-accent-foreground rounded-full h-8 w-8 md:h-10 md:w-10 border overflow-hidden">
                     <img alt="Profile Picture" src={`${session.user.image}`} />
                   </div>
                 ) : (
@@ -223,7 +226,7 @@ export default function Header() {
         </div>
         {navbarOpen && (
           <nav className="text-base justify-center md:hidden font-semibold p-6 text-gray-600 dark:text-gray-300">
-            {renderList()}
+            {renderList(true)}
           </nav>
         )}
       </div>

@@ -103,20 +103,20 @@ export default function Customize() {
 
   return (
     <main className="text-black body-font container">
-      <div className="mb-12 flex justify-between">
-        <div className="flex">
+      <div className="mb-12 ">
+        <div className="flex flex-wrap gap-2">
           <EditBar />
+          <Button
+            variant="ghost"
+            onClick={downloadImage}
+            className={`${constants.btnClass} rounded-full mr-4 `}
+          >
+            Download
+          </Button>
         </div>
-        <Button
-          variant="ghost"
-          onClick={downloadImage}
-          className={`${constants.btnClass} rounded-full mr-4 `}
-        >
-          Download
-        </Button>
       </div>
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-2 rounded-md ">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <div className="col-span-12 md:col-span-2 rounded-md">
           {menu.map((item) => (
             <Button
               key={item.code}
@@ -133,23 +133,25 @@ export default function Customize() {
             </Button>
           ))}
         </div>
-        <div className="col-span-4 drop-shadow-2xl p-4 bg-background dark:text-white">
+        <div className="col-span-12 md:col-span-4 drop-shadow-2xl p-4 bg-background dark:text-white">
           {activeTab === "MY_PHOTO" && <MyPhotoControler />}
           {activeTab === "BORDER" && <Border />}
           {activeTab === "BACKGROUND" && <Background />}
         </div>
-        <div className="col-span-6 bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl p-8 bg-background">
-          <div className="aspect-w-1 aspect-h-1">
-            <div
-              className={`outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]`}
-            >
-              <div ref={imageWrapperRef} className="relative w-full h-full">
-                {selectedImage && controlerValue && (
-                  <DownloadImage
-                    image={selectedImage}
-                    controler={controlerValue}
-                  />
-                )}
+        <div className="col-span-12 md:col-span-6 bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl p-4 md:p-8 bg-background flex justify-center items-center">
+          <div className="w-full">
+            <div className="aspect-w-1 aspect-h-1">
+              <div
+                className={`outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]`}
+              >
+                <div ref={imageWrapperRef} className="relative w-full h-full">
+                  {selectedImage && controlerValue && (
+                    <DownloadImage
+                      image={selectedImage}
+                      controler={controlerValue}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -169,13 +171,13 @@ export default function Customize() {
             <Button
               variant="ghost"
               onClick={() => toggleDialog(false)}
-              className="drop-shadow-2xl rounded-full py-4 px-6"
+              className={`${constants.btnClass} rounded-full hover:bg-background`}
             >
               Cancel
             </Button>
             <Link
               href="/"
-              className="text-sm flex justify-center items-center drop-shadow-2xl rounded-full px-6 bg-violet-500 hover:bg-violet-500 text-white relative"
+              className={`${constants.btnClass} rounded-full flex justify-center items-center bg-violet-500`}
             >
               Add Credit
             </Link>

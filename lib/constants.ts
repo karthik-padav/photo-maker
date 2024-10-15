@@ -3,7 +3,7 @@ import { uid } from "uid";
 
 const constants = {
   btnClass:
-    "bg-background drop-shadow-2xl dark:text-white hover:text-white hover:bg-violet-500 drop-shadow-2xl",
+    "bg-background drop-shadow-2xl dark:text-white hover:text-white hover:bg-violet-500 drop-shadow-2xl py-2 px-4 md:py-4 md:px-6 text-sm",
   blurDataURL:
     "https://hatchet.com.au/static/3b5370e27fd88759edf39a45cb219962/4fb49/codioful-formerly-gradienta-rKv4HduvzIE-unsplash-scaled.jpg",
   headerMenuList: [

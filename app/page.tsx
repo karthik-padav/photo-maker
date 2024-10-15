@@ -16,6 +16,7 @@ import GenerateImageBtn from "@/components/generateImageBtn";
 import Lottie from "lottie-react";
 import lottiefilesArrow from "@/assets/lottiefiles/arrow.json";
 import BannerSection from "@/components/bannerSection";
+import Payment from "@/components/payment";
 
 export default async function Home() {
   return (
@@ -27,9 +28,7 @@ export default async function Home() {
         <p className="mx-auto my-4 lg:text-2xl md:text-xl font-normal leading-relaxed text-gray-600 dark:text-gray-300 lg:w-2/3 text-center">
           {constants.landingPage.subtitle}
         </p>
-        <div className="">
-          <BannerSection />
-        </div>
+        <BannerSection />
         <p className="mx-auto my-10 lg:text-2xl md:text-xl font-normal leading-relaxed text-gray-600 dark:text-gray-300 lg:w-2/3 text-center">
           Picofme.io helps you create eye-catching profile pictures in just a
           few clicks. Using AI image background removal, our variations of
@@ -37,6 +36,10 @@ export default async function Home() {
           and help you to attract more audiences.
         </p>
       </section>
+
+      {/* <section>
+        <Payment />
+      </section> */}
     </main>
   );
 }

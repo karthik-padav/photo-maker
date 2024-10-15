@@ -106,67 +106,68 @@ export default function MyPhotos() {
   return (
     <main className="text-black body-font container">
       <Tabs defaultValue={tabs.photos} className="w-full">
-        <TabsList className="bg-background drop-shadow-2xl dark:text-white drop-shadow-2xl mb-10 rounded-full h-14">
+        <TabsList className="bg-background drop-shadow-2xl dark:text-white drop-shadow-2xl mb-10 rounded-full md:h-14">
           <TabsTrigger
             value={tabs.photos}
-            className="mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 h-12"
+            className="mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 md:h-12"
           >
             Uploaded Photos
           </TabsTrigger>
           <TabsTrigger
             value={tabs.downloads}
-            className="data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 h-12"
+            className="data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 md:h-12"
           >
             Downloaded Photos
           </TabsTrigger>
         </TabsList>
         <TabsContent value={tabs.photos}>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-12">
-            {loader &&
-              [1, 2, 3, 4, 5].map((i) => (
-                <div key={i}>
-                  <div className="aspect-w-1 aspect-h-1">
-                    <div className="animate-pulse border-white border-4 drop-shadow-2xl rounded-full">
-                      <div className="rounded-full bg-slate-100 h-full w-full" />
+          {loader && !imageList.length ? (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i}>
+                    <div className="aspect-w-1 aspect-h-1">
+                      <div className="animate-pulse border-white border-2 md:border-4 drop-shadow-2xl rounded-full">
+                        <div className="rounded-full bg-slate-100 h-full w-full" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-          </div>
-          {!loader && !imageList.length ? (
-            <div className="flex flex-col justify-center items-center h-80">
-              <div className="relative md:h-32 md:w-32 h-14 w-14">
-                <Image
-                  placeholder="blur"
-                  blurDataURL={constants.blurDataURL}
-                  src="/images/no-data.png"
-                  layout="fill"
-                  objectFit="contain"
-                  alt="no-data"
-                  loading="lazy"
-                />
+                ))}
               </div>
-              <p className="my-2">No data found</p>
-            </div>
+              <div className="flex flex-col justify-center items-center h-80">
+                <div className="relative md:h-32 md:w-32 h-14 w-14">
+                  <Image
+                    placeholder="blur"
+                    blurDataURL={constants.blurDataURL}
+                    src="/images/no-data.png"
+                    layout="fill"
+                    objectFit="contain"
+                    alt="no-data"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="my-2">No data found</p>
+              </div>
+            </>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-12">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
               {imageList.map((i) => (
                 <div key={i._id}>
                   <div className="aspect-w-1 aspect-h-1">
                     <div
-                      className={`border-white border-4 drop-shadow-2xl rounded-full overflow-hidden`}
+                      className={`border-white border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
                     >
                       <DownloadImage disabled={true} image={i} />
                     </div>
                   </div>
-                  <div className="text-center -mt-7">
+                  <div className="text-center -mt-6 md:-mt-7">
                     <Button
                       variant="ghost"
                       onClick={() => {
                         setSelectedImage(i);
                         router.push("/customize");
                       }}
-                      className="h-12 mr-2 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                      className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
                     >
                       <Pencil />
                     </Button>
@@ -175,7 +176,7 @@ export default function MyPhotos() {
                       onClick={() =>
                         toggleDialog({ id: i._id, tab: tabs.photos })
                       }
-                      className="h-12 w-12 p-0 hover:bg-red-500 text-red-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                      className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
                     >
                       <Trash2 />
                     </Button>
@@ -186,7 +187,7 @@ export default function MyPhotos() {
           )}
         </TabsContent>
         <TabsContent value={tabs.downloads}>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
             {!loader && !controlerList.length ? (
               <div className="flex flex-col justify-center items-center h-80">
                 <div className="relative md:h-32 md:w-32 h-14 w-14">
@@ -214,7 +215,7 @@ export default function MyPhotos() {
                       <div key={i._id}>
                         <div className="aspect-w-1 aspect-h-1">
                           <div
-                            className={`border-white border-4 drop-shadow-2xl ${borderRadius}`}
+                            className={`border-white border-2 md:border-4 drop-shadow-2xl ${borderRadius} overflow-hidden`}
                           >
                             <Image
                               className="overflow-hidden"
@@ -228,7 +229,7 @@ export default function MyPhotos() {
                             />
                           </div>
                         </div>
-                        <div className="text-center -mt-7">
+                        <div className="text-center -mt-6 md:-mt-7">
                           <Button
                             variant="ghost"
                             onClick={() => {
@@ -236,18 +237,9 @@ export default function MyPhotos() {
                               setControlerValue(controler);
                               router.push("/customize");
                             }}
-                            className="h-12 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                            className="h-10 w-10 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
                           >
                             <Pencil />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            onClick={() =>
-                              toggleDialog({ id: i._id, tab: tabs.downloads })
-                            }
-                            className="h-12 w-12 mx-2 p-0 hover:bg-red-500 text-red-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                          >
-                            <Trash2 />
                           </Button>
                           <Button
                             variant="ghost"
@@ -255,9 +247,18 @@ export default function MyPhotos() {
                               i.downloadedImageKey &&
                               downloadImage(i.downloadedImageKey)
                             }
-                            className="h-12 w-12 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                            className="h-10 w-10 mx-2 p-0 hover:bg-violet-500 text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
                           >
                             <Download />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            onClick={() =>
+                              toggleDialog({ id: i._id, tab: tabs.downloads })
+                            }
+                            className="h-10 w-10 p-0 hover:bg-red-500 text-red-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                          >
+                            <Trash2 />
                           </Button>
                         </div>
                       </div>
@@ -284,14 +285,14 @@ export default function MyPhotos() {
             <Button
               variant="ghost"
               onClick={() => toggleDialog(null)}
-              className="drop-shadow-2xl rounded-full py-4 px-6"
+              className={`${constants.btnClass} rounded-full hover:bg-background`}
             >
               Cancel
             </Button>
             <Button
               disabled={loader}
               onClick={onDelete}
-              className="drop-shadow-2xl rounded-full py-4 px-6 bg-violet-500 hover:bg-violet-500 text-white relative"
+              className={`${constants.btnClass} rounded-full flex justify-center items-center bg-violet-500`}
             >
               {loader && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin absolute" />

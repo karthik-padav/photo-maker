@@ -56,7 +56,7 @@ export default function Background() {
 
         <DrawerContent>
           <div className="container">
-            <DrawerHeader>
+            <DrawerHeader className="flex justify-between items-center">
               <DrawerTitle>Select Background Image</DrawerTitle>
               <Button variant="ghost" onClick={() => setIsOpen(false)}>
                 Cancel
@@ -69,7 +69,7 @@ export default function Background() {
                     return (
                       <div
                         key={item.id}
-                        className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer"
+                        className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer bg-white"
                         onClick={() => handleBg(item.bgImage)}
                       >
                         <Image
@@ -92,6 +92,7 @@ export default function Background() {
       {controlerValue?.bgImage &&
         Object.keys(controler).map((key: string) => {
           const data = controler[key];
+          console.log(data, "data123");
           return (
             <div className="border-white drop-shadow-md pt-4" key={key}>
               <p className="flex justify-between mb-1">

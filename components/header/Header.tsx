@@ -3,7 +3,7 @@
 import {
   Moon,
   Sun,
-  Zap,
+  Camera,
   AlignJustify,
   LaptopMinimal,
   Settings,
@@ -126,7 +126,7 @@ export default function Header() {
             href="/"
             className="flex items-center text-gray-600 dark:text-gray-300"
           >
-            <Zap className="mr-2 text-violet-500" />
+            <Camera className="mr-2 text-violet-500" />
             <h1 className="text-base-content text-lg font-bold">
               {process.env.NEXT_PUBLIC_WEBSITE_NAME}
             </h1>

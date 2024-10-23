@@ -92,7 +92,6 @@ export default function Background() {
       {controlerValue?.bgImage &&
         Object.keys(controler).map((key: string) => {
           const data = controler[key];
-          console.log(data, "data123");
           return (
             <div className="border-white drop-shadow-md pt-4" key={key}>
               <p className="flex justify-between mb-1">

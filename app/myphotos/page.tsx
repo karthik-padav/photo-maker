@@ -147,11 +147,11 @@ export default function MyPhotos() {
                   loading="lazy"
                 />
               </div>
-              <p className="my-2">No data found</p>
+              <p className="my-2 dark:text-white">No data found</p>
             </div>
           )}
 
-          {!loader && imageList.length && (
+          {!loader && imageList.length > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
               {imageList.map((i) => (
                 <div key={i._id}>
@@ -189,7 +189,7 @@ export default function MyPhotos() {
           )}
         </TabsContent>
         <TabsContent value={tabs.downloads}>
-          {loader && !controlerList.length && (
+          {loader && controlerList.length === 0 && (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i}>
@@ -202,7 +202,7 @@ export default function MyPhotos() {
               ))}
             </div>
           )}
-          {!loader && !controlerList.length && (
+          {!loader && controlerList.length === 0 && (
             <div className="flex flex-col justify-center items-center h-80">
               <div className="relative md:h-32 md:w-32 h-14 w-14">
                 <Image
@@ -215,44 +215,66 @@ export default function MyPhotos() {
                   loading="lazy"
                 />
               </div>
-              <p className="my-2">No data found</p>
+              <p className="my-2 dark:text-white">No data found</p>
             </div>
           )}
-
-          {!loader && controlerList.length && (
+          {!loader && controlerList.length > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
-              {imageList.map((i) => (
-                <div key={i._id}>
-                  <div className="aspect-w-1 aspect-h-1">
-                    <div
-                      className={`border-white border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
-                    >
-                      <DownloadImage disabled={true} image={i} />
+              {controlerList.map((i) => {
+                const { controler = {}, imageId } = i;
+                if (!i.downloadedImageKey) return null;
+                return (
+                  <div key={i._id}>
+                    <div className="aspect-w-1 aspect-h-1">
+                      <div
+                        className={`border-white border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
+                      >
+                        {i.imageId && (
+                          <DownloadImage
+                            disabled={true}
+                            image={{
+                              ...i.imageId,
+                              imageKey: i.downloadedImageKey,
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-center -mt-6 md:-mt-7">
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          setSelectedImage(imageId);
+                          setControlerValue(controler);
+                          router.push("/customize");
+                        }}
+                        className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                      >
+                        <Pencil />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() =>
+                          i.downloadedImageKey &&
+                          downloadImage(i.downloadedImageKey)
+                        }
+                        className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                      >
+                        <Download />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() =>
+                          toggleDialog({ id: i._id, tab: tabs.downloads })
+                        }
+                        className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
+                      >
+                        <Trash2 />
+                      </Button>
                     </div>
                   </div>
-                  <div className="text-center -mt-6 md:-mt-7">
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        setSelectedImage(i);
-                        router.push("/customize");
-                      }}
-                      className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                    >
-                      <Pencil />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() =>
-                        toggleDialog({ id: i._id, tab: tabs.photos })
-                      }
-                      className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
-                    >
-                      <Trash2 />
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </TabsContent>

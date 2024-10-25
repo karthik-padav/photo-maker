@@ -30,10 +30,17 @@ export default async function Home() {
         </p>
         <BannerSection />
         <p className="mx-auto my-10 lg:text-2xl md:text-xl font-normal leading-relaxed text-gray-600 dark:text-gray-300 lg:w-2/3 text-center">
-          Picofme.io helps you create eye-catching profile pictures in just a
-          few clicks. Using AI image background removal, our variations of
-          backgrounds, outlines, and filters, your profile will look fantastic
-          and help you to attract more audiences.
+          <Link
+            href={process.env.NEXT_PUBLIC_WEBSITE_URL || "/"}
+            className="text-violet-500"
+          >
+            {process.env.NEXT_PUBLIC_WEBSITE_LABEL}
+          </Link>{" "}
+          enables you to create professional, eye-catching profile pictures
+          effortlessly. With advanced AI-powered background removal,
+          customizable backgrounds, outlines, and filters, you can elevate your
+          profile's appeal and effectively engage a broader audience. makes it
+          easy to enhance your profile and attract a wider audience.
         </p>
       </section>
 

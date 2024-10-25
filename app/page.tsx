@@ -39,8 +39,8 @@ export default async function Home() {
           enables you to create professional, eye-catching profile pictures
           effortlessly. With advanced AI-powered background removal,
           customizable backgrounds, outlines, and filters, you can elevate your
-          profile's appeal and effectively engage a broader audience. makes it
-          easy to enhance your profile and attract a wider audience.
+          profile&apos;s appeal and effectively engage a broader audience. makes
+          it easy to enhance your profile and attract a wider audience.
         </p>
       </section>
 

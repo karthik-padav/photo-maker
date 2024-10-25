@@ -199,11 +199,11 @@ export default function Header() {
                 <>
                   {session ? (
                     <>
-                      <DropdownMenuItem>
-                        <Link href="/myphotos">
+                      <Link href="/myphotos">
+                        <DropdownMenuItem className="cursor-pointer">
                           <span className="ml-2 text-sm">My photos</span>
-                        </Link>
-                      </DropdownMenuItem>
+                        </DropdownMenuItem>
+                      </Link>
                       <DropdownMenuItem
                         onClick={() => {
                           signOut({ callbackUrl: "/" });

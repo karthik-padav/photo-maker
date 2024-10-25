@@ -4,6 +4,7 @@ import { BgPngImage, ControlerValue } from "./interfaces";
 import { getHfToken } from "./actions/server.action";
 import { toPng } from "html-to-image";
 import { updateImage } from "./actions/services";
+import { uid } from "uid";
 
 export async function rembg(blob: Blob) {
   try {
@@ -265,14 +266,14 @@ export const onDownload = (
   if (el) {
     toPng(el, {
       cacheBust: true,
-      quality: 1,
+      quality: 0.5,
       pixelRatio: 5,
     })
       .then((dataUrl) => {
         const blob = base64ToBlob(dataUrl, "image/png");
         callback(blob);
         const link = document.createElement("a");
-        link.download = "my-image-name.png";
+        link.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}`;
         link.href = dataUrl;
         link.click();
       })

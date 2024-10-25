@@ -17,8 +17,13 @@ export default function About() {
         <p className="pb-2 md:pb-4 text-lg text-gray-600 dark:text-gray-300">
           These terms and conditions outline the rules and regulations for the
           use of {process.env.NEXT_PUBLIC_WEBSITE_NAME}&apos;s Website, located
-          at
-          {process.env.NEXT_PUBLIC_WEBSITE_URL}.
+          at&nbsp;
+          <Link
+            href={process.env.NEXT_PUBLIC_WEBSITE_URL || "/"}
+            className="text-violet-500"
+          >
+            {process.env.NEXT_PUBLIC_WEBSITE_LABEL}
+          </Link>
         </p>
 
         <p className="pb-2 md:pb-4 text-lg text-gray-600 dark:text-gray-300">

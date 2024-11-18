@@ -36,7 +36,7 @@ import { ControlerValue, SessionData } from "@/lib/interfaces";
 import MyPhotoControler from "@/components/customize/MyPhotoControler";
 import Border from "@/components/customize/Border";
 import Background from "@/components/customize/Background";
-import { createControler } from "@/lib/actions/services";
+import { createControler, getWebsiteData } from "@/lib/actions/services";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -100,6 +100,13 @@ export default function Customize() {
       toggleDialog(true);
     } else await onDownload(imageWrapperRef.current, callback);
   }
+
+  useEffect(() => {
+    init();
+    async function init() {
+      const { data: websiteDate } = await getWebsiteData();
+    }
+  }, []);
 
   return (
     <main className="text-black body-font container">

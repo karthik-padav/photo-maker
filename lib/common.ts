@@ -266,11 +266,12 @@ export const onDownload = (
   if (el) {
     toPng(el, {
       cacheBust: true,
-      quality: 0.5,
+      quality: 1,
       pixelRatio: 5,
     })
-      .then((dataUrl) => {
-        const blob = base64ToBlob(dataUrl, "image/png");
+      .then(async (dataUrl) => {
+        let blob = base64ToBlob(dataUrl, "image/png");
+        blob = (await compressImageBlob(blob)) as Blob;
         callback(blob);
         const link = document.createElement("a");
         link.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}`;
@@ -313,4 +314,41 @@ function base64ToBlob(base64: string, mimeType: string) {
 
   // Create a Blob object from the ArrayBuffer and define the MIME type
   return new Blob([arrayBuffer], { type: mimeType });
+}
+
+async function compressImageBlob(
+  imageBlob: Blob,
+  maxWidth = 800,
+  quality = 0.7
+) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(imageBlob);
+
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+
+      const canvas = document.createElement("canvas");
+      const scaleFactor = Math.min(maxWidth / img.width, 1);
+      canvas.width = img.width * scaleFactor;
+      canvas.height = img.height * scaleFactor;
+
+      const ctx = canvas.getContext("2d");
+      ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error("Compression failed"));
+          }
+        },
+        "image/jpeg",
+        quality
+      );
+    };
+
+    img.onerror = reject;
+    img.src = url;
+  });
 }

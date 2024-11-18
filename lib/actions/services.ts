@@ -80,3 +80,9 @@ export async function geUser() {
     { headers: { Authorization: `Bearer ${cookies?.value}` } }
   );
 }
+
+export async function getWebsiteData() {
+  return await axios.get(
+    "https://raw.githubusercontent.com/karthik-padav/public-data/refs/heads/main/upssp.json"
+  );
+}

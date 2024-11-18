@@ -1,27 +1,14 @@
 "use client";
 
-import { Image as LucideImage, LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAppProvider } from "../../lib/app-provider";
-import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
-import { client } from "@gradio/client";
-import { rembg } from "@/lib/common";
-import { uid } from "uid";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import constants from "@/lib/constants";
-import { getCookie } from "@/lib/actions/server.action";
-import axios from "axios";
-import DrawerWrapper from "@/components/drawerWrapper";
-// import MyPhotos from "./MyPhotos";
 import Link from "next/link";
 import GenerateImageBtn from "../generateImageBtn";
 

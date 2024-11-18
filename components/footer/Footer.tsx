@@ -54,7 +54,11 @@ export default function Footer({ data }: any) {
                       key={item.code}
                       className="pb-1 text-sm text-gray-600 dark:text-gray-300"
                     >
-                      <Link className="hover:text-violet-400" href={item.href}>
+                      <Link
+                        className="hover:text-violet-400"
+                        href={item.href}
+                        target="_blank"
+                      >
                         {item.title}
                       </Link>
                     </li>

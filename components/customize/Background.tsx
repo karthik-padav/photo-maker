@@ -62,7 +62,7 @@ export default function Background() {
                 Cancel
               </Button>
             </DrawerHeader>
-            <ScrollArea className="h-[70vh] w-full pt-4 px-4">
+            <ScrollArea className="h-[70vh] w-full p-4">
               <div className="grid grid-cols-3 md:grid-cols-8 gap-4">
                 {constants.pngBgCollections.map((item) => {
                   if (item?.bgImage)

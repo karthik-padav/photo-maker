@@ -18,8 +18,8 @@ import { AppProvider } from "@/lib/app-provider";
 import LoginPopup from "@/components/loginPopup";
 import constants from "@/lib/constants";
 import Script from "next/script";
-import { cookies } from "next/headers";
 import GlobalLoader from "@/components/globalLoader";
+import { getWebsiteData } from "@/lib/actions/services";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -37,6 +37,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  const { data: websiteDate } = await getWebsiteData();
   return (
     <html lang="en">
       <body
@@ -76,7 +77,7 @@ export default async function RootLayout({
                 </div>
                 <div className="grow py-6">{children}</div>
                 <div className="flex-none">
-                  <Footer />
+                  <Footer data={websiteDate} />
                 </div>
               </div>
               <LoginPopup />

@@ -46,12 +46,10 @@ export async function triggerHf(token: string) {
       hf_token: token as `hf_${string}` | undefined,
     });
     const result: any = await app.predict("/predict", [blob]);
-
-    console.log(result.data);
     return result.data;
   } catch (error) {
     console.log(error);
-    throw new Error("HF space URL not found.");
+    throw new Error("Error in triggerHf");
   }
 }
 

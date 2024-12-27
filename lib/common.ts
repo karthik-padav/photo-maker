@@ -32,6 +32,27 @@ export async function rembg(blob: Blob) {
   }
 }
 
+export async function triggerHf(token: string) {
+  try {
+    if (!token) throw new Error("HF token not found.");
+    if (!process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL)
+      throw new Error("HF space URL not found.");
+
+    const response_0 = await fetch(
+      "https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png"
+    );
+    const blob = await response_0.blob();
+    const app = await client(process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL, {
+      hf_token: token as `hf_${string}` | undefined,
+    });
+    const result: any = await app.predict("/predict", [blob]);
+    return result.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error in triggerHf");
+  }
+}
+
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 
 export const calcPx = (width: number, v: number) => (v * width) / 100;

@@ -6,7 +6,6 @@ import { useAppProvider } from "../../lib/app-provider";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef } from "react";
 import { client } from "@gradio/client";
-import { rembg } from "@/lib/common";
 import { uid } from "uid";
 import Image from "next/image";
 

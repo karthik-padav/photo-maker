@@ -1,57 +1,9 @@
 import { client } from "@gradio/client";
 import axios from "axios";
 import { BgPngImage, ControlerValue } from "./interfaces";
-import { getHfToken } from "./actions/server.action";
 import { toPng } from "html-to-image";
-import { updateImage } from "./actions/services";
+import { generateImage } from "./actions/services";
 import { uid } from "uid";
-
-export async function rembg(blob: Blob) {
-  try {
-    const token = await getHfToken();
-    if (!token) throw new Error("HF token not found.");
-    if (!process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL)
-      throw new Error("HF space URL not found.");
-
-    const app = await client(process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL, {
-      hf_token: token as `hf_${string}` | undefined,
-    });
-    const result: any = await app.predict("/predict", [blob]);
-
-    if (!result?.data?.[0]?.path) return false;
-
-    const imgURL = `${process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL}file=${result?.data?.[0]?.path}`;
-
-    const response = await axios.get(imgURL, {
-      headers: { Authorization: `Bearer ${token}` },
-      responseType: "blob",
-    });
-    return response?.data;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function triggerHf(token: string) {
-  try {
-    if (!token) throw new Error("HF token not found.");
-    if (!process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL)
-      throw new Error("HF space URL not found.");
-
-    const response_0 = await fetch(
-      "https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png"
-    );
-    const blob = await response_0.blob();
-    const app = await client(process.env.NEXT_PUBLIC_HUGGING_FACE_SPACE_URL, {
-      hf_token: token as `hf_${string}` | undefined,
-    });
-    const result: any = await app.predict("/predict", [blob]);
-    return result.data;
-  } catch (error) {
-    console.log(error);
-    throw new Error("Error in triggerHf");
-  }
-}
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 
@@ -308,15 +260,9 @@ export const onDownload = (
 export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
   let file: File | null = e?.target?.files?.[0] || null;
   if (file) {
-    try {
-      let blob = new Blob([file], { type: file.type });
-      blob = await rembg(blob);
-      if (!blob) throw new Error("'Blob not found");
-      return await updateImage({ blob, fileName: file.name });
-    } catch (error) {
-      console.log(error);
-      return;
-    }
+    let blob = new Blob([file], { type: file.type });
+    if (!blob) throw new Error("'Blob not found");
+    return await generateImage({ blob, fileName: file.name });
   }
 }
 

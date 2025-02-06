@@ -4,7 +4,6 @@ import { CircleDashed, BoxSelect, Download } from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
 import { useSession, getCsrfToken } from "next-auth/react";
 import { useEffect, useRef } from "react";
-import { getBgStyles, getClientSideCookie, rembg } from "@/lib/common";
 import { uid } from "uid";
 import Image from "next/image";
 import DragAndDrop from "@/components/dragAndDrop";

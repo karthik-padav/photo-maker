@@ -38,7 +38,7 @@ export async function getMyImages() {
   );
 }
 
-export async function updateImage({
+export async function generateImage({
   blob,
   fileName,
 }: {

@@ -7,7 +7,3 @@ export async function getCookie() {
     `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-session-token`
   );
 }
-
-export async function getHfToken() {
-  return process.env.HF_TOKEN;
-}

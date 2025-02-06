@@ -4,6 +4,7 @@ import { BgPngImage, ControlerValue } from "./interfaces";
 import { toPng } from "html-to-image";
 import { generateImage } from "./actions/services";
 import { uid } from "uid";
+import { removeBackground } from "@imgly/background-removal";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 
@@ -261,6 +262,8 @@ export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
   let file: File | null = e?.target?.files?.[0] || null;
   if (file) {
     let blob = new Blob([file], { type: file.type });
+    const imageUrl = URL.createObjectURL(file);
+    blob = await removeBackground(imageUrl);
     if (!blob) throw new Error("'Blob not found");
     return await generateImage({ blob, fileName: file.name });
   }

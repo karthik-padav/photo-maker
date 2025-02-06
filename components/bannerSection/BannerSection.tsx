@@ -57,9 +57,9 @@ export default function BannerSection() {
             >
               <div
                 style={{ ...item.bg }}
-                className={`aspect-w-1 aspect-h-1 bg-cover`}
+                className="aspect-w-1 aspect-h-1 w-full bg-cover"
               >
-                <div className="drop-shadow-2xl rounded-full overflow-hidden">
+                <div className="drop-shadow-2xl rounded-full overflow-hidden w-full h-full">
                   <Image
                     alt="banner-dp"
                     src="/images/banner-dp-png.png"

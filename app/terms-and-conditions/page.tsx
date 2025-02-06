@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function About() {
   return (
     <main className="text-black body-font">
-      <section className="container py-10">
+      <section className="container mx-auto py-10">
         <h1 className="title-font pb-2 md:pb-4 font-medium md:text-5xl text-3xl text-gray-600 dark:text-white">
           Terms and Conditions
         </h1>

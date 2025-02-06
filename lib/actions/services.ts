@@ -75,6 +75,10 @@ export async function deleteControler({ id }: { id: string }) {
 
 export async function geUser() {
   const cookies = await getCookie();
+  console.log(
+    process.env.NEXT_PUBLIC_BACKEND_BASE_URL,
+    "process.env.NEXT_PUBLIC_BACKEND_BASE_URL"
+  );
   return await axios.get(
     `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getUser`,
     { headers: { Authorization: `Bearer ${cookies?.value}` } }

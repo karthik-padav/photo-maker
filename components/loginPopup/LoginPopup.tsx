@@ -23,6 +23,8 @@ export default function LoginPopup() {
 
   const { showLogin, toggleLogin } = useAppProvider();
 
+  // return null;
+
   return (
     <>
       <Dialog open={showLogin} onOpenChange={toggleLogin}>
@@ -50,7 +52,7 @@ export default function LoginPopup() {
                   <LoaderCircle className="animate-spin absolute" />
                 ) : (
                   <>
-                    <item.icon className="mr-2 h-8 w-8 md:h-6 w-6" />
+                    {/* <item.icon className="mr-2 h-8 w-8 md:h-6 w-6" /> */}
                     <span className="mr-1 md:hidden">{item.labelPrefix}</span>
                     {item.label}
                   </>

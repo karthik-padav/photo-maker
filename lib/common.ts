@@ -1,4 +1,3 @@
-import { client } from "@gradio/client";
 import axios from "axios";
 import { BgPngImage, ControlerValue } from "./interfaces";
 import { toPng } from "html-to-image";
@@ -196,7 +195,7 @@ export function getBgStyles({
   controlerValue: ControlerValue;
 }) {
   let imageBgStyle: { [key: string]: string } = {};
-  let bgImage = [];
+  let bgImage: string[] = [];
   let _bgImage = controlerValue?.bgImage || item?.bgImage;
   if (_bgImage) bgImage.push(`url(${_bgImage})`);
   imageBgStyle["backgroundSize"] = `${controlerValue?.bgSize || "100"}% ${
@@ -237,13 +236,14 @@ export const onDownload = (
   el: HTMLDivElement | null,
   callback = (blob: Blob) => {}
 ) => {
+  debugger;
   if (el) {
-    toPng(el, {
-      cacheBust: true,
-      quality: 1,
-      pixelRatio: 5,
-    })
-      .then(async (dataUrl) => {
+    try {
+      toPng(el, {
+        cacheBust: true,
+        quality: 1,
+        pixelRatio: 5,
+      }).then(async (dataUrl) => {
         let blob = base64ToBlob(dataUrl, "image/png");
         blob = (await compressImageBlob(blob)) as Blob;
         callback(blob);
@@ -251,10 +251,10 @@ export const onDownload = (
         link.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}`;
         link.href = dataUrl;
         link.click();
-      })
-      .catch((err) => {
-        console.log(err);
       });
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
 

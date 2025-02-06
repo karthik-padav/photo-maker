@@ -54,7 +54,7 @@ export default function Generate() {
                       }}
                     >
                       <div
-                        className={`border-white border-4 drop-shadow-2xl ${borderRadius}`}
+                        className={`w-full h-full border-white border-4 drop-shadow-2xl ${borderRadius}`}
                       >
                         <DownloadImage
                           disabled={true}

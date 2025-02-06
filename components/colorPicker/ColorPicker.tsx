@@ -47,7 +47,7 @@ export default function ColorPicker({
                   };
                   return (
                     <div
-                      className="rounded-full aspect-w-1 aspect-h-1 cursor-pointer"
+                      className="rounded-full w-full h-full aspect-w-1 aspect-h-1 cursor-pointer"
                       style={style}
                       key={i.id}
                       onClick={() =>

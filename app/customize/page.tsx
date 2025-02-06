@@ -13,7 +13,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   getBgStyles,
   getClientSideCookie,
-  rembg,
   getImageStyle,
   myPhotoControlers,
   calcPercentage,
@@ -101,15 +100,15 @@ export default function Customize() {
     } else await onDownload(imageWrapperRef.current, callback);
   }
 
-  useEffect(() => {
-    init();
-    async function init() {
-      const { data: websiteDate } = await getWebsiteData();
-    }
-  }, []);
+  // useEffect(() => {
+  //   init();
+  //   async function init() {
+  //     const { data: websiteDate } = await getWebsiteData();
+  //   }
+  // }, []);
 
   return (
-    <main className="text-black body-font container">
+    <main className="text-black body-font container mx-auto">
       <div className="mb-12 ">
         <div className="flex flex-wrap gap-2">
           <EditBar />
@@ -149,7 +148,7 @@ export default function Customize() {
           <div className="w-full">
             <div className="aspect-w-1 aspect-h-1">
               <div
-                className={`outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]`}
+                className={`w-full h-full outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]`}
               >
                 <div ref={imageWrapperRef} className="relative w-full h-full">
                   {selectedImage && controlerValue && (

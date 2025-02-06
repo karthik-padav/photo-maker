@@ -27,12 +27,6 @@ const constants = {
       label: "Google",
       icon: Google,
     },
-    // {
-    //   code: "facebook",
-    //   labelPrefix: "Sign in with ",
-    //   label: "Facebook",
-    //   icon: Facebook,
-    // },
     {
       code: "github",
       labelPrefix: "Sign in with ",

@@ -1,22 +1,6 @@
 import constants from "@/lib/constants";
 import Link from "next/link";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import UploadImage from "@/components/dragAndDrop";
-import ImageWrapper from "@/components/imageWrapper";
-import { Button } from "@/components/ui/button";
-import { auth } from "./api/auth/[...nextauth]";
-import Image from "next/image";
-import { getBorderColor, onImageGenerate } from "@/lib/common";
-import GenerateImageBtn from "@/components/generateImageBtn";
-import Lottie from "lottie-react";
-import lottiefilesArrow from "@/assets/lottiefiles/arrow.json";
 import BannerSection from "@/components/bannerSection";
-import Payment from "@/components/payment";
 
 export default async function Home() {
   return (
@@ -43,10 +27,6 @@ export default async function Home() {
           it easy to enhance your profile and attract a wider audience.
         </p>
       </section>
-
-      {/* <section>
-        <Payment />
-      </section> */}
     </main>
   );
 }

@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+
 import { Inter as FontSans } from "next/font/google";
 
 import "./globals.css";
@@ -31,6 +36,8 @@ export const metadata: Metadata = {
   description: constants.landingPage.subtitle,
 };
 
+const inter = Inter({ subsets: ["latin"] });
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -55,10 +62,10 @@ export default async function RootLayout({
             />
             <Script id="gtm-script-2">
               {`  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  
-  gtag('config', ${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS})`}
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', ${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS})`}
             </Script>
           </>
         )}
@@ -84,6 +91,8 @@ export default async function RootLayout({
               <GlobalLoader />
             </ThemeProvider>
           </AppProvider>
+          <Analytics />
+          <SpeedInsights />
         </SessionProvider>
       </body>
     </html>

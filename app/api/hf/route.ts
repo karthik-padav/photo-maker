@@ -1,4 +1,3 @@
-import { triggerHf } from "@/lib/common";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -11,9 +10,5 @@ export async function GET(request: NextRequest) {
       { status: 401 }
     );
   }
-  const data = await triggerHf(token);
-  return NextResponse.json(
-    { message: "Success", isOk: true, data },
-    { status: 200 }
-  );
+  return NextResponse.json({ message: "Success", isOk: true }, { status: 200 });
 }

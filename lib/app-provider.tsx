@@ -36,7 +36,10 @@ const defaultValue: Theme = {
 const ThemeContext = createContext<Theme>(defaultValue);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  let localStoredData = null;
+  let localStoredData: {
+    selectedImage: SelectedImage | null;
+    controlerValue: ControlerValue | null;
+  } | null = null;
   const storage =
     typeof window !== "undefined" &&
     sessionStorage.getItem(
@@ -52,6 +55,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedImage, _setSelectedImage] = useState<SelectedImage | null>(
     () => localStoredData?.selectedImage || defaultValue.selectedImage
   );
+
   const [controlerValue, _setControler] = useState<ControlerValue | null>(
     () => localStoredData?.controlerValue || defaultValue.controlerValue
   );

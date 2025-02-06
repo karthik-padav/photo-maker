@@ -55,7 +55,7 @@ export default function Background() {
         </DrawerTrigger>
 
         <DrawerContent>
-          <div className="container">
+          <div className="container mx-auto">
             <DrawerHeader className="flex justify-between items-center">
               <DrawerTitle>Select Background Image</DrawerTitle>
               <Button variant="ghost" onClick={() => setIsOpen(false)}>

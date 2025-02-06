@@ -4,7 +4,6 @@ import { CircleDashed, BoxSelect, Download } from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
 import { useSession, getCsrfToken } from "next-auth/react";
 import { useEffect, useRef } from "react";
-import { getBgStyles, getClientSideCookie, rembg } from "@/lib/common";
 import { uid } from "uid";
 import Image from "next/image";
 import DragAndDrop from "@/components/dragAndDrop";
@@ -55,7 +54,7 @@ export default function Generate() {
                       }}
                     >
                       <div
-                        className={`border-white border-4 drop-shadow-2xl ${borderRadius}`}
+                        className={`w-full h-full border-white border-4 drop-shadow-2xl ${borderRadius}`}
                       >
                         <DownloadImage
                           disabled={true}

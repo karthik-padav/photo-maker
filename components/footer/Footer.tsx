@@ -1,5 +1,5 @@
 import constants from "@/lib/constants";
-import { Zap } from "lucide-react";
+import { Camera } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer({ data }: any) {
@@ -12,7 +12,7 @@ export default function Footer({ data }: any) {
               href="/"
               className="flex items-center text-gray-600 dark:text-gray-300 pb-2"
             >
-              <Zap className="mr-2 text-violet-400" />
+              <Camera className="mr-2 text-violet-500" />
               <h1 className="text-base-content text-lg font-bold">
                 {process.env.NEXT_PUBLIC_WEBSITE_NAME}
               </h1>

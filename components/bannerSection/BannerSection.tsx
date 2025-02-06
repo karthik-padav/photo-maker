@@ -59,10 +59,11 @@ export default function BannerSection() {
                 style={{ ...item.bg }}
                 className="aspect-w-1 aspect-h-1 w-full bg-cover"
               >
-                <div className="drop-shadow-2xl rounded-full overflow-hidden w-full h-full">
+                <div className="drop-shadow-2xl rounded-full overflow-hidden">
                   <Image
                     alt="banner-dp"
                     src="/images/banner-dp-png.png"
+                    className=" pt-4"
                     style={{ objectFit: "contain", ...item.borderColor }}
                     fill={true}
                     loading="lazy"

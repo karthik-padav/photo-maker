@@ -19,6 +19,11 @@ const constants = {
       href: "/customize",
       requireSelectedImage: true,
     },
+    {
+      code: "MY_PHOTOS",
+      title: "My Photos",
+      href: "/myphotos",
+    },
   ],
   loginProvider: [
     {

@@ -102,7 +102,7 @@ export default function MyPhotosWrapper({
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i}>
-                  <div className="aspect-[1/1]">
+                  <div className="aspect-w-1 aspect-h-1">
                     <div className="animate-pulse w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full">
                       <div className="rounded-full bg-slate-100 h-full w-full" />
                     </div>
@@ -132,7 +132,7 @@ export default function MyPhotosWrapper({
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
               {imageList.map((i) => (
                 <div key={i._id}>
-                  <div className="aspect-[1/1]">
+                  <div className="aspect-w-1 aspect-h-1">
                     <div
                       className={`border-white w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
                     >
@@ -170,7 +170,7 @@ export default function MyPhotosWrapper({
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i}>
-                  <div className="aspect-[1/1]">
+                  <div className="aspect-w-1 aspect-h-1">
                     <div className="animate-pulse w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full">
                       <div className="rounded-full bg-slate-100 h-full w-full" />
                     </div>
@@ -202,7 +202,7 @@ export default function MyPhotosWrapper({
                 if (!i.downloadedImageKey) return null;
                 return (
                   <div key={i._id}>
-                    <div className="aspect-[1/1]">
+                    <div className="aspect-w-1 aspect-h-1">
                       <div
                         className={`border-white w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
                       >

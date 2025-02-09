@@ -74,6 +74,7 @@ export default function Header() {
             switch (i.code) {
               case "GENERATE":
               case "CUSTOMIZE":
+              case "MY_PHOTOS":
                 return !!session;
               default:
                 return true;

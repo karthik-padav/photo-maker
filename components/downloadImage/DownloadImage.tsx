@@ -117,6 +117,7 @@ export default function DownloadImage({
               layout="fill"
               objectFit="contain"
               alt="profile pic"
+              quality={10}
               loading="lazy"
               onLoadingComplete={handleImageLoad}
             />

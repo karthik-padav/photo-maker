@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BgPngImage, ControlerValue } from "./interfaces";
+import { ControlerValue } from "./interfaces";
 import { toPng } from "html-to-image";
 import { generateImage } from "./actions/services";
 import { uid } from "uid";
@@ -82,20 +82,35 @@ export function borderControlers(controlerValue: ControlerValue | null) {
 }
 
 export function bgControlers(controlerValue: ControlerValue | null) {
-  return {
-    bgSize: {
-      label: "Zoom In",
-      valuePrefix: "",
+  let obj = {
+    backgroundRotate: {
+      label: "Rotate",
+      valuePrefix: "°",
       attr: {
         type: "range",
-        min: 50,
-        max: 200,
-        step: 10,
-        value: controlerValue?.bgSize || 100,
+        min: 0,
+        max: 360,
+        step: 20,
+        value: controlerValue?.backgroundRotate || 0,
         className: "w-full slider dark:bg-accent bg-gray-200",
       },
     },
   };
+  if (controlerValue?.backgroundImagePath)
+    obj["backgroundScale"] = {
+      label: "Zoom In",
+      valuePrefix: "",
+      attr: {
+        type: "range",
+        min: 0.5,
+        max: 2,
+        step: 0.1,
+        value: controlerValue?.backgroundScale || 1,
+        className: "w-full slider dark:bg-accent bg-gray-200",
+      },
+    };
+
+  return obj;
 }
 
 export function hexToRgb(hex: string) {
@@ -118,50 +133,56 @@ export function getBorderColor(controlerValue: ControlerValue) {
     /rgb\(\d{1,3}, \d{1,3}, \d{1,3}\)/g
   );
   const px = controlerValue?.pngShadow;
-  if (!px || px === "0") return {};
-  if (rgbColors?.length === 1)
-    return {
-      "--stroke-pos": `${1 + Number(px)}px`,
-      "--stroke-neg": `-${px}px`,
-      "--stroke-color": rgbColors?.[0] || "rgb(255, 228, 0)",
-      filter:
-        "drop-shadow(var(--stroke-pos) 0 0 var(--stroke-color)) drop-shadow(var(--stroke-neg) 0 var(--stroke-color)) drop-shadow(0 var(--stroke-pos) 0 var(--stroke-color)) drop-shadow(0 var(--stroke-neg) 0 var(--stroke-color)) drop-shadow(var(--stroke-pos) var(--stroke-pos) 0 var(--stroke-color)) drop-shadow(var(--stroke-pos) var(--stroke-neg) 0 var(--stroke-color)) drop-shadow(var(--stroke-neg) var(--stroke-pos) 0 var(--stroke-color)) drop-shadow(var(--stroke-neg) var(--stroke-neg) 0 var(--stroke-color))",
-    };
-  if (rgbColors?.length === 2)
-    return {
-      "--stroke-pos": `${px}px`,
-      "--stroke-neg": `-${px}px`,
-      "--stroke-color-start": rgbColors?.[0],
-      "--stroke-color-end": rgbColors?.[1],
-      filter: `drop-shadow(var(--stroke-pos) 0 0 var(--stroke-color-start)) 
-  drop-shadow(var(--stroke-neg) 0 0 var(--stroke-color-end)) 
-  drop-shadow(0 var(--stroke-pos) 0 var(--stroke-color-start)) 
-  drop-shadow(0 var(--stroke-neg) 0 var(--stroke-color-end)) 
-  drop-shadow(var(--stroke-pos) var(--stroke-pos) 0 var(--stroke-color-start)) 
-  drop-shadow(var(--stroke-pos) var(--stroke-neg) 0 var(--stroke-color-end)) 
-  drop-shadow(var(--stroke-neg) var(--stroke-pos) 0 var(--stroke-color-start)) 
-  drop-shadow(var(--stroke-neg) var(--stroke-neg) 0 var(--stroke-color-end))`,
-    };
-  return {};
+
+  if (!px || px === "0" || !rgbColors?.length) return {};
+
+  const strokeVars = {
+    "--stroke-pos": `${px}px`,
+    "--stroke-neg": `-${px}px`,
+  };
+
+  // Generate drop-shadow dynamically based on available colors
+  const dropShadows = [
+    ["var(--stroke-pos)", "0"],
+    ["var(--stroke-neg)", "0"],
+    ["0", "var(--stroke-pos)"],
+    ["0", "var(--stroke-neg)"],
+    ["var(--stroke-pos)", "var(--stroke-pos)"],
+    ["var(--stroke-pos)", "var(--stroke-neg)"],
+    ["var(--stroke-neg)", "var(--stroke-pos)"],
+    ["var(--stroke-neg)", "var(--stroke-neg)"],
+  ];
+
+  const filter = dropShadows
+    .map(
+      (shadow, index) =>
+        `drop-shadow(${shadow[0]} ${shadow[1]} 0 ${
+          rgbColors[index % rgbColors.length]
+        })`
+    )
+    .join(" ");
+
+  return { ...strokeVars, filter };
 }
 
-export function getImageStyle(controlerValue: ControlerValue) {
+export function getImageStyle(controlerValue: ControlerValue | undefined) {
   let imageStyle: any = {};
   if (controlerValue?.scale) imageStyle["scale"] = controlerValue.scale;
-  if (controlerValue?.rotate && controlerValue?.transform)
-    imageStyle[
-      "transform"
-    ] = `${controlerValue.transform} rotate(${controlerValue.rotate}deg)`;
-  else if (controlerValue?.rotate)
+  // if (controlerValue?.rotate && controlerValue?.transformX && controlerValue?.transformY)
+  //   imageStyle[
+  //     "transform"
+  //   ] = `${controlerValue.transform} rotate(${controlerValue.rotate}deg)`;
+  // else if (controlerValue?.rotate)
+  //   imageStyle["transform"] = `rotate(${controlerValue.rotate}deg)`;
+  if (controlerValue?.rotate)
     imageStyle["transform"] = `rotate(${controlerValue.rotate}deg)`;
-  // else if (controlerValue?.transform)
-  //   imageStyle["transform"] = controlerValue.transform;
-  imageStyle = { ...imageStyle, ...getBorderColor(controlerValue) };
+  if (controlerValue)
+    imageStyle = { ...imageStyle, ...getBorderColor(controlerValue) };
   return imageStyle;
 }
 
 export function getBorderStyles(
-  controlerValue: ControlerValue,
+  controlerValue: ControlerValue | undefined,
   currentWidth: number | undefined
 ) {
   let borderStyle: { [key: string]: string } = {};
@@ -183,35 +204,7 @@ export function getBorderStyles(
         controlerValue.outerBorderOpacity || "1"
       );
   }
-
   return borderStyle;
-}
-
-export function getBgStyles({
-  item,
-  controlerValue,
-}: {
-  item?: BgPngImage;
-  controlerValue: ControlerValue;
-}) {
-  let imageBgStyle: { [key: string]: string } = {};
-  let bgImage: string[] = [];
-  let _bgImage = controlerValue?.bgImage || item?.bgImage;
-  if (_bgImage) bgImage.push(`url(${_bgImage})`);
-  imageBgStyle["backgroundSize"] = `${controlerValue?.bgSize || "100"}% ${
-    controlerValue?.bgSize || "100"
-  }%`;
-  imageBgStyle["backgroundRepeat"] = "no-repeat";
-  imageBgStyle["backgroundPosition"] = "center center";
-  if (controlerValue?.backgroundColor?.type === "bg")
-    imageBgStyle["backgroundColor"] = controlerValue.backgroundColor.color;
-  else if (controlerValue?.backgroundColor?.type === "bgg")
-    bgImage.push(controlerValue.backgroundColor.color);
-  if (bgImage.length) imageBgStyle["backgroundImage"] = bgImage.join(",");
-  // if (controlerValue?.transform)
-  //   imageBgStyle["transform"] = controlerValue.transform;
-
-  return imageBgStyle;
 }
 
 export const getClientSideCookie = (name: string) => {
@@ -234,9 +227,8 @@ export const extractValues = (input: string) => {
 
 export const onDownload = (
   el: HTMLDivElement | null,
-  callback = (blob: Blob) => {}
+  callback = (blob: Blob, dataUrl: string) => {}
 ) => {
-  debugger;
   if (el) {
     try {
       toPng(el, {
@@ -246,11 +238,7 @@ export const onDownload = (
       }).then(async (dataUrl) => {
         let blob = base64ToBlob(dataUrl, "image/png");
         blob = (await compressImageBlob(blob)) as Blob;
-        callback(blob);
-        const link = document.createElement("a");
-        link.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}`;
-        link.href = dataUrl;
-        link.click();
+        callback(blob, dataUrl);
       });
     } catch (error) {
       console.log(error);
@@ -262,8 +250,8 @@ export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
   let file: File | null = e?.target?.files?.[0] || null;
   if (file) {
     let blob = new Blob([file], { type: file.type });
-    const imageUrl = URL.createObjectURL(file);
-    blob = await removeBackground(imageUrl);
+    // const imageUrl = URL.createObjectURL(file);
+    blob = await removeBackground(file);
     if (!blob) throw new Error("'Blob not found");
     return await generateImage({ blob, fileName: file.name });
   }

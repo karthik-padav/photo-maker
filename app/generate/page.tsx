@@ -23,9 +23,12 @@ export default function Generate() {
   const session = useSession();
   if (!selectedImage || !session?.data) router.push("/");
 
-  function handleRedirect(item: { id: string; bgImage?: string }) {
-    if (item?.bgImage)
-      setControlerValue({ ...controlerValue, bgImage: item.bgImage });
+  function handleRedirect(item: { id: string; backgroundImagePath?: string }) {
+    if (item?.backgroundImagePath)
+      setControlerValue({
+        ...controlerValue,
+        backgroundImagePath: item.backgroundImagePath,
+      });
     router.push("/customize");
   }
 
@@ -42,7 +45,7 @@ export default function Generate() {
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
             {constants.pngBgCollections.map(
-              (item: { id: string; bgImage?: string }) => {
+              (item: { id: string; backgroundImagePath?: string }) => {
                 return (
                   <div key={item.id}>
                     <div
@@ -60,9 +63,9 @@ export default function Generate() {
                           disabled={true}
                           image={selectedImage}
                           controler={{
-                            bgImage: item.bgImage,
+                            backgroundImagePath: item.backgroundImagePath,
                             border: controlerValue?.border,
-                            bgSize: "100",
+                            backgroundScale: "1",
                           }}
                         />
                       </div>

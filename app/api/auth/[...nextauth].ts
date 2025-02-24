@@ -2,10 +2,12 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "@/lib/db";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
+
+const prisma = new PrismaClient();
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -31,18 +33,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   jwt: {
     encode: async ({ token, secret }: JWTEncodeParams<JWT>) => {
       if (!secret || !token) throw new Error("Secret or token is undefined");
-      const encode = jwt.sign(token, secret as jwt.Secret, {
-        algorithm: "HS384",
-      });
-      return encode;
+      return jwt.sign(token, secret as jwt.Secret, { algorithm: "HS384" });
     },
     decode: async ({ token, secret }: JWTDecodeParams): Promise<JWT | null> => {
       if (!secret || !token) throw new Error("Secret or token is undefined");
       try {
-        const decode = jwt.verify(token, secret as jwt.Secret, {
+        return jwt.verify(token, secret as jwt.Secret, {
           algorithms: ["HS384"],
         }) as JWT;
-        return decode;
       } catch (error) {
         return null;
       }
@@ -72,22 +70,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  adapter: MongoDBAdapter(clientPromise),
-  events: {
-    async createUser({ user }) {
-      const db = (await clientPromise).db();
-      const creditExist = await db
-        .collection("users")
-        .findOne({ email: user.email, credit: { $exists: true } });
-      if (!creditExist) {
-        await db
-          .collection("users")
-          .updateOne(
-            { email: user.email },
-            { $set: { credit: 100, active: true } }
-          );
-      }
-    },
-  },
+  adapter: PrismaAdapter(prisma),
+  // events: {
+  // async createUser({ user }) {
+  // const existingUser = await prisma.user.findUnique({
+  //   where: { email: user.email },
+  //   select: { credit: true },
+  // });
+  // if (existingUser?.credit === null || existingUser?.credit === undefined) {
+  //   await prisma.user.update({
+  //     where: { email: user.email },
+  //     data: { credit: 100, active: true },
+  //   });
+  // }
+  // },
+  // },
   secret: process.env.NEXT_AUTH_SECRET,
 });

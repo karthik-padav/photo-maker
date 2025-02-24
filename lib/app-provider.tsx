@@ -60,7 +60,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     () => localStoredData?.controlerValue || defaultValue.controlerValue
   );
   const { data: session } = useSession();
-
+  console.log(selectedImage, "selectedImage");
+  console.log(controlerValue, "controlerValue");
   useEffect(() => {
     async function init() {
       if (session?.user?.email && !user) {

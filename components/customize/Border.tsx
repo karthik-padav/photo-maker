@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import DownloadImage from "../downloadImage";
-import { borderControlers, getBgStyles } from "@/lib/common";
+import { borderControlers } from "@/lib/common";
 import { useAppProvider } from "../../lib/app-provider";
 import constants from "@/lib/constants";
 import { ScrollArea } from "../ui/scroll-area";

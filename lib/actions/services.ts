@@ -12,8 +12,50 @@ export async function createControler(body: Params) {
   const cookies = await getCookie();
   const formData = new FormData();
   const { blob, ...rest } = body;
+  const {
+    border,
+    rotate,
+    scale,
+    transformX,
+    transformY,
+    pngShadow,
+    pngBorderColor,
+    outerBorderOpacity,
+    outerBorderWidth,
+    outerBorderColor,
+    imageWrapperSize,
+    imageId,
+
+    backgroundColor,
+    backgroundColorType,
+    backgroundRotate,
+    backgroundImagePath,
+    backgroundScale,
+  } = { ...rest, ...rest.controler };
+
+  let payload = {
+    imageWrapperSize,
+    rotate,
+    scale,
+    pngShadow,
+    pngBorderColor,
+    outerBorderColor,
+    outerBorderOpacity,
+    outerBorderWidth,
+    backgroundImagePath,
+    imageId,
+    backgroundScale,
+    backgroundColorType,
+    backgroundRotate,
+    backgroundColor,
+    ...(border?.title && border.value
+      ? { borderTitle: border.title, borderValue: border.value }
+      : {}),
+    ...(transformX && transformY ? { transformX, transformY } : {}),
+  };
+  console.log(payload, "payload123");
   formData.append("file", blob);
-  formData.append("data", JSON.stringify(rest));
+  formData.append("data", JSON.stringify(payload));
 
   return await axios.post(
     `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/createControler`,
@@ -23,11 +65,16 @@ export async function createControler(body: Params) {
 }
 
 export async function getControler() {
-  const cookies = await getCookie();
-  return await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getControler`,
-    { headers: { Authorization: `Bearer ${cookies?.value}` } }
-  );
+  try {
+    const cookies = await getCookie();
+    return await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getControler`,
+      { headers: { Authorization: `Bearer ${cookies?.value}` } }
+    );
+  } catch (error) {
+    console.log("Error in fetching controler", error);
+    return { data: null };
+  }
 }
 
 export async function getMyImages() {
@@ -75,10 +122,6 @@ export async function deleteControler({ id }: { id: string }) {
 
 export async function geUser() {
   const cookies = await getCookie();
-  console.log(
-    process.env.NEXT_PUBLIC_BACKEND_BASE_URL,
-    "process.env.NEXT_PUBLIC_BACKEND_BASE_URL"
-  );
   return await axios.get(
     `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getUser`,
     { headers: { Authorization: `Bearer ${cookies?.value}` } }

@@ -59,7 +59,7 @@ export default function GenerateImageBtn({
             <Image
               placeholder="blur"
               blurDataURL={constants.blurDataURL}
-              src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imageKey}`}
+              src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imagePath}`}
               layout="fill"
               objectFit="cover"
               alt="profile pic"

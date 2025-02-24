@@ -1,25 +1,10 @@
 "use client";
 
-import {
-  CircleDashed,
-  BoxSelect,
-  Layers,
-  Image as LImage,
-  Square,
-} from "lucide-react";
+import { Image as LImage, Square } from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
-import { useSession, getCsrfToken } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
-import {
-  getBgStyles,
-  getClientSideCookie,
-  getImageStyle,
-  myPhotoControlers,
-  calcPercentage,
-  calcPx,
-  onDownload,
-  getBorderStyles,
-} from "@/lib/common";
+import { useSession } from "next-auth/react";
+import { useRef, useState } from "react";
+import { onDownload, getBorderStyles } from "@/lib/common";
 import { uid } from "uid";
 import Image from "next/image";
 import DragAndDrop from "@/components/dragAndDrop";
@@ -65,7 +50,7 @@ export default function Customize() {
           <Image
             placeholder="blur"
             blurDataURL={constants.blurDataURL}
-            src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imageKey}`}
+            src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imagePath}`}
             layout="fill"
             objectFit="cover"
             alt="profile pic"
@@ -87,13 +72,19 @@ export default function Customize() {
     const credit = process.env.NEXT_PUBLIC_PRICE_PER_DOWNLOAD
       ? parseInt(process.env.NEXT_PUBLIC_PRICE_PER_DOWNLOAD)
       : 3;
-    function callback(blob: Blob) {
-      if (selectedImage?._id && blob && controlerValue)
-        createControler({
+    async function callback(blob: Blob, dataUrl: string) {
+      if (selectedImage?.id && blob && controlerValue) {
+        const resp = await createControler({
           controler: controlerValue,
-          imageId: selectedImage._id,
+          imageId: selectedImage.id,
           blob,
         });
+        console.log(resp, "resp123");
+        // const link = document.createElement("a");
+        // link.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}`;
+        // link.href = dataUrl;
+        // link.click();
+      }
     }
     if (ENABLE_PAYMENT && user?.credit && credit > Number(user.credit)) {
       toggleDialog(true);
@@ -151,10 +142,10 @@ export default function Customize() {
                 className={`w-full h-full outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]`}
               >
                 <div ref={imageWrapperRef} className="relative w-full h-full">
-                  {selectedImage && controlerValue && (
+                  {selectedImage && (
                     <DownloadImage
                       image={selectedImage}
-                      controler={controlerValue}
+                      controler={controlerValue ?? undefined}
                     />
                   )}
                 </div>

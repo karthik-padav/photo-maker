@@ -83,8 +83,9 @@ export default function Background() {
                       >
                         <Image
                           src={item.backgroundImagePath}
-                          layout="fill"
-                          objectFit="cover"
+                          fill
+                          sizes="100%"
+                          style={{ objectFit: "cover" }}
                           alt="profile pic"
                           loading="lazy"
                         />

@@ -118,8 +118,9 @@ export default function MyPhotosWrapper({
                   placeholder="blur"
                   blurDataURL={constants.blurDataURL}
                   src="/images/no-data.png"
-                  layout="fill"
-                  objectFit="contain"
+                  fill
+                  sizes="100%"
+                  style={{ objectFit: "contain" }}
                   alt="no-data"
                   loading="lazy"
                 />
@@ -140,8 +141,9 @@ export default function MyPhotosWrapper({
                         placeholder="blur"
                         blurDataURL={constants.blurDataURL}
                         src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${i.imagePath}`}
-                        layout="fill"
-                        objectFit="contain"
+                        fill
+                        sizes="100%"
+                        style={{ objectFit: "cover" }}
                         alt="profile pic"
                         quality={10}
                         loading="lazy"
@@ -195,8 +197,9 @@ export default function MyPhotosWrapper({
                   placeholder="blur"
                   blurDataURL={constants.blurDataURL}
                   src="/images/no-data.png"
-                  layout="fill"
-                  objectFit="contain"
+                  fill
+                  sizes="100%"
+                  style={{ objectFit: "contain" }}
                   alt="no-data"
                   loading="lazy"
                 />
@@ -225,8 +228,9 @@ export default function MyPhotosWrapper({
                           placeholder="blur"
                           blurDataURL={constants.blurDataURL}
                           src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${downloadedImagePath}`}
-                          layout="fill"
-                          objectFit="contain"
+                          fill
+                          sizes="100%"
+                          style={{ objectFit: "contain" }}
                           alt="profile pic"
                           quality={10}
                           loading="lazy"

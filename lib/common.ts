@@ -6,134 +6,107 @@ import { uid } from "uid";
 import { removeBackground } from "@imgly/background-removal";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
-
 export const calcPx = (width: number, v: number) => (v * width) / 100;
+
+const createRangeControl = (
+  label: string,
+  min: number,
+  max: number,
+  step: number,
+  value: number | string,
+  extraClass = ""
+) => ({
+  label,
+  valuePrefix: "",
+  attr: {
+    type: "range",
+    min,
+    max,
+    step,
+    value,
+    className: `w-full slider dark:bg-accent bg-gray-200 ${extraClass}`,
+  },
+});
 
 export function myPhotoControlers(controlerValue: ControlerValue | null) {
   return {
-    rotate: {
-      label: "Rotate",
-      valuePrefix: "",
-      attr: {
-        type: "range",
-        min: 0,
-        max: 360,
-        step: 20,
-        value: controlerValue?.rotate || 0,
-        className: "w-full slider dark:bg-accent bg-gray-200",
-      },
-    },
-    scale: {
-      label: "Scale",
-      valuePrefix: "",
-      attr: {
-        type: "range",
-        min: 0.5,
-        max: 2,
-        value: controlerValue?.scale || 1,
-        step: 0.1,
-        className: "w-full slider dark:bg-accent bg-gray-200",
-      },
-    },
-    pngShadow: {
-      label: "Outline",
-      valuePrefix: "",
-      className: "col-span-4",
-      attr: {
-        type: "range",
-        min: 0,
-        max: 5,
-        step: 1,
-        value: controlerValue?.pngShadow || 0,
-        className: "w-full slider dark:bg-accent bg-gray-200",
-      },
-    },
+    rotate: createRangeControl(
+      "Rotate",
+      0,
+      360,
+      10,
+      controlerValue?.rotate || 0
+    ),
+    scale: createRangeControl("Scale", 0.5, 2, 0.1, controlerValue?.scale || 1),
+    pngShadow: createRangeControl(
+      "Outline",
+      0,
+      5,
+      1,
+      controlerValue?.pngShadow || 0,
+      "col-span-4"
+    ),
   };
 }
 
 export function borderControlers(controlerValue: ControlerValue | null) {
   return {
-    outerBorderWidth: {
-      label: "Thickness",
-      convertToPerc: true,
-      valuePrefix: "",
-      attr: {
-        type: "range",
-        min: 0,
-        max: 40,
-        step: 5,
-        value: controlerValue?.outerBorderWidth || 0,
-        className: "w-full slider dark:bg-accent bg-gray-200",
-      },
-    },
-    outerBorderOpacity: {
-      label: "Opacity",
-      valuePrefix: "",
-      attr: {
-        type: "range",
-        min: 0,
-        max: 1,
-        value: controlerValue?.outerBorderOpacity || 1,
-        step: 0.1,
-        className: "w-full slider dark:bg-accent bg-gray-200",
-      },
-    },
+    outerBorderWidth: createRangeControl(
+      "Thickness",
+      0,
+      40,
+      5,
+      controlerValue?.outerBorderWidth || 0
+    ),
+    outerBorderOpacity: createRangeControl(
+      "Opacity",
+      0,
+      1,
+      0.1,
+      controlerValue?.outerBorderOpacity || 1
+    ),
   };
 }
 
 export function bgControlers(controlerValue: ControlerValue | null) {
-  let obj = {
-    backgroundRotate: {
-      label: "Rotate",
-      valuePrefix: "°",
-      attr: {
-        type: "range",
-        min: 0,
-        max: 360,
-        step: 20,
-        value: controlerValue?.backgroundRotate || 0,
-        className: "w-full slider dark:bg-accent bg-gray-200",
-      },
-    },
+  return {
+    backgroundRotate: createRangeControl(
+      "Rotate",
+      0,
+      360,
+      20,
+      controlerValue?.backgroundRotate || 0
+    ),
+    ...(controlerValue?.backgroundImagePath && {
+      backgroundScale: createRangeControl(
+        "Zoom In",
+        0.5,
+        2,
+        0.1,
+        controlerValue?.backgroundScale || 1
+      ),
+    }),
   };
-  if (controlerValue?.backgroundImagePath)
-    obj["backgroundScale"] = {
-      label: "Zoom In",
-      valuePrefix: "",
-      attr: {
-        type: "range",
-        min: 0.5,
-        max: 2,
-        step: 0.1,
-        value: controlerValue?.backgroundScale || 1,
-        className: "w-full slider dark:bg-accent bg-gray-200",
-      },
-    };
-
-  return obj;
 }
 
-export function hexToRgb(hex: string) {
+export const hexToRgb = (hex: string) => {
   hex = hex.replace(/^#/, "");
-  let r = parseInt(hex.substring(0, 2), 16);
-  let g = parseInt(hex.substring(2, 4), 16);
-  let b = parseInt(hex.substring(4, 6), 16);
-  return `rgb(${r}, ${g}, ${b})`;
-}
+  return `rgb(${parseInt(hex.substring(0, 2), 16)}, ${parseInt(
+    hex.substring(2, 4),
+    16
+  )}, ${parseInt(hex.substring(4, 6), 16)})`;
+};
 
-function rgbToRgba(rgb: string = "", opacity: string = "1") {
+const rgbToRgba = (rgb: string = "", opacity: string = "1") => {
   const rgbValues = rgb.match(/\d+/g);
-  if (rgbValues?.length)
-    return `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, ${opacity})`;
-  return "";
-}
+  return rgbValues?.length ? `rgba(${rgbValues.join(", ")}, ${opacity})` : "";
+};
 
 export function getBorderColor(controlerValue: ControlerValue) {
   const rgbColors = (controlerValue?.pngBorderColor || "").match(
     /rgb\(\d{1,3}, \d{1,3}, \d{1,3}\)/g
   );
   const px = controlerValue?.pngShadow;
-
   if (!px || px === "0" || !rgbColors?.length) return {};
 
   const strokeVars = {
@@ -141,138 +114,111 @@ export function getBorderColor(controlerValue: ControlerValue) {
     "--stroke-neg": `-${px}px`,
   };
 
-  // Generate drop-shadow dynamically based on available colors
   const dropShadows = [
-    ["var(--stroke-pos)", "0"],
-    ["var(--stroke-neg)", "0"],
-    ["0", "var(--stroke-pos)"],
-    ["0", "var(--stroke-neg)"],
-    ["var(--stroke-pos)", "var(--stroke-pos)"],
-    ["var(--stroke-pos)", "var(--stroke-neg)"],
-    ["var(--stroke-neg)", "var(--stroke-pos)"],
-    ["var(--stroke-neg)", "var(--stroke-neg)"],
-  ];
-
-  const filter = dropShadows
+    "var(--stroke-pos) 0",
+    "var(--stroke-neg) 0",
+    "0 var(--stroke-pos)",
+    "0 var(--stroke-neg)",
+    "var(--stroke-pos) var(--stroke-pos)",
+    "var(--stroke-pos) var(--stroke-neg)",
+    "var(--stroke-neg) var(--stroke-pos)",
+    "var(--stroke-neg) var(--stroke-neg)",
+  ]
     .map(
       (shadow, index) =>
-        `drop-shadow(${shadow[0]} ${shadow[1]} 0 ${
-          rgbColors[index % rgbColors.length]
-        })`
+        `drop-shadow(${shadow} 0 ${rgbColors[index % rgbColors.length]})`
     )
     .join(" ");
 
-  return { ...strokeVars, filter };
+  return { ...strokeVars, filter: dropShadows };
 }
 
-export function getImageStyle(controlerValue: ControlerValue | undefined) {
-  let imageStyle: any = {};
-  if (controlerValue?.scale) imageStyle["scale"] = controlerValue.scale;
-  // if (controlerValue?.rotate && controlerValue?.transformX && controlerValue?.transformY)
-  //   imageStyle[
-  //     "transform"
-  //   ] = `${controlerValue.transform} rotate(${controlerValue.rotate}deg)`;
-  // else if (controlerValue?.rotate)
-  //   imageStyle["transform"] = `rotate(${controlerValue.rotate}deg)`;
-  if (controlerValue?.rotate)
-    imageStyle["transform"] = `rotate(${controlerValue.rotate}deg)`;
-  if (controlerValue)
-    imageStyle = { ...imageStyle, ...getBorderColor(controlerValue) };
-  return imageStyle;
+export function getImageStyle(controlerValue?: ControlerValue) {
+  return controlerValue
+    ? {
+        scale: controlerValue.scale,
+        transform: `rotate(${controlerValue.rotate}deg)`,
+        ...getBorderColor(controlerValue),
+      }
+    : {};
 }
 
 export function getBorderStyles(
-  controlerValue: ControlerValue | undefined,
-  currentWidth: number | undefined
+  controlerValue?: ControlerValue,
+  currentWidth?: number
 ) {
-  let borderStyle: { [key: string]: string } = {};
   const outerBorderWidth =
-    controlerValue?.imageWrapperSize &&
     controlerValue?.outerBorderWidth &&
-    currentWidth
+    currentWidth &&
+    controlerValue?.imageWrapperSize
       ? (Number(controlerValue.outerBorderWidth) * currentWidth) /
         controlerValue.imageWrapperSize
       : controlerValue?.outerBorderWidth;
 
-  if (outerBorderWidth && outerBorderWidth !== "0") {
-    borderStyle["borderWidth"] = `${outerBorderWidth}px`;
-    borderStyle["borderWidth"] = `${outerBorderWidth}px`;
-
-    if (controlerValue?.outerBorderColor)
-      borderStyle["borderColor"] = rgbToRgba(
-        controlerValue.outerBorderColor,
-        controlerValue.outerBorderOpacity || "1"
-      );
-  }
-  return borderStyle;
+  return outerBorderWidth && outerBorderWidth !== "0"
+    ? {
+        borderWidth: `${outerBorderWidth}px`,
+        borderColor: rgbToRgba(
+          controlerValue?.outerBorderColor || "",
+          controlerValue?.outerBorderOpacity || "1"
+        ),
+      }
+    : {};
 }
 
-export const getClientSideCookie = (name: string) => {
-  const cookieValue = document.cookie;
-  // .split("; ")
-  // .find((row) => row.startsWith(`${name}=`))
-  // ?.split("=")[1];
+export const getClientSideCookie = (name: string) => document.cookie;
 
-  return cookieValue;
-};
-
-export const extractValues = (input: string) => {
-  const regex = /translate\(([-\d.]+)%, ([-\d.]+)%\)/;
-  const matches = input?.match(regex);
-  if (matches) {
-    return [parseFloat(matches[1]), parseFloat(matches[2])];
-  }
-  return [];
-};
+export const extractValues = (input: string) =>
+  input
+    .match(/translate\(([-\d.]+)%, ([-\d.]+)%\)/)
+    ?.slice(1)
+    .map(parseFloat) || [];
 
 export const onDownload = (
   el: HTMLDivElement | null,
   callback = (blob: Blob, dataUrl: string) => {}
 ) => {
-  if (el) {
-    try {
-      toPng(el, {
-        cacheBust: true,
-        quality: 1,
-        pixelRatio: 5,
-      }).then(async (dataUrl) => {
-        let blob = base64ToBlob(dataUrl, "image/png");
-        blob = (await compressImageBlob(blob)) as Blob;
-        callback(blob, dataUrl);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  if (!el) return;
+  toPng(el, { cacheBust: true, quality: 1, pixelRatio: 5 })
+    .then(async (dataUrl) => {
+      let blob = base64ToBlob(dataUrl, "image/png");
+      blob = (await compressImageBlob(blob)) as Blob;
+      callback(blob, dataUrl);
+    })
+    .catch(console.log);
 };
 
 export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
-  let file: File | null = e?.target?.files?.[0] || null;
-  if (file) {
-    let blob = new Blob([file], { type: file.type });
-    // const imageUrl = URL.createObjectURL(file);
-    blob = await removeBackground(file);
-    if (!blob) throw new Error("'Blob not found");
-    return await generateImage({ blob, fileName: file.name });
-  }
+  const file = e?.target?.files?.[0];
+  if (!file) return null;
+
+  return new Promise((resolve) => {
+    const worker = new Worker(
+      new URL("../workers/removeBackgroundWorker.js", import.meta.url)
+    );
+
+    worker.postMessage(file);
+
+    worker.onmessage = async (event) => {
+      if (event.data.success) {
+        const blob = event.data.blob;
+        const imageData = await generateImage({ blob, fileName: file.name });
+        resolve(imageData);
+      } else {
+        console.error("Background removal error:", event.data.error);
+        resolve(null);
+      }
+      worker.terminate();
+    };
+  });
 }
 
-function base64ToBlob(base64: string, mimeType: string) {
-  // Remove the base64 prefix if present (e.g., "data:image/png;base64,")
+const base64ToBlob = (base64: string, mimeType: string) => {
   const byteString = atob(base64.split(",")[1] || base64);
-
-  // Create an array buffer to hold the binary data
-  const arrayBuffer = new ArrayBuffer(byteString.length);
-  const uint8Array = new Uint8Array(arrayBuffer);
-
-  // Convert the binary string to a Uint8Array
-  for (let i = 0; i < byteString.length; i++) {
-    uint8Array[i] = byteString.charCodeAt(i);
-  }
-
-  // Create a Blob object from the ArrayBuffer and define the MIME type
-  return new Blob([arrayBuffer], { type: mimeType });
-}
+  return new Blob([Uint8Array.from(byteString, (c) => c.charCodeAt(0))], {
+    type: mimeType,
+  });
+};
 
 async function compressImageBlob(
   imageBlob: Blob,
@@ -281,32 +227,23 @@ async function compressImageBlob(
 ) {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    const url = URL.createObjectURL(imageBlob);
-
+    img.src = URL.createObjectURL(imageBlob);
     img.onload = () => {
-      URL.revokeObjectURL(url);
-
-      const canvas = document.createElement("canvas");
-      const scaleFactor = Math.min(maxWidth / img.width, 1);
-      canvas.width = img.width * scaleFactor;
-      canvas.height = img.height * scaleFactor;
-
-      const ctx = canvas.getContext("2d");
-      ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(img.src);
+      const canvas = Object.assign(document.createElement("canvas"), {
+        width: img.width * Math.min(maxWidth / img.width, 1),
+        height: img.height * Math.min(maxWidth / img.width, 1),
+      });
+      canvas
+        .getContext("2d")
+        ?.drawImage(img, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(
-        (blob) => {
-          if (blob) {
-            resolve(blob);
-          } else {
-            reject(new Error("Compression failed"));
-          }
-        },
+        (blob) =>
+          blob ? resolve(blob) : reject(new Error("Compression failed")),
         "image/jpeg",
         quality
       );
     };
-
     img.onerror = reject;
-    img.src = url;
   });
 }

@@ -106,15 +106,17 @@ export default function DownloadImage({
                 style={{
                   scale: controler.backgroundScale,
                   transform: `rotate(${controler.backgroundRotate}deg)`,
+                  objectFit: "cover",
                 }}
                 placeholder="blur"
                 blurDataURL={constants.blurDataURL}
                 src={controler.backgroundImagePath}
                 fill
-                objectFit="cover"
+                sizes="100%"
+                quality={100}
                 alt="Background image"
                 loading="lazy"
-                onLoadingComplete={() => handleImageLoad("bgImage")}
+                onLoad={() => handleImageLoad("bgImage")}
               />
             </div>
           )}
@@ -151,16 +153,16 @@ export default function DownloadImage({
                 <div className="absolute inset-0 z-50" />
                 <Image
                   className="z-40"
-                  style={imageStyle}
+                  style={{ objectFit: "contain", ...imageStyle }}
                   placeholder="blur"
                   blurDataURL={constants.blurDataURL}
                   src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`}
                   fill
-                  objectFit="contain"
+                  sizes="100%"
                   alt={`Editable image: ${image.imagePath}`}
-                  quality={20}
+                  quality={100}
                   loading="lazy"
-                  onLoadingComplete={() => handleImageLoad("mainImage")}
+                  onLoad={() => handleImageLoad("mainImage")}
                 />
               </div>
             </Draggable>

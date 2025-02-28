@@ -2,8 +2,7 @@
 import { useAppProvider } from "@/lib/app-provider";
 import constants from "@/lib/constants";
 import { deleteControler, deleteImage } from "@/lib/actions/services";
-import { MyContoler, SelectedImage } from "@/lib/interfaces";
-import DownloadImage from "@/components/downloadImage";
+import { ControlerValue, MyContoler, SelectedImage } from "@/lib/interfaces";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -30,12 +29,11 @@ export default function MyPhotosWrapper({
   imageData,
   controlerData,
 }: {
-  controlerData: any;
-  imageData: any;
+  controlerData: MyContoler[];
+  imageData: SelectedImage[];
 }) {
   const router = useRouter();
-  const { setSelectedImage, setControlerValue, selectedImage } =
-    useAppProvider();
+  const { setSelectedImage, setControlerValue } = useAppProvider();
   const [selectedId, toggleDialog] = useState<{
     id: string;
     tab: string;
@@ -65,14 +63,14 @@ export default function MyPhotosWrapper({
       setLoader(true);
       if (selectedId.tab === tabs.photos) {
         const { data } = await deleteImage({ id: selectedId.id });
-        data?._id &&
-          setImageList((prev) => prev.filter((i) => i._id !== selectedId.id));
+        data?.id &&
+          setImageList((prev) => prev.filter((i) => i.id !== selectedId.id));
       }
       if (selectedId?.tab === tabs.downloads) {
         const { data } = await deleteControler({ id: selectedId.id });
-        data?._id &&
+        data?.id &&
           setControlerList((prev) =>
-            prev.filter((i) => i._id !== selectedId.id)
+            prev.filter((i) => i.id !== selectedId.id)
           );
       }
       setLoader(false);
@@ -118,8 +116,9 @@ export default function MyPhotosWrapper({
                   placeholder="blur"
                   blurDataURL={constants.blurDataURL}
                   src="/images/no-data.png"
-                  layout="fill"
-                  objectFit="contain"
+                  fill
+                  sizes="100%"
+                  style={{ objectFit: "contain" }}
                   alt="no-data"
                   loading="lazy"
                 />
@@ -131,12 +130,22 @@ export default function MyPhotosWrapper({
           {!loader && imageList.length > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
               {imageList.map((i) => (
-                <div key={i._id}>
+                <div key={i.id}>
                   <div className="aspect-w-1 aspect-h-1">
                     <div
                       className={`border-white w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
                     >
-                      <DownloadImage disabled={true} image={i} />
+                      <Image
+                        placeholder="blur"
+                        blurDataURL={constants.blurDataURL}
+                        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${i.imagePath}`}
+                        fill
+                        sizes="100%"
+                        style={{ objectFit: "cover" }}
+                        alt="profile pic"
+                        quality={10}
+                        loading="lazy"
+                      />
                     </div>
                   </div>
                   <div className="text-center -mt-6 md:-mt-7">
@@ -153,7 +162,7 @@ export default function MyPhotosWrapper({
                     <Button
                       variant="ghost"
                       onClick={() =>
-                        toggleDialog({ id: i._id, tab: tabs.photos })
+                        toggleDialog({ id: i.id, tab: tabs.photos })
                       }
                       className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
                     >
@@ -186,8 +195,9 @@ export default function MyPhotosWrapper({
                   placeholder="blur"
                   blurDataURL={constants.blurDataURL}
                   src="/images/no-data.png"
-                  layout="fill"
-                  objectFit="contain"
+                  fill
+                  sizes="100%"
+                  style={{ objectFit: "contain" }}
                   alt="no-data"
                   loading="lazy"
                 />
@@ -197,31 +207,38 @@ export default function MyPhotosWrapper({
           )}
           {!loader && controlerList.length > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
-              {controlerList.map((i) => {
-                const { controler = {}, imageId } = i;
-                if (!i.downloadedImageKey) return null;
+              {controlerList.map((i, index) => {
+                const {
+                  controler = {} as ControlerValue,
+                  image = {} as SelectedImage,
+                  id,
+                  downloadedImagePath,
+                } = i;
+                if (!downloadedImagePath) return null;
                 return (
-                  <div key={i._id}>
+                  <div key={index}>
                     <div className="aspect-w-1 aspect-h-1">
                       <div
                         className={`border-white w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
                       >
-                        {i.imageId && (
-                          <DownloadImage
-                            disabled={true}
-                            image={{
-                              ...i.imageId,
-                              imageKey: i.downloadedImageKey,
-                            }}
-                          />
-                        )}
+                        <Image
+                          placeholder="blur"
+                          blurDataURL={constants.blurDataURL}
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${downloadedImagePath}`}
+                          fill
+                          sizes="100%"
+                          style={{ objectFit: "contain" }}
+                          alt="profile pic"
+                          quality={10}
+                          loading="lazy"
+                        />
                       </div>
                     </div>
                     <div className="text-center -mt-6 md:-mt-7">
                       <Button
                         variant="ghost"
                         onClick={() => {
-                          setSelectedImage(imageId);
+                          setSelectedImage(image);
                           setControlerValue(controler);
                           router.push("/customize");
                         }}
@@ -232,8 +249,8 @@ export default function MyPhotosWrapper({
                       <Button
                         variant="ghost"
                         onClick={() =>
-                          i.downloadedImageKey &&
-                          downloadImage(i.downloadedImageKey)
+                          downloadedImagePath &&
+                          downloadImage(downloadedImagePath)
                         }
                         className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
                       >
@@ -242,7 +259,7 @@ export default function MyPhotosWrapper({
                       <Button
                         variant="ghost"
                         onClick={() =>
-                          toggleDialog({ id: i._id, tab: tabs.downloads })
+                          id && toggleDialog({ id: id, tab: tabs.downloads })
                         }
                         className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
                       >
@@ -270,7 +287,7 @@ export default function MyPhotosWrapper({
             <Button
               variant="ghost"
               onClick={() => toggleDialog(null)}
-              className={`${constants.btnClass} rounded-full hover:bg-background`}
+              className={`${constants.btnClass} rounded-full hover:bg-background hover:text-accent-foreground`}
             >
               Cancel
             </Button>

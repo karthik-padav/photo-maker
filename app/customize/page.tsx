@@ -1,41 +1,15 @@
 "use client";
 
-import {
-  CircleDashed,
-  BoxSelect,
-  Layers,
-  Image as LImage,
-  Square,
-} from "lucide-react";
+import { Image as LImage, Square } from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
-import { useSession, getCsrfToken } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
-import {
-  getBgStyles,
-  getClientSideCookie,
-  getImageStyle,
-  myPhotoControlers,
-  calcPercentage,
-  calcPx,
-  onDownload,
-  getBorderStyles,
-} from "@/lib/common";
-import { uid } from "uid";
+import { useSession } from "next-auth/react";
+import { useRef, useState, useCallback } from "react";
+import { onDownload } from "@/lib/common";
 import Image from "next/image";
-import DragAndDrop from "@/components/dragAndDrop";
-import constants from "@/lib/constants";
-import EditBar from "@/components/editBar";
-import { Button } from "@/components/ui/button";
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
-import DownloadImage from "@/components/downloadImage";
 import { useRouter } from "next/navigation";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Draggable from "react-draggable";
-import { ControlerValue, SessionData } from "@/lib/interfaces";
-import MyPhotoControler from "@/components/customize/MyPhotoControler";
-import Border from "@/components/customize/Border";
-import Background from "@/components/customize/Background";
-import { createControler, getWebsiteData } from "@/lib/actions/services";
+import { Button } from "@/components/ui/button";
+import DownloadImage from "@/components/downloadImage";
+import { createControler } from "@/lib/actions/services";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -45,97 +19,107 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
+import constants from "@/lib/constants";
+import MyPhotoControler from "@/components/customize/MyPhotoControler";
+import Border from "@/components/customize/Border";
+import Background from "@/components/customize/Background";
+import EditBar from "@/components/editBar";
 
-export default function Customize() {
-  const { selectedImage, controlerValue, user } = useAppProvider();
-  const router = useRouter();
-  const session = useSession();
-  if (!selectedImage || !session?.data) router.push("/");
-
-  const imageWrapperRef = useRef<HTMLDivElement>(null);
-
-  const [activeTab, setActiveTab] = useState<string>("MY_PHOTO");
-  const [showDialog, toggleDialog] = useState<boolean>(false);
-  const [menu] = useState(() => [
-    {
-      label: "My Photo",
-      code: "MY_PHOTO",
-      icon: selectedImage && (
+const MENU_ITEMS = [
+  {
+    label: "My Photo",
+    code: "MY_PHOTO",
+    icon: (image) =>
+      image && (
         <div className="h-6 w-6 bg-gray-100 overflow-hidden relative rounded-full">
           <Image
             placeholder="blur"
             blurDataURL={constants.blurDataURL}
-            src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imageKey}`}
-            layout="fill"
-            objectFit="cover"
+            src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`}
+            fill
+            sizes="100%"
+            style={{ objectFit: "cover" }}
             alt="profile pic"
             loading="lazy"
           />
         </div>
       ),
-    },
-    { label: "Border", code: "BORDER", icon: <Square className="h-6 w-6" /> },
-    {
-      label: "Background",
-      code: "BACKGROUND",
-      icon: <LImage className="h-6 w-6" />,
-    },
-  ]);
+  },
+  {
+    label: "Border",
+    code: "BORDER",
+    icon: () => <Square className="h-6 w-6" />,
+  },
+  {
+    label: "Background",
+    code: "BACKGROUND",
+    icon: () => <LImage className="h-6 w-6" />,
+  },
+];
 
-  async function downloadImage() {
+export default function Customize() {
+  const { selectedImage, controlerValue, user } = useAppProvider();
+  const router = useRouter();
+  const session = useSession();
+  const imageWrapperRef = useRef(null);
+  const [activeTab, setActiveTab] = useState("MY_PHOTO");
+  const [showDialog, setShowDialog] = useState(false);
+
+  if (!selectedImage || !session?.data) router.push("/");
+
+  const downloadImage = useCallback(async () => {
     const ENABLE_PAYMENT = process.env.NEXT_PUBLIC_ENABLE_PAYMENT === "true";
     const credit = process.env.NEXT_PUBLIC_PRICE_PER_DOWNLOAD
       ? parseInt(process.env.NEXT_PUBLIC_PRICE_PER_DOWNLOAD)
       : 3;
-    function callback(blob: Blob) {
-      if (selectedImage?._id && blob && controlerValue)
-        createControler({
+
+    if (ENABLE_PAYMENT && user?.credit && credit > Number(user.credit)) {
+      setShowDialog(true);
+      return;
+    }
+
+    await onDownload(imageWrapperRef.current, async (blob) => {
+      if (selectedImage?.id && blob && controlerValue) {
+        await createControler({
           controler: controlerValue,
-          imageId: selectedImage._id,
+          imageId: selectedImage.id,
           blob,
         });
-    }
-    if (ENABLE_PAYMENT && user?.credit && credit > Number(user.credit)) {
-      toggleDialog(true);
-    } else await onDownload(imageWrapperRef.current, callback);
-  }
+      }
+    });
+  }, [selectedImage, controlerValue, user]);
 
-  // useEffect(() => {
-  //   init();
-  //   async function init() {
-  //     const { data: websiteDate } = await getWebsiteData();
-  //   }
-  // }, []);
+  const borderRadius = controlerValue?.border?.value
+    ? controlerValue.border.value
+    : "";
 
   return (
-    <main className="text-black body-font container mx-auto">
-      <div className="mb-12 ">
-        <div className="flex flex-wrap gap-2">
-          <EditBar />
-          <Button
-            variant="ghost"
-            onClick={downloadImage}
-            className={`${constants.btnClass} rounded-full mr-4 `}
-          >
-            Download
-          </Button>
-        </div>
+    <main className="text-black container mx-auto">
+      <div className="mb-12 flex flex-wrap gap-2">
+        <EditBar />
+        <Button
+          variant="ghost"
+          onClick={downloadImage}
+          className={`${constants.btnClass} rounded-full mr-4`}
+        >
+          Download
+        </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <div className="col-span-12 md:col-span-2 rounded-md">
-          {menu.map((item) => (
+          {MENU_ITEMS.map(({ label, code, icon }) => (
             <Button
-              key={item.code}
+              key={code}
               variant="ghost"
-              onClick={() => setActiveTab(item.code)}
+              onClick={() => setActiveTab(code)}
               className={`${constants.btnClass} w-full mb-2 justify-start ${
-                activeTab === item.code
+                activeTab === code
                   ? "bg-violet-500 text-white"
                   : "bg-background"
               }`}
             >
-              {item.icon}
-              <span className="px-2">{item.label}</span>
+              {icon(selectedImage)}
+              <span className="px-2">{label}</span>
             </Button>
           ))}
         </div>
@@ -144,26 +128,23 @@ export default function Customize() {
           {activeTab === "BORDER" && <Border />}
           {activeTab === "BACKGROUND" && <Background />}
         </div>
-        <div className="col-span-12 md:col-span-6 bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl p-4 md:p-8 bg-background flex justify-center items-center">
-          <div className="w-full">
-            <div className="aspect-w-1 aspect-h-1">
-              <div
-                className={`w-full h-full outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]`}
-              >
-                <div ref={imageWrapperRef} className="relative w-full h-full">
-                  {selectedImage && controlerValue && (
-                    <DownloadImage
-                      image={selectedImage}
-                      controler={controlerValue}
-                    />
-                  )}
-                </div>
-              </div>
+        <div
+          className={`col-span-12 md:col-span-6 bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl p-4 md:p-8 bg-background flex justify-center items-center`}
+        >
+          <div
+            className={`w-full aspect-w-1 aspect-h-1 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25] relative ${borderRadius}`}
+          >
+            <div ref={imageWrapperRef} className="w-full h-full">
+              {selectedImage && (
+                <DownloadImage
+                  image={selectedImage}
+                  controler={controlerValue ?? undefined}
+                />
+              )}
             </div>
           </div>
         </div>
       </div>
-
       <AlertDialog open={showDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -176,7 +157,7 @@ export default function Customize() {
           <AlertDialogFooter>
             <Button
               variant="ghost"
-              onClick={() => toggleDialog(false)}
+              onClick={() => setShowDialog(false)}
               className={`${constants.btnClass} rounded-full hover:bg-background`}
             >
               Cancel

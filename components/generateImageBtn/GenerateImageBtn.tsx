@@ -2,9 +2,9 @@
 
 import { Button } from "../ui/button";
 import constants from "@/lib/constants";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useSession } from "next-auth/react";
-import { SessionData } from "@/lib/interfaces";
+import { SelectedImage, SessionData } from "@/lib/interfaces";
 import { useAppProvider } from "@/lib/app-provider";
 import { onImageGenerate } from "@/lib/common";
 import { useRouter } from "next/navigation";
@@ -32,18 +32,25 @@ export default function GenerateImageBtn({
 
   async function onImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     setGlobalLoader(true);
-    const { data } = { ...(await onImageGenerate(e)) };
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const { data = null } = (await onImageGenerate(e)) as {
+      data: SelectedImage;
+    };
+
     if (data) {
       setSelectedImage(data);
       router.push("/generate");
-    } else
+    } else {
       toast({
         variant: "destructive",
-        description: "Oops Something went worng.",
+        description: "Oops! Something went wrong.",
       });
-    if (inputFileRef?.current) inputFileRef.current.value = "";
+    }
+
+    if (inputFileRef.current) inputFileRef.current.value = "";
     setGlobalLoader(false);
   }
+
   return (
     <>
       <Button
@@ -59,9 +66,10 @@ export default function GenerateImageBtn({
             <Image
               placeholder="blur"
               blurDataURL={constants.blurDataURL}
-              src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imageKey}`}
-              layout="fill"
-              objectFit="cover"
+              src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imagePath}`}
+              fill
+              sizes="100%"
+              style={{ objectFit: "cover" }}
               alt="profile pic"
               loading="lazy"
             />

@@ -65,7 +65,8 @@ export default function BannerSection() {
                     src="/images/banner-dp-png.png"
                     className=" pt-4"
                     style={{ objectFit: "contain", ...item.borderColor }}
-                    fill={true}
+                    fill
+                    sizes="100%"
                     loading="lazy"
                   />
                 </div>

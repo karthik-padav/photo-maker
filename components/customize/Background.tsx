@@ -22,28 +22,26 @@ export default function Background() {
 
   function handleColor(obj: { [key: string]: string }) {
     let _controlerValue = { ...controlerValue };
-    if (_controlerValue?.bgImage) {
-      _controlerValue.bgImage = "null";
-      _controlerValue.bgSize = "null";
+    if (_controlerValue?.backgroundImagePath) {
+      _controlerValue.backgroundImagePath = "";
+      _controlerValue.backgroundScale = "1`";
     }
     setControlerValue({
       ..._controlerValue,
-      backgroundColor: { type: obj.type, color: obj.color },
+      backgroundColorType: obj.type,
+      backgroundColor: obj.color,
     });
   }
 
   function handleBg(value: string) {
     let _controlerValue = { ...controlerValue };
-    if (_controlerValue?.backgroundColor)
-      _controlerValue.backgroundColor = null;
-    setControlerValue({
-      ..._controlerValue,
-      bgImage: value,
-      bgSize: controler.bgSize.attr.value,
-    });
+    if (_controlerValue?.backgroundColor) {
+      _controlerValue.backgroundColor = "";
+      _controlerValue.backgroundColorType = "";
+    }
+    setControlerValue({ ..._controlerValue, backgroundImagePath: value });
     setIsOpen(false);
   }
-
   return (
     <>
       <p className="pb-1">Background Image</p>
@@ -64,18 +62,25 @@ export default function Background() {
             </DrawerHeader>
             <ScrollArea className="h-[70vh] w-full p-4">
               <div className="grid grid-cols-3 md:grid-cols-8 gap-4">
+                <div
+                  className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer bg-white border-2 border-dashed border-[#9C92AC20]"
+                  onClick={() => handleBg("")}
+                >
+                  <p className="flex justify-center items-center">None</p>
+                </div>
                 {constants.pngBgCollections.map((item) => {
-                  if (item?.bgImage)
+                  if (item?.backgroundImagePath)
                     return (
                       <div
                         key={item.id}
                         className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer bg-white"
-                        onClick={() => handleBg(item.bgImage)}
+                        onClick={() => handleBg(item.backgroundImagePath)}
                       >
                         <Image
-                          src={item.bgImage}
-                          layout="fill"
-                          objectFit="cover"
+                          src={item.backgroundImagePath}
+                          fill
+                          sizes="100%"
+                          style={{ objectFit: "cover" }}
                           alt="profile pic"
                           loading="lazy"
                         />
@@ -89,30 +94,29 @@ export default function Background() {
         </DrawerContent>
       </Drawer>
 
-      {controlerValue?.bgImage &&
-        Object.keys(controler).map((key: string) => {
-          const data = controler[key];
-          return (
-            <div className="border-white drop-shadow-md pt-4" key={key}>
-              <p className="flex justify-between mb-1">
-                {data.label}
-                <span>
-                  {data?.attr?.value || 0}
-                  {data.valuePrefix}
-                </span>
-              </p>
-              <input
-                onChange={(e) =>
-                  setControlerValue({
-                    ...controlerValue,
-                    [key]: e.target.value,
-                  })
-                }
-                {...data.attr}
-              />
-            </div>
-          );
-        })}
+      {Object.keys(controler).map((key: string) => {
+        const data = controler[key];
+        return (
+          <div className="border-white drop-shadow-md pt-4" key={key}>
+            <p className="flex justify-between mb-1">
+              {data.label}
+              <span>
+                {data?.attr?.value || 0}
+                {data.valuePrefix}
+              </span>
+            </p>
+            <input
+              onChange={(e) =>
+                setControlerValue({
+                  ...controlerValue,
+                  [key]: e.target.value,
+                })
+              }
+              {...data.attr}
+            />
+          </div>
+        );
+      })}
       <ColorPicker cols="12" onClick={handleColor} />
     </>
   );

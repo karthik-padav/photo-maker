@@ -1,8 +1,6 @@
 import constants from "@/lib/constants";
-import { Zap } from "lucide-react";
-import Link from "next/link";
 import { Pipette } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { hexToRgb } from "@/lib/common";
 
 const colorList = [

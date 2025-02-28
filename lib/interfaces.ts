@@ -1,29 +1,25 @@
 export interface ControlerValue {
   border?: { title: string; value: string };
-  backgroundColor?: { type: string; color: string } | null;
   rotate?: number | string;
   scale?: number | string;
-  transform?: { x?: number; y?: number };
+  transformX?: number;
+  transformY?: number;
   pngShadow?: string;
   pngBorderColor?: string;
   outerBorderOpacity?: string;
   outerBorderWidth?: string;
   outerBorderColor?: string;
-  bgImage?: string;
-  bgSize?: string | number;
   imageWrapperSize?: number;
+  backgroundColor?: string;
+  backgroundColorType?: string;
+  backgroundRotate?: string;
+  backgroundImagePath?: string;
+  backgroundScale?: string;
 }
 
 export interface SelectedImage {
-  _id: string;
-  imageKey: string;
-  email: string;
-  bgImage?: string;
-}
-
-export interface BgPngImage {
-  id?: string;
-  bgImage?: string;
+  id: string;
+  imagePath: string;
 }
 
 export interface SessionData {
@@ -31,13 +27,13 @@ export interface SessionData {
 }
 
 export interface MyContoler {
-  _id: string;
+  id: string;
   controler: ControlerValue;
-  imageId: SelectedImage | null;
-  downloadedImageKey?: string;
+  image: SelectedImage;
+  downloadedImagePath?: string;
 }
 
 export interface User {
-  _id: string;
+  id: string;
   credit: number | string;
 }

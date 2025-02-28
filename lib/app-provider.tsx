@@ -46,7 +46,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       process.env.NEXT_PUBLIC_WEBSITE_CODE || "photoMaker"
     );
   if (storage) localStoredData = JSON.parse(storage);
-
   const [showLogin, setShowLogin] = useState<boolean>(defaultValue.showLogin);
   const [user, _setUser] = useState<User | null>(defaultValue.user);
   const [globalLoader, _setGlobalLoader] = useState<boolean>(
@@ -59,8 +58,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [controlerValue, _setControler] = useState<ControlerValue | null>(
     () => localStoredData?.controlerValue || defaultValue.controlerValue
   );
-  const { data: session } = useSession();
 
+  const { data: session } = useSession();
   useEffect(() => {
     async function init() {
       if (session?.user?.email && !user) {

@@ -1,12 +1,10 @@
 "use client";
 
-import { Image as LucideImage, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAppProvider } from "../../lib/app-provider";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef } from "react";
-import { uid } from "uid";
-import Image from "next/image";
+import { useRef } from "react";
 
 interface SessionData {
   user: { email: string; photos: string[] };

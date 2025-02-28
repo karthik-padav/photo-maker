@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 import Lottie from "lottie-react";
 import lottiefilesArrow from "@/assets/lottiefiles/arrow.json";
 import GenerateImageBtn from "../generateImageBtn";
@@ -13,11 +13,11 @@ export default function BannerSection() {
         <GenerateImageBtn
           className={`${constants.btnClass} rounded-full h-14 bg-violet-500 text-white`}
         />
-        {/* <Lottie
+        <Lottie
           animationData={lottiefilesArrow}
           loop={true}
           className="w-32 h-32 rotate-180 mt-10"
-        /> */}
+        />
       </div>
 
       <div className="flex justify-center">

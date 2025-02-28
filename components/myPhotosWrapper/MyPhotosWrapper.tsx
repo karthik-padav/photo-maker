@@ -3,7 +3,6 @@ import { useAppProvider } from "@/lib/app-provider";
 import constants from "@/lib/constants";
 import { deleteControler, deleteImage } from "@/lib/actions/services";
 import { ControlerValue, MyContoler, SelectedImage } from "@/lib/interfaces";
-import DownloadImage from "@/components/downloadImage";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -34,8 +33,7 @@ export default function MyPhotosWrapper({
   imageData: SelectedImage[];
 }) {
   const router = useRouter();
-  const { setSelectedImage, setControlerValue, selectedImage } =
-    useAppProvider();
+  const { setSelectedImage, setControlerValue } = useAppProvider();
   const [selectedId, toggleDialog] = useState<{
     id: string;
     tab: string;
@@ -216,7 +214,6 @@ export default function MyPhotosWrapper({
                   id,
                   downloadedImagePath,
                 } = i;
-                console.log(i, "i123132");
                 if (!downloadedImagePath) return null;
                 return (
                   <div key={index}>

@@ -2,7 +2,7 @@
 
 import { Button } from "../ui/button";
 import constants from "@/lib/constants";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useSession } from "next-auth/react";
 import { SelectedImage, SessionData } from "@/lib/interfaces";
 import { useAppProvider } from "@/lib/app-provider";
@@ -33,8 +33,9 @@ export default function GenerateImageBtn({
   async function onImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     setGlobalLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 0));
-
-    const { data } = (await onImageGenerate(e)) as { data: SelectedImage };
+    const { data = null } = (await onImageGenerate(e)) as {
+      data: SelectedImage;
+    };
 
     if (data) {
       setSelectedImage(data);

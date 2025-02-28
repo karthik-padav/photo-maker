@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -23,9 +22,10 @@ import constants from "@/lib/constants";
 import { signOut, useSession } from "next-auth/react";
 import { useAppProvider } from "@/lib/app-provider";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import coinImage from "@/assets/lottiefiles/coin.json";
 import Lottie from "lottie-react";
+import { Config, preload } from "@imgly/background-removal";
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -65,6 +65,17 @@ export default function Header() {
   const router = useRouter();
   const { toast } = useToast();
   const { data, status } = useSession();
+
+  useEffect(() => {
+    const config: Config = { device: "gpu" };
+    preload(config)
+      .then(() => {
+        console.log("Assets preloaded successfully");
+      })
+      .catch((error) => {
+        console.error("Error preloading assets:", error);
+      });
+  }, []);
 
   function renderList(isNav = false) {
     return (

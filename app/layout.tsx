@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -8,9 +6,9 @@ import { Inter as FontSans } from "next/font/google";
 
 import "./globals.css";
 
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { config } from "@fortawesome/fontawesome-svg-core";
-config.autoAddCss = false;
+// import "@fortawesome/fontawesome-svg-core/styles.css";
+// import { config } from "@fortawesome/fontawesome-svg-core";
+// config.autoAddCss = false;
 
 import { ThemeProvider } from "@/lib/theme-provider";
 import { cn } from "@/lib/utils";
@@ -45,6 +43,7 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   const { data: websiteDate } = await getWebsiteData();
+
   return (
     <html lang="en">
       <body
@@ -91,8 +90,6 @@ gtag('config', ${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS})`}
               <GlobalLoader />
             </ThemeProvider>
           </AppProvider>
-          <Analytics />
-          <SpeedInsights />
         </SessionProvider>
       </body>
     </html>

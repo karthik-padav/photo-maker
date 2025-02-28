@@ -22,11 +22,6 @@ export interface SelectedImage {
   imagePath: string;
 }
 
-// export interface BgPngImage {
-//   id?: string;
-//   backgroundImagePath?: string;
-// }
-
 export interface SessionData {
   user: { email: string; photos: string[] };
 }

@@ -1,34 +1,9 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import DownloadImage from "../downloadImage";
 import { borderControlers } from "@/lib/common";
 import { useAppProvider } from "../../lib/app-provider";
-import constants from "@/lib/constants";
-import { ScrollArea } from "../ui/scroll-area";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Button } from "../ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ControlerValue } from "@/lib/interfaces";
 import ColorPicker from "../colorPicker";
 
 export default function Border() {
-  const { setSelectedImage, selectedImage, controlerValue, setControlerValue } =
-    useAppProvider();
+  const { controlerValue, setControlerValue } = useAppProvider();
 
   const controler: any = borderControlers(controlerValue);
 

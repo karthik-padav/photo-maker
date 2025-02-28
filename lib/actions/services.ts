@@ -25,7 +25,6 @@ export async function createControler(body: Params) {
     outerBorderColor,
     imageWrapperSize,
     imageId,
-
     backgroundColor,
     backgroundColorType,
     backgroundRotate,
@@ -53,7 +52,6 @@ export async function createControler(body: Params) {
       : {}),
     ...(transformX && transformY ? { transformX, transformY } : {}),
   };
-  console.log(payload, "payload123");
   formData.append("file", blob);
   formData.append("data", JSON.stringify(payload));
 

@@ -12,6 +12,13 @@ import { useAppProvider } from "../../lib/app-provider";
 import { ControlerValue, SelectedImage } from "@/lib/interfaces";
 import Draggable from "react-draggable";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  DndContext,
+  useDraggable,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from "@dnd-kit/core";
 
 interface Params {
   image: SelectedImage;
@@ -57,20 +64,42 @@ export default function DownloadImage({
     [controler]
   );
 
-  const handleDrop = useCallback(
-    (e: any, ui: { x: number; y: number }) => {
-      setControlerValue({
-        ...controler,
-        transformX: imageWrapperRef?.current?.offsetWidth
-          ? calcPercentage(imageWrapperRef.current.offsetWidth, ui.x)
-          : 0,
-        transformY: imageWrapperRef?.current?.offsetWidth
-          ? calcPercentage(imageWrapperRef.current.offsetWidth, ui.y)
-          : 0,
-      });
-    },
-    [setControlerValue]
-  );
+  function DragDropDemo() {
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+      id: "draggable-box",
+    });
+
+    const x =
+      (transform?.x || 0) +
+      calcPx(controler?.imageWrapperSize || 0, controler?.transformX || 0);
+    const y =
+      (transform?.y || 0) +
+      calcPx(controler?.imageWrapperSize || 0, controler?.transformY || 0);
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={{ transform: `translate3d(${x}px, ${y}px, 0)` }}
+        {...listeners}
+        {...attributes}
+        className="relative h-full w-full"
+      >
+        {/* <div className="absolute inset-0 z-50" /> */}
+        <Image
+          className="z-40"
+          style={{ objectFit: "contain", ...imageStyle }}
+          // placeholder="blur"
+          // blurDataURL={constants.blurDataURL}
+          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`}
+          fill
+          sizes="100%"
+          alt={`Editable image: ${image.imagePath}`}
+          loading="lazy"
+          onLoad={() => handleImageLoad("mainImage")}
+        />
+      </div>
+    );
+  }
 
   const borderRadius = controler?.border?.value ? controler.border.value : "";
 
@@ -125,47 +154,30 @@ export default function DownloadImage({
           <div
             className={`_imageWrapper absolute inset-0 z-50 ${borderRadius}`}
           >
-            <Draggable
-              disabled={disabled}
-              defaultPosition={{
-                x: controler?.transformX
-                  ? calcPx(
-                      controler.imageWrapperSize,
-                      Number(controler.transformX)
-                    )
-                  : 0,
-                y: controler?.transformY
-                  ? calcPx(
-                      controler.imageWrapperSize,
-                      Number(controler.transformY)
-                    )
-                  : 0,
-              }}
-              onStop={handleDrop}
-              bounds={{
-                top: -(controler.imageWrapperSize - 462 * 0.3),
-                left: -(controler.imageWrapperSize - 462 * 0.3),
-                right: controler.imageWrapperSize - 462 * 0.3,
-                bottom: controler.imageWrapperSize - 462 * 0.3,
+            <DndContext
+              onDragEnd={(event) => {
+                setControlerValue({
+                  transformX: calcPercentage(
+                    controler?.imageWrapperSize || 0,
+                    calcPx(
+                      controler?.imageWrapperSize || 0,
+                      controler?.transformX || 0
+                    ) + event.delta.x
+                  ),
+                  transformY: calcPercentage(
+                    controler?.imageWrapperSize || 0,
+                    calcPx(
+                      controler?.imageWrapperSize || 0,
+                      controler?.transformY || 0
+                    ) + event.delta.y
+                  ),
+                });
               }}
             >
-              <div className="relative h-full w-full">
-                <div className="absolute inset-0 z-50" />
-                <Image
-                  className="z-40"
-                  style={{ objectFit: "contain", ...imageStyle }}
-                  placeholder="blur"
-                  blurDataURL={constants.blurDataURL}
-                  src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`}
-                  fill
-                  sizes="100%"
-                  alt={`Editable image: ${image.imagePath}`}
-                  quality={100}
-                  loading="lazy"
-                  onLoad={() => handleImageLoad("mainImage")}
-                />
+              <div className="relative w-full h-full">
+                <DragDropDemo />
               </div>
-            </Draggable>
+            </DndContext>
           </div>
         </>
       )}

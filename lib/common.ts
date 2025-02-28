@@ -1,9 +1,6 @@
-import axios from "axios";
 import { ControlerValue } from "./interfaces";
 import { toPng } from "html-to-image";
 import { generateImage } from "./actions/services";
-import { uid } from "uid";
-import { removeBackground } from "@imgly/background-removal";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -193,23 +190,35 @@ export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
   if (!file) return null;
 
   return new Promise((resolve) => {
-    const worker = new Worker(
-      new URL("../workers/removeBackgroundWorker.js", import.meta.url)
-    );
+    const reader = new FileReader();
+    reader.onload = async () => {
+      if (!reader.result) return;
 
-    worker.postMessage(file);
+      const arrayBuffer = reader.result as ArrayBuffer;
+      const uint8Array = new Uint8Array(arrayBuffer); // ✅ Convert to Uint8Array
 
-    worker.onmessage = async (event) => {
-      if (event.data.success) {
-        const blob = event.data.blob;
-        const imageData = await generateImage({ blob, fileName: file.name });
-        resolve(imageData);
-      } else {
-        console.error("Background removal error:", event.data.error);
-        resolve(null);
-      }
-      worker.terminate();
+      const worker = new Worker(
+        new URL("@/workers/backgroundWorker.ts", import.meta.url),
+        { type: "module" }
+      );
+
+      worker.postMessage({ imageData: uint8Array }); // ✅ Send Uint8Array
+
+      worker.onmessage = async (message) => {
+        if (message.data.success) {
+          // const blob = URL.createObjectURL(message.data.blob);
+          const blob = message.data.blob;
+          const imageData = await generateImage({ blob, fileName: file.name });
+          resolve(imageData);
+        } else {
+          console.error("Background removal failed:", message.data.error);
+          resolve(null);
+        }
+        worker.terminate();
+      };
     };
+
+    reader.readAsArrayBuffer(file); // ✅ Read file as ArrayBuffer
   });
 }
 

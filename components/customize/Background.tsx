@@ -39,14 +39,9 @@ export default function Background() {
       _controlerValue.backgroundColor = "";
       _controlerValue.backgroundColorType = "";
     }
-    setControlerValue({
-      ..._controlerValue,
-      backgroundImagePath: value,
-      // backgroundScale: controler.bgSize.attr.value,
-    });
+    setControlerValue({ ..._controlerValue, backgroundImagePath: value });
     setIsOpen(false);
   }
-  console.log(controlerValue, "controlerValue123");
   return (
     <>
       <p className="pb-1">Background Image</p>

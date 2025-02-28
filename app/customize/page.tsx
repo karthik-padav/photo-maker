@@ -89,6 +89,10 @@ export default function Customize() {
     });
   }, [selectedImage, controlerValue, user]);
 
+  const borderRadius = controlerValue?.border?.value
+    ? controlerValue.border.value
+    : "";
+
   return (
     <main className="text-black container mx-auto">
       <div className="mb-12 flex flex-wrap gap-2">
@@ -124,8 +128,12 @@ export default function Customize() {
           {activeTab === "BORDER" && <Border />}
           {activeTab === "BACKGROUND" && <Background />}
         </div>
-        <div className="col-span-12 md:col-span-6 bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl p-4 md:p-8 bg-background flex justify-center items-center">
-          <div className="w-full aspect-w-1 aspect-h-1 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25] relative">
+        <div
+          className={`col-span-12 md:col-span-6 bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl p-4 md:p-8 bg-background flex justify-center items-center`}
+        >
+          <div
+            className={`w-full aspect-w-1 aspect-h-1 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25] relative ${borderRadius}`}
+          >
             <div ref={imageWrapperRef} className="w-full h-full">
               {selectedImage && (
                 <DownloadImage

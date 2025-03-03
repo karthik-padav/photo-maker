@@ -1,6 +1,7 @@
 import { ControlerValue } from "./interfaces";
 import { toPng } from "html-to-image";
 import { generateImage } from "./actions/services";
+import { client } from "@gradio/client";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -185,6 +186,25 @@ export const onDownload = (
     .catch(console.log);
 };
 
+export async function onHfImageGenerate(
+  e: React.ChangeEvent<HTMLInputElement>
+) {
+  const file = e?.target?.files?.[0];
+
+  const app = await client("https://briaai-bria-rmbg-1-4.hf.space/");
+  const result = (await app.predict("/predict", [file])) as {
+    data: { path: string };
+  };
+  console.log(result, "result123123");
+  if (result?.data?.[0]?.path) {
+    const response = await fetch(
+      `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`
+    );
+    return await response.blob();
+  }
+  return;
+}
+
 export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
   const file = e?.target?.files?.[0];
   if (!file) return null;
@@ -195,21 +215,19 @@ export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
       if (!reader.result) return;
 
       const arrayBuffer = reader.result as ArrayBuffer;
-      const uint8Array = new Uint8Array(arrayBuffer); // ✅ Convert to Uint8Array
+      const uint8Array = new Uint8Array(arrayBuffer);
 
       const worker = new Worker(
         new URL("@/workers/backgroundWorker.ts", import.meta.url),
         { type: "module" }
       );
 
-      worker.postMessage({ imageData: uint8Array }); // ✅ Send Uint8Array
+      worker.postMessage({ imageData: uint8Array });
 
       worker.onmessage = async (message) => {
         if (message.data.success) {
-          // const blob = URL.createObjectURL(message.data.blob);
           const blob = message.data.blob;
-          const imageData = await generateImage({ blob, fileName: file.name });
-          resolve(imageData);
+          resolve(blob);
         } else {
           console.error("Background removal failed:", message.data.error);
           resolve(null);

@@ -6,10 +6,11 @@ import { useRef } from "react";
 import { useSession } from "next-auth/react";
 import { SelectedImage, SessionData } from "@/lib/interfaces";
 import { useAppProvider } from "@/lib/app-provider";
-import { onImageGenerate } from "@/lib/common";
+import { onHfImageGenerate } from "@/lib/common";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
+import { generateImage } from "@/lib/actions/services";
 
 export default function GenerateImageBtn({
   className = constants.btnClass,
@@ -31,9 +32,19 @@ export default function GenerateImageBtn({
   const { toast } = useToast();
 
   async function onImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e?.target?.files?.[0];
+
+    if (!file) return;
+
     setGlobalLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    const { data = null } = (await onImageGenerate(e)) as {
+    const blob = (await onHfImageGenerate(e)) as Blob;
+
+    // const blob = (await onImageGenerate(e)) as Blob;
+
+    const { data = null } = (await generateImage({
+      blob,
+      fileName: file.name,
+    })) as {
       data: SelectedImage;
     };
 

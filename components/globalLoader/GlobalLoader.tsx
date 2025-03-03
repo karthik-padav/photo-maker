@@ -9,8 +9,12 @@ export default function GlobalLoader() {
   if (globalLoader)
     return (
       <div className="flex justify-center items-center fixed top-0 bottom-0 right-0 left-0 bg-neutral-950/90">
-        <div className="md:w-2/12 w-full max-w-full text-center text-white">
-          <Lottie animationData={lottiefilesLoader} loop={true} className="" />
+        <div className="text-center text-white p-2">
+          <Lottie
+            animationData={lottiefilesLoader}
+            loop={true}
+            className="w-52 m-auto"
+          />
           <p>We&apos;re generating your image...</p>
           <p>This may take a few minutes. Thanks for your patience!</p>
         </div>

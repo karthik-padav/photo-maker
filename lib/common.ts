@@ -1,6 +1,5 @@
 import { ControlerValue } from "./interfaces";
 import { toPng } from "html-to-image";
-import { generateImage } from "./actions/services";
 import { client } from "@gradio/client";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
@@ -185,6 +184,17 @@ export const onDownload = (
     })
     .catch(console.log);
 };
+
+export function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 export async function onHfImageGenerate(
   e: React.ChangeEvent<HTMLInputElement>

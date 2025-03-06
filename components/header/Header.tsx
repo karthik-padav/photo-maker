@@ -64,18 +64,17 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
-  const { data, status } = useSession();
 
-  useEffect(() => {
-    const config: Config = { device: "gpu" };
-    preload(config)
-      .then(() => {
-        console.log("Assets preloaded successfully");
-      })
-      .catch((error) => {
-        console.error("Error preloading assets:", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   const config: Config = { device: "gpu" };
+  //   preload(config)
+  //     .then(() => {
+  //       console.log("Assets preloaded successfully");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error preloading assets:", error);
+  //     });
+  // }, []);
 
   function renderList(isNav = false) {
     return (
@@ -92,7 +91,10 @@ export default function Header() {
             }
           })
           .map((item) => (
-            <div key={item.code} className={isNav ? "" : `inline-block`}>
+            <div
+              key={item.code}
+              className={isNav ? "border-b px-2 py-1" : `inline-block`}
+            >
               {item?.requireSelectedImage ? (
                 <Button
                   variant="ghost"
@@ -140,7 +142,7 @@ export default function Header() {
           >
             <Camera className="mr-2 text-violet-500" />
             <h1 className="text-base-content text-lg font-bold">
-              {process.env.NEXT_PUBLIC_WEBSITE_NAME}
+              {process.env.NEXT_PUBLIC_LOGO_NAME}
             </h1>
           </Link>
           <div className="flex items-center">
@@ -192,7 +194,7 @@ export default function Header() {
                       <p className="text-md">{session.user.name}</p>
                       <p className="text-xs">{session.user.email}</p>
                     </div>
-                    <hr className="my-2" />
+                    <hr className="my-2 border border-slate-200 dark:border-gray-800" />
                   </>
                 )}
                 <>
@@ -207,7 +209,7 @@ export default function Header() {
                     </DropdownMenuItem>
                   ))}
                 </>
-                <hr className="my-2" />
+                <hr className="my-2 border border-slate-200 dark:border-gray-800" />
                 <>
                   {session ? (
                     <>
@@ -237,7 +239,7 @@ export default function Header() {
           </div>
         </div>
         {navbarOpen && (
-          <nav className="text-base justify-center md:hidden font-semibold p-6 text-gray-600 dark:text-gray-300">
+          <nav className="mt-4 text-base justify-center md:hidden font-semibold text-gray-600 dark:text-gray-300 border-t border-x border-slate-200 dark:border-gray-800">
             {renderList(true)}
           </nav>
         )}

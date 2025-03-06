@@ -4,7 +4,7 @@ import { Image as LImage, Square } from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
 import { useSession } from "next-auth/react";
 import { useRef, useState, useCallback } from "react";
-import { onDownload } from "@/lib/common";
+import { downloadBlob, onDownload } from "@/lib/common";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ import MyPhotoControler from "@/components/customize/MyPhotoControler";
 import Border from "@/components/customize/Border";
 import Background from "@/components/customize/Background";
 import EditBar from "@/components/editBar";
+import { uid } from "uid";
+import { LoaderCircle } from "lucide-react";
 
 const MENU_ITEMS = [
   {
@@ -64,10 +66,11 @@ export default function Customize() {
   const imageWrapperRef = useRef(null);
   const [activeTab, setActiveTab] = useState("MY_PHOTO");
   const [showDialog, setShowDialog] = useState(false);
+  const [isloading, setLoader] = useState(false);
 
   if (!selectedImage || !session?.data) router.push("/");
 
-  const downloadImage = useCallback(async () => {
+  async function downloadImage() {
     const ENABLE_PAYMENT = process.env.NEXT_PUBLIC_ENABLE_PAYMENT === "true";
     const credit = process.env.NEXT_PUBLIC_PRICE_PER_DOWNLOAD
       ? parseInt(process.env.NEXT_PUBLIC_PRICE_PER_DOWNLOAD)
@@ -79,15 +82,22 @@ export default function Customize() {
     }
 
     await onDownload(imageWrapperRef.current, async (blob) => {
+      setLoader(true);
       if (selectedImage?.id && blob && controlerValue) {
-        await createControler({
+        const { data } = await createControler({
           controler: controlerValue,
           imageId: selectedImage.id,
           blob,
         });
+        if (data)
+          downloadBlob(
+            blob,
+            `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}.png`
+          );
       }
+      setLoader(false);
     });
-  }, [selectedImage, controlerValue, user]);
+  }
 
   const borderRadius = controlerValue?.border?.value
     ? controlerValue.border.value
@@ -99,13 +109,19 @@ export default function Customize() {
         <EditBar />
         <Button
           variant="ghost"
+          disabled={isloading}
           onClick={downloadImage}
           className={`${constants.btnClass} rounded-full mr-4`}
         >
-          Download
+          {isloading && (
+            <span className="absolute top-0 bottom-0 left-o right-0 w-full flex justify-center items-center">
+              <LoaderCircle className="animate-spin" />
+            </span>
+          )}
+          <span className={`${isloading ? "opacity-0" : ""}`}>Download</span>
         </Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pb-6">
         <div className="col-span-12 md:col-span-2 rounded-md">
           {MENU_ITEMS.map(({ label, code, icon }) => (
             <Button

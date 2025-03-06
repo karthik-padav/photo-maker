@@ -57,7 +57,7 @@ export default function ColorPicker({
                 {item.type === "bg" && (
                   <>
                     <div
-                      className="rounded-full aspect-w-1 aspect-h-1 cursor-pointer border border-slate-200"
+                      className="rounded-full aspect-w-1 aspect-h-1 cursor-pointer border border-slate-200 dark:border-gray-800"
                       onClick={() => colorInput.current?.click()}
                     >
                       <div className="flex justify-center items-center h-full w-full">

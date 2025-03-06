@@ -51,7 +51,7 @@ export default function Generate() {
                     }}
                   >
                     <div
-                      className={`w-full h-full border-white border-4 drop-shadow-2xl overflow-hidden ${borderRadius}`}
+                      className={`w-full h-full border-white dark:border-gray-800 border-4 drop-shadow-2xl overflow-hidden ${borderRadius}`}
                     >
                       <Image
                         className="z-40"
@@ -92,10 +92,6 @@ export default function Generate() {
           </div>
         </>
       )}
-      {/* <ColorPicker
-        customImage={customImage}
-        onClose={() => setCustomImage(null)}
-      /> */}
     </main>
   );
 }

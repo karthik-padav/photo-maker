@@ -23,18 +23,39 @@ import constants from "@/lib/constants";
 import Script from "next/script";
 import GlobalLoader from "@/components/globalLoader";
 import { getWebsiteData } from "@/lib/actions/services";
+import Analytics from "@/components/Analytics";
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
   description: constants.landingPage.subtitle,
+  keywords: "photo editing, background remover, image editor, customize images",
+  openGraph: {
+    title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+    description: constants.landingPage.subtitle,
+    url: process.env.NEXT_PUBLIC_WEBSITE_URL,
+    siteName: process.env.NEXT_PUBLIC_WEBSITE_NAME,
+    images: [
+      {
+        url: "https://yourwebsite.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Photo Maker",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+    description: constants.landingPage.subtitle,
+    images: ["https://yourwebsite.com/og-image.jpg"],
+  },
 };
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default async function RootLayout({
   children,
@@ -52,20 +73,26 @@ export default async function RootLayout({
           fontSans.variable
         )}
       >
-        {process?.env?.GOOGLE_ANALYTICS && (
+        {process?.env?.NEXT_PUBLIC_GA_TRACKING_ID && (
           <>
             <Script
-              id="gtm-script"
               strategy="afterInteractive"
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_TRACKING_ID}`}
             />
-            <Script id="gtm-script-2">
-              {`  window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-
-gtag('config', ${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS})`}
-            </Script>
+            <Script
+              id="google-analytics"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){window.dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_TRACKING_ID}', {
+                page_path: window.location.pathname,
+              });
+            `,
+              }}
+            />
           </>
         )}
         <SessionProvider session={session}>
@@ -77,6 +104,7 @@ gtag('config', ${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS})`}
               disableTransitionOnChange
             >
               <Toaster />
+              <Analytics />
               <div className="flex flex-col justify-between min-h-screen">
                 <div className="flex-none">
                   <Header />

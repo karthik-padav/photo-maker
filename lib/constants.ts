@@ -39,7 +39,8 @@ const constants = {
       icon: Github,
     },
   ],
-  footerLegalList: [
+  footerCompanyList: [
+    { code: "ABOUT US", title: "About Us", href: "/about-us" },
     {
       code: "TERMS_AND_CONDITIONS",
       title: "Terms And Conditions",
@@ -53,32 +54,59 @@ const constants = {
   ],
   landingPage: {
     login_title: `Join ${process.env.NEXT_PUBLIC_WEBSITE_NAME} To Create Stunning Logo In Seconds`,
-    title: "Just AI profile picture maker",
-    subtitle: "Upload your photo and get an eye-catching profile picture!",
-    detailed_desc: [
-      "Simple to create and personalize.",
-      "Design a stunning logo in minutes.",
-      `Effortless logo creation with ${process.env.NEXT_PUBLIC_WEBSITE_NAME}.`,
-      "Obtain a high-quality logo for download and use on websites, social media, print, and branding.",
-    ],
-    howItWorks: [
-      {
-        title: "Select or Upload an Icon",
-        desc: "Begin by selecting a pre-designed icon from our extensive library or upload your own unique SVG.",
-      },
-      {
-        title: "Customize Your Design",
-        desc: "Use our easy-to-use tools to resize your icon, add colors, and apply background gradients to create a personalized logo.",
-      },
-      {
-        title: "Preview Your Logo",
-        desc: "Instantly see how your logo looks with our real-time preview feature, ensuring you get the perfect design.",
-      },
-      {
-        title: "Download Your Logo",
-        desc: "Once you're happy with your design, download your logo in high-quality SVG or PNG formats, ready for use across all platforms.",
-      },
-    ],
+    title: "AI-Powered Profile Picture Maker",
+    subtitle:
+      "Remove Background, Edit, and Customize Your Profile Picture in Seconds!",
+    whyOurWebsite: {
+      heading: `Why ${process.env.NEXT_PUBLIC_WEBSITE_NAME}?`,
+      list: [
+        {
+          title: "AI Background Removal",
+          desc: "Instantly erase backgrounds with precision.",
+        },
+        {
+          title: "Custom Backgrounds",
+          desc: "Choose from solid colors, gradients, and templates to match your style.",
+        },
+        {
+          title: "Outline & Borders",
+          desc: "Add creative glowing, colored, or gradient outlines to highlight your image.",
+        },
+        {
+          title: "Rotate & Scale",
+          desc: "Adjust your photo size and angle for the perfect fit.",
+        },
+        {
+          title: "High-Quality Download",
+          desc: "Get HD profile pictures for any platform.",
+        },
+      ],
+    },
+    howItWorks: {
+      heading: `How it works`,
+      list: [
+        {
+          title: "Upload Your Image",
+          desc: "Drag and drop or select an image to start editing.",
+        },
+        {
+          title: "Remove Background",
+          desc: "Our AI automatically removes the background in seconds.",
+        },
+        {
+          title: "Customize Your Profile Picture",
+          desc: "Apply borders, outlines, colors, and backgrounds to match your aesthetic.",
+        },
+        {
+          title: "Enhance & Adjust",
+          desc: "Rotate, scale, and fine-tune your image for the perfect look.",
+        },
+        {
+          title: "Download & Share",
+          desc: "Save your new profile picture in high resolution and use it anywhere!",
+        },
+      ],
+    },
     detailedList: [
       {
         title: "Simple to create and personalize",
@@ -312,13 +340,11 @@ const constants = {
       color: "linear-gradient(to right, rgb(20, 30, 48), rgb(36, 59, 85))",
     },
   ],
-
   borders: [
     { title: "Round", value: "rounded-full" },
     { title: "Rounded Corners", value: "rounded-3xl" },
     { title: "Square", value: "rounded-xl" },
   ],
-
   solidColorCollection: [
     { id: uid(16), color: "rgb(255, 255, 255)" },
     { id: uid(16), color: "rgb(195, 200, 215)" },
@@ -336,7 +362,6 @@ const constants = {
     { id: uid(16), color: "rgb(63, 43, 150)" },
     { id: uid(16), color: "rgb(205, 90, 236)" },
   ],
-
   pngBgCollections: [
     {
       id: uid(16),
@@ -396,6 +421,178 @@ const constants = {
     { id: uid(16), backgroundImagePath: "/images/bg/41.jpg" },
     { id: uid(16), backgroundImagePath: "/images/bg/42.jpg" },
     { id: uid(16), backgroundImagePath: "/images/bg/43.jpg" },
+  ],
+  careers: [
+    {
+      jobTitle: "Frontend Developer (React.js)",
+      jobLocation: "Remote",
+      skills: ["React.js", "JavaScript", "HTML", "CSS", "Redux", "Next.js"],
+      experience: "3-6 years",
+      responsibilities: [
+        "Develop and maintain high-performance web applications using React.js.",
+        "Collaborate with designers and backend developers to create seamless user experiences.",
+        "Optimize applications for maximum speed and scalability.",
+        "Ensure the technical feasibility of UI/UX designs.",
+        "Write clean, modular, and reusable code.",
+        "Stay up-to-date with the latest frontend technologies.",
+        "Troubleshoot and debug issues to improve application performance.",
+      ],
+      requirements: [
+        "Proven experience as a React.js Developer.",
+        "Strong knowledge of JavaScript, HTML, and CSS.",
+        "Familiarity with RESTful APIs and state management (Redux).",
+        "Experience with Next.js and SSR is a plus.",
+        "Understanding of responsive design and cross-browser compatibility.",
+        "Strong problem-solving skills and attention to detail.",
+        "Excellent communication and teamwork skills.",
+      ],
+    },
+    {
+      jobTitle: "Backend Developer (Node.js)",
+      jobLocation: "Remote",
+      skills: ["Node.js", "Express.js", "MongoDB", "SQL", "REST API", "Docker"],
+      experience: "4-8 years",
+      responsibilities: [
+        "Develop and maintain scalable backend services using Node.js.",
+        "Design and implement RESTful APIs for frontend consumption.",
+        "Optimize database queries for performance and reliability.",
+        "Ensure security best practices in backend development.",
+        "Write unit tests and perform code reviews.",
+        "Collaborate with frontend teams to integrate APIs seamlessly.",
+        "Monitor system performance and troubleshoot issues.",
+      ],
+      requirements: [
+        "Proven experience as a Node.js Developer.",
+        "Strong knowledge of JavaScript, Express.js, and database management.",
+        "Experience working with both SQL and NoSQL databases.",
+        "Familiarity with authentication and authorization protocols.",
+        "Knowledge of containerization tools like Docker.",
+        "Ability to optimize APIs for speed and efficiency.",
+        "Good communication and problem-solving skills.",
+      ],
+    },
+    {
+      jobTitle: "Full Stack Developer (MERN Stack)",
+      jobLocation: "Remote",
+      skills: [
+        "MongoDB",
+        "Express.js",
+        "React.js",
+        "Node.js",
+        "TypeScript",
+        "GraphQL",
+      ],
+      experience: "3-7 years",
+      responsibilities: [
+        "Develop, test, and maintain full-stack web applications.",
+        "Collaborate with frontend and backend teams to ensure smooth development.",
+        "Design and implement REST and GraphQL APIs.",
+        "Ensure responsiveness and cross-platform compatibility.",
+        "Write unit and integration tests for reliability.",
+        "Stay updated with the latest technologies in MERN stack.",
+        "Troubleshoot and resolve technical issues efficiently.",
+      ],
+      requirements: [
+        "Proven experience with MERN stack development.",
+        "Strong knowledge of JavaScript, TypeScript, and React.js.",
+        "Experience with MongoDB and SQL databases.",
+        "Familiarity with GraphQL and REST APIs.",
+        "Ability to write clean, scalable, and well-documented code.",
+        "Understanding of cloud platforms like AWS or Firebase.",
+        "Excellent analytical and problem-solving skills.",
+      ],
+    },
+    {
+      jobTitle: "UI/UX Designer",
+      jobLocation: "Remote",
+      skills: [
+        "Figma",
+        "Adobe XD",
+        "Sketch",
+        "Wireframing",
+        "User Research",
+        "Prototyping",
+      ],
+      experience: "2-5 years",
+      responsibilities: [
+        "Create wireframes, prototypes, and high-fidelity designs for web and mobile applications.",
+        "Collaborate with developers to ensure accurate design implementation.",
+        "Conduct user research to understand pain points and improve UX.",
+        "Develop and maintain design systems for consistency.",
+        "Optimize user flows and interactions for better engagement.",
+        "Stay updated with the latest design trends and technologies.",
+        "Test UI components for usability and accessibility.",
+      ],
+      requirements: [
+        "Proven experience as a UI/UX Designer.",
+        "Proficiency in design tools like Figma, Adobe XD, or Sketch.",
+        "Understanding of user research methodologies.",
+        "Knowledge of frontend development (HTML, CSS, JavaScript) is a plus.",
+        "Ability to create responsive and accessible designs.",
+        "Strong attention to detail and problem-solving skills.",
+        "Excellent communication and teamwork skills.",
+      ],
+    },
+    {
+      jobTitle: "Digital Marketing Specialist",
+      jobLocation: "Remote",
+      skills: [
+        "SEO",
+        "Google Ads",
+        "Social Media Marketing",
+        "Email Marketing",
+        "Content Strategy",
+      ],
+      experience: "3-6 years",
+      responsibilities: [
+        "Develop and execute digital marketing campaigns across multiple channels.",
+        "Optimize website content for SEO and improve search rankings.",
+        "Manage and monitor social media accounts and engagement.",
+        "Analyze data to measure performance and optimize marketing strategies.",
+        "Run paid advertising campaigns on Google Ads and social media.",
+        "Collaborate with content teams to create compelling marketing materials.",
+        "Stay updated with digital marketing trends and best practices.",
+      ],
+      requirements: [
+        "Proven experience in digital marketing and SEO.",
+        "Familiarity with Google Analytics, Google Ads, and Facebook Ads.",
+        "Strong understanding of content marketing strategies.",
+        "Ability to analyze data and optimize campaigns accordingly.",
+        "Experience in email marketing and automation tools.",
+        "Creative mindset with strong attention to detail.",
+        "Excellent communication and project management skills.",
+      ],
+    },
+    {
+      jobTitle: "Customer Support Specialist",
+      jobLocation: "Remote",
+      skills: [
+        "Customer Service",
+        "Communication",
+        "Zendesk",
+        "Live Chat Support",
+        "Problem Solving",
+      ],
+      experience: "2-5 years",
+      responsibilities: [
+        "Respond to customer inquiries via chat, email, and phone.",
+        "Resolve customer issues efficiently and professionally.",
+        "Work closely with technical teams to troubleshoot problems.",
+        "Maintain records of customer interactions and resolutions.",
+        "Assist in developing FAQs and knowledge base articles.",
+        "Identify recurring issues and suggest improvements.",
+        "Ensure customer satisfaction and maintain brand reputation.",
+      ],
+      requirements: [
+        "Previous experience in a customer support role.",
+        "Excellent verbal and written communication skills.",
+        "Ability to multitask and prioritize work effectively.",
+        "Familiarity with support tools like Zendesk or Freshdesk.",
+        "Strong problem-solving skills and patience.",
+        "Ability to work in a fast-paced environment.",
+        "Team player with a customer-centric approach.",
+      ],
+    },
   ],
 };
 export default constants;

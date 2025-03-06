@@ -133,7 +133,7 @@ export default function MyPhotosWrapper({
                 <div key={i.id}>
                   <div className="aspect-w-1 aspect-h-1">
                     <div
-                      className={`border-white w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
+                      className={`border-white dark:border-gray-800 w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
                     >
                       <Image
                         placeholder="blur"
@@ -219,7 +219,7 @@ export default function MyPhotosWrapper({
                   <div key={index}>
                     <div className="aspect-w-1 aspect-h-1">
                       <div
-                        className={`border-white w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
+                        className={`border-white dark:border-gray-800 w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
                       >
                         <Image
                           placeholder="blur"

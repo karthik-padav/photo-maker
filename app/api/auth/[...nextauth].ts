@@ -71,19 +71,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   adapter: PrismaAdapter(prisma),
-  // events: {
-  // async createUser({ user }) {
-  // const existingUser = await prisma.user.findUnique({
-  //   where: { email: user.email },
-  //   select: { credit: true },
-  // });
-  // if (existingUser?.credit === null || existingUser?.credit === undefined) {
-  //   await prisma.user.update({
-  //     where: { email: user.email },
-  //     data: { credit: 100, active: true },
-  //   });
-  // }
-  // },
-  // },
   secret: process.env.NEXT_AUTH_SECRET,
 });

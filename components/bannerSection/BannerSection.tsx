@@ -34,8 +34,7 @@ export default function BannerSection() {
                     src={`/images/${i}.png`}
                     style={{ objectFit: "contain" }}
                     fill
-                    sizes="100%"
-                    loading="lazy"
+                    sizes="100vw"
                   />
                 </div>
               </div>

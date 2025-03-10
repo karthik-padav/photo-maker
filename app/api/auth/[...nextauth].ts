@@ -66,24 +66,43 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   callbacks: {
+    async signIn({ account, profile, user }) {
+      if (!user.email) return false; // Prevent accounts without emails
+
+      // Check if a user with the same email exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: user.email },
+        include: { accounts: true },
+      });
+
+      if (existingUser) {
+        // Check if this provider is already linked
+        const providerExists = existingUser.accounts.some(
+          (acc) => account && acc.provider === account.provider
+        );
+
+        if (!providerExists) {
+          // Link the new provider to the existing user
+          await prisma.account.create({
+            data: {
+              userId: existingUser.id,
+              provider: account?.provider || "",
+              providerAccountId: account?.providerAccountId || "",
+              type: "oauth", // Add the missing 'type' property
+            },
+          });
+        }
+
+        return true;
+      } else {
+        // Create a new user if no existing user is found
+        return true;
+      }
+    },
     async session({ session }) {
       return session;
     },
   },
   adapter: PrismaAdapter(prisma),
-  // events: {
-  // async createUser({ user }) {
-  // const existingUser = await prisma.user.findUnique({
-  //   where: { email: user.email },
-  //   select: { credit: true },
-  // });
-  // if (existingUser?.credit === null || existingUser?.credit === undefined) {
-  //   await prisma.user.update({
-  //     where: { email: user.email },
-  //     data: { credit: 100, active: true },
-  //   });
-  // }
-  // },
-  // },
   secret: process.env.NEXT_AUTH_SECRET,
 });

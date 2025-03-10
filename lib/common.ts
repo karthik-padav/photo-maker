@@ -49,14 +49,14 @@ export function myPhotoControlers(controlerValue: ControlerValue | null) {
 export function borderControlers(controlerValue: ControlerValue | null) {
   return {
     outerBorderWidth: createRangeControl(
-      "Thickness",
+      "Border Thickness",
       0,
       40,
       5,
       controlerValue?.outerBorderWidth || 0
     ),
     outerBorderOpacity: createRangeControl(
-      "Opacity",
+      "Border Opacity",
       0,
       1,
       0.1,
@@ -68,7 +68,7 @@ export function borderControlers(controlerValue: ControlerValue | null) {
 export function bgControlers(controlerValue: ControlerValue | null) {
   return {
     backgroundRotate: createRangeControl(
-      "Rotate",
+      "Background Rotate",
       0,
       360,
       20,
@@ -76,7 +76,7 @@ export function bgControlers(controlerValue: ControlerValue | null) {
     ),
     ...(controlerValue?.backgroundImagePath && {
       backgroundScale: createRangeControl(
-        "Zoom In",
+        "Background Scale",
         0.5,
         2,
         0.1,

@@ -13,7 +13,6 @@ export default function Analytics() {
 
   useEffect(() => {
     if (window.gtag && process?.env?.NEXT_PUBLIC_GA_TRACKING_ID) {
-      console.log("Google Analytics triggered");
       window.gtag("config", process.env.NEXT_PUBLIC_GA_TRACKING_ID, {
         page_path: pathname,
       });

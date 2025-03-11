@@ -11,17 +11,17 @@ model User {
   id            String          @id @default(uuid())
   name          String?
   username      String?         @unique
-  email         String?         @unique
+  email         String?         
   emailVerified DateTime?
   image         String?
-  accounts      Account[]
-  images        Image[]
-  controlers    Controler[]
-  sessions      Session[]
-  credit        Int      @default(100)
-  isActive      Boolean @default(true)
+  accounts      Account[]       
+  images        Image[]         
+  controlers    Controler[]     
+  sessions      Session[]       
+  credit        Int             @default(100)
+  isActive      Boolean         @default(true)
   // Optional for WebAuthn support
-  Authenticator Authenticator[]
+  Authenticator Authenticator[] 
  
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -29,7 +29,7 @@ model User {
  
 model Account {
   id                       String  @id @default(uuid())
-  userId                   String  @unique
+  userId                   String  
   type                     String
   provider                 String
   providerAccountId        String
@@ -41,7 +41,7 @@ model Account {
   id_token                 String? @db.Text
   session_state            String?
   refresh_token_expires_in Int?
-  user                     User?   @relation(fields: [userId], references: [id])
+  user                     User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -51,16 +51,16 @@ model Account {
 }
  
 model Image {
-  id                       String  @id @default(uuid())
+  id                       String       @id @default(uuid())
   userId                   String
   bucket                   String
-  imagePath                 String
-  isActive                 Boolean @default(true)
-  user                     User?   @relation(fields: [userId], references: [id])
-  controlers               Controler[]
+  imagePath                String
+  isActive                 Boolean      @default(true)
+  user                     User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  controlers               Controler[]  
  
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  updatedAt DateTime @default(now())    @updatedAt
  
   @@index([userId])
 }
@@ -87,10 +87,10 @@ model Controler {
   backgroundColor          String?
   backgroundImagePath      String?
   backgroundRotate         String?
-  downloadedImagePath       String?
+  downloadedImagePath      String?
   isActive                 Boolean    @default(true)
-  user                     User?      @relation(fields: [userId], references: [id])
-  image                    Image?     @relation(fields: [imageId], references: [id])
+  user                     User?      @relation(fields: [userId], references: [id], onDelete:Cascade)
+  image                    Image?     @relation(fields: [imageId], references: [id], onDelete:Cascade)
  
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())  @updatedAt
@@ -103,7 +103,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

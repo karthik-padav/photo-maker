@@ -101,8 +101,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Create a new user if no existing user is found
         return true;
       }
-
-      return true;
     },
     async session({ session }) {
       return session;

@@ -74,15 +74,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         where: { email: user.email },
         include: { accounts: true },
       });
-      console.log(existingUser, "existingUser123");
-      console.log(account, "account123");
 
       if (existingUser && account) {
         // Check if this provider is already linked
         const providerExists = existingUser.accounts.some(
           (acc) => acc.provider === account.provider
         );
-        console.log(providerExists, "providerExists123");
 
         if (!providerExists) {
           await prisma.account.create({

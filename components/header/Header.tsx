@@ -53,6 +53,7 @@ export default function Header() {
     },
   ];
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const [dropDownMenu, setDropdownMenu] = useState(false);
   const { data: session } = useSession();
   const {
     toggleLogin,
@@ -64,17 +65,6 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
-
-  // useEffect(() => {
-  //   const config: Config = { device: "gpu" };
-  //   preload(config)
-  //     .then(() => {
-  //       console.log("Assets preloaded successfully");
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error preloading assets:", error);
-  //     });
-  // }, []);
 
   function renderList(isNav = false) {
     return (
@@ -171,7 +161,7 @@ export default function Header() {
             >
               <AlignJustify />
             </Button>
-            <DropdownMenu>
+            <DropdownMenu open={dropDownMenu} onOpenChange={setDropdownMenu}>
               <DropdownMenuTrigger asChild>
                 {session?.user?.image ? (
                   <div className="text-accent-foreground rounded-full h-8 w-8 md:h-10 md:w-10 border overflow-hidden">
@@ -229,7 +219,12 @@ export default function Header() {
                       </DropdownMenuItem>
                     </>
                   ) : (
-                    <DropdownMenuItem onClick={toggleLogin}>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setDropdownMenu(false);
+                        toggleLogin();
+                      }}
+                    >
                       <span className="ml-2 text-sm"> Sign In</span>
                     </DropdownMenuItem>
                   )}

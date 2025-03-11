@@ -84,12 +84,9 @@ export default function DownloadImage({
         {...attributes}
         className="relative h-full w-full"
       >
-        {/* <div className="absolute inset-0 z-50" /> */}
         <Image
           className="z-40"
           style={{ objectFit: "contain", ...imageStyle }}
-          // placeholder="blur"
-          // blurDataURL={constants.blurDataURL}
           src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`}
           fill
           sizes="100%"

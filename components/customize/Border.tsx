@@ -1,6 +1,7 @@
 import { borderControlers } from "@/lib/common";
 import { useAppProvider } from "../../lib/app-provider";
 import ColorPicker from "../colorPicker";
+import constants from "@/lib/constants";
 
 export default function Border() {
   const { controlerValue, setControlerValue } = useAppProvider();
@@ -31,13 +32,19 @@ export default function Border() {
       })}
 
       <ColorPicker
-        allowedList={["bg"]}
         onClick={(obj: { [key: string]: string }) =>
           setControlerValue({
             ...controlerValue,
             outerBorderColor: obj.color,
           })
         }
+        colorList={[
+          {
+            label: "Border Color",
+            list: constants.solidColorCollection,
+            type: "bg",
+          },
+        ]}
       />
     </>
   );

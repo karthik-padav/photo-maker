@@ -1,6 +1,7 @@
 import { myPhotoControlers } from "@/lib/common";
 import { useAppProvider } from "../../lib/app-provider";
 import ColorPicker from "../colorPicker";
+import constants from "@/lib/constants";
 
 export default function MyPhotoControler() {
   const { controlerValue, setControlerValue } = useAppProvider();
@@ -34,13 +35,24 @@ export default function MyPhotoControler() {
       })}
 
       <ColorPicker
-        cols="8"
         onClick={(obj: { [key: string]: string }) =>
           setControlerValue({
             ...controlerValue,
             pngBorderColor: obj.color,
           })
         }
+        colorList={[
+          {
+            label: "Outline Solid Color",
+            list: constants.solidColorCollection,
+            type: "bg",
+          },
+          {
+            label: "Outline Gradients",
+            list: constants.gradientColorCollection,
+            type: "bgg",
+          },
+        ]}
       />
     </>
   );

@@ -36,6 +36,13 @@ export default function GenerateImageBtn({
 
     if (!file) return;
 
+    if (file.size > 1024 * 1024) {
+      toast({
+        variant: "destructive",
+        description: "File size should be less than 1MB.",
+      });
+      return;
+    }
     setGlobalLoader(true);
     const blob = (await onHfImageGenerate(e)) as Blob;
 

@@ -117,7 +117,21 @@ export default function Background() {
           </div>
         );
       })}
-      <ColorPicker cols="12" onClick={handleColor} />
+      <ColorPicker
+        onClick={handleColor}
+        colorList={[
+          {
+            label: "Background Solid Color",
+            list: constants.solidColorCollection,
+            type: "bg",
+          },
+          {
+            label: "Background Gradients",
+            list: constants.gradientColorCollection,
+            type: "bgg",
+          },
+        ]}
+      />
     </>
   );
 }

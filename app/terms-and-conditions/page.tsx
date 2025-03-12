@@ -57,8 +57,8 @@ export default function About() {
         <p className="pb-2 md:pb-4 text-lg text-gray-600 dark:text-gray-300">
           We employ the use of cookies. By accessing{" "}
           {process.env.NEXT_PUBLIC_WEBSITE_NAME}, you agreed to use cookies in
-          agreement with the
-          {process.env.NEXT_PUBLIC_WEBSITE_NAME}&apos;s Privacy Policy.
+          agreement with the {process.env.NEXT_PUBLIC_WEBSITE_NAME}&apos;s
+          Privacy Policy.
         </p>
 
         <p className="pb-2 md:pb-4 text-lg text-gray-600 dark:text-gray-300">

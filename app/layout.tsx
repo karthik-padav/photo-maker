@@ -4,12 +4,6 @@ import "./globals.css";
 
 import { Inter as FontSans } from "next/font/google";
 
-import "./globals.css";
-
-// import "@fortawesome/fontawesome-svg-core/styles.css";
-// import { config } from "@fortawesome/fontawesome-svg-core";
-// config.autoAddCss = false;
-
 import { ThemeProvider } from "@/lib/theme-provider";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";

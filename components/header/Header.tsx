@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import coinImage from "@/assets/lottiefiles/coin.json";
 import Lottie from "lottie-react";
 import { Config, preload } from "@imgly/background-removal";
+import Image from "next/image";
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -126,14 +127,23 @@ export default function Header() {
     <header className="body-font">
       <div className="container mx-auto p-5">
         <div className="flex justify-between items-center">
-          <Link
-            href="/"
-            className="flex items-center text-gray-600 dark:text-gray-300"
-          >
-            <Camera className="mr-2 text-violet-500" />
-            <h1 className="text-base-content text-lg font-bold">
-              {process.env.NEXT_PUBLIC_LOGO_NAME}
-            </h1>
+          <Link href="/" className="relative">
+            <Image
+              alt="Logo"
+              src="/images/logo.png"
+              width={130}
+              height={130}
+              priority
+              className="h-auto w-[80px] md:w-[130px] dark:hidden"
+            />
+            <Image
+              alt="Logo"
+              src="/images/logo_dark.png"
+              width={130}
+              height={130}
+              priority
+              className="h-auto w-[80px] md:w-[130px] hidden dark:block"
+            />
           </Link>
           <div className="flex items-center">
             <nav className="text-base justify-center font-semibold md:block hidden text-gray-600 dark:text-gray-300">

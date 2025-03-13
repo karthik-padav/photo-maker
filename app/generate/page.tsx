@@ -8,6 +8,7 @@ import constants from "@/lib/constants";
 import EditBar from "@/components/editBar";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import bgImages from "@/assets/bgImage/images.json";
 
 export default function Generate() {
   const router = useRouter();
@@ -37,16 +38,16 @@ export default function Generate() {
             <EditBar />
           </div>
 
-          {/* <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
-            {constants.pngBgCollections.map((item) => {
-              if (!item.backgroundImagePath) return null;
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
+            {bgImages.map((item) => {
+              if (!item.url) return null;
               return (
-                <div key={item.id}>
+                <div key={item.key}>
                   <div
                     className="aspect-w-1 aspect-h-1 relative"
                     ref={(e: HTMLDivElement) => {
                       if (imageWrapperRef.current) {
-                        imageWrapperRef.current[item.id] = e;
+                        imageWrapperRef.current[item.key] = e;
                       }
                     }}
                   >
@@ -57,7 +58,7 @@ export default function Generate() {
                         className="z-40"
                         placeholder="blur"
                         blurDataURL={constants.blurDataURL}
-                        src={item.backgroundImagePath}
+                        src={item.url}
                         fill
                         sizes="100%"
                         style={{ objectFit: "cover" }}
@@ -80,7 +81,12 @@ export default function Generate() {
                   </div>
                   <div className="text-center -mt-6 md:-mt-7">
                     <Button
-                      onClick={() => handleRedirect(item)}
+                      onClick={() =>
+                        handleRedirect({
+                          id: item.key,
+                          backgroundImagePath: item.url,
+                        })
+                      }
                       className="drop-shadow-2xl rounded-full py-2 px-4 md:py-4 md:px-6 bg-violet-500 hover:bg-violet-500 text-white"
                     >
                       Customize
@@ -89,7 +95,7 @@ export default function Generate() {
                 </div>
               );
             })}
-          </div> */}
+          </div>
         </>
       )}
     </main>

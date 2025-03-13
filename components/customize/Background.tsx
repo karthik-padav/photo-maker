@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import ColorPicker from "../colorPicker";
 import Image from "next/image";
+import bgImages from "@/assets/bgImage/images.json";
 
 export default function Background() {
   const { controlerValue, setControlerValue } = useAppProvider();
@@ -68,26 +69,28 @@ export default function Background() {
                 >
                   <p className="flex justify-center items-center">None</p>
                 </div>
-                {/* {constants.pngBgCollections.map((item) => {
-                  if (item?.backgroundImagePath)
+                {bgImages.map((item) => {
+                  if (item?.url)
                     return (
                       <div
-                        key={item.id}
+                        key={item.key}
                         className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer bg-white"
-                        onClick={() => handleBg(item.backgroundImagePath)}
+                        onClick={() => handleBg(item.url)}
                       >
                         <Image
-                          src={item.backgroundImagePath}
+                          src={item.url}
+                          placeholder="blur"
+                          blurDataURL={constants.blurDataURL}
                           fill
                           sizes="100%"
                           style={{ objectFit: "cover" }}
-                          alt="profile pic"
+                          alt="Background Picture"
                           loading="lazy"
                         />
                       </div>
                     );
                   return null;
-                })} */}
+                })}
               </div>
             </ScrollArea>
           </div>

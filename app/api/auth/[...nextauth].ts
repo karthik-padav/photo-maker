@@ -134,6 +134,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  adapter: CustomPrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma),
   secret: process.env.NEXT_AUTH_SECRET,
 });

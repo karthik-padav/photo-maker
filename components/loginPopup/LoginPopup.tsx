@@ -35,7 +35,7 @@ export default function LoginPopup() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {constants.loginProvider?.map((item) => (
             <Button
-              className={`text-accent-foreground  px-2 py-3 rounded-lg ${
+              className={`text-accent-foreground px-2 py-3 rounded-lg ${
                 loader && "cursor-not-allowed"
               }`}
               key={item.code}
@@ -46,7 +46,9 @@ export default function LoginPopup() {
               variant="secondary"
             >
               {loader == item.code ? (
-                <LoaderCircle className="animate-spin absolute" />
+                <div className="relative">
+                  <LoaderCircle className="animate-spin" />
+                </div>
               ) : (
                 <>
                   <item.icon className="mr-2 h-8 w-8 md:h-6 w-6" />

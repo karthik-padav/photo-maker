@@ -10,6 +10,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "stqwqcvysz.**",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "utfs.io",
         pathname: "/**",
       },

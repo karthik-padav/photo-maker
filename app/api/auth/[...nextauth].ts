@@ -29,6 +29,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  debug: true,
   session: { strategy: "jwt" },
   jwt: {
     encode: async ({ token, secret }: JWTEncodeParams<JWT>) => {

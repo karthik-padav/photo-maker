@@ -205,7 +205,6 @@ export async function onHfImageGenerate(
   const result = (await app.predict("/predict", [file])) as {
     data: { path: string };
   };
-  console.log(result, "result123123");
   if (result?.data?.[0]?.path) {
     const response = await fetch(
       `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`

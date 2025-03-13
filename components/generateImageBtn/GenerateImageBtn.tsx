@@ -35,11 +35,11 @@ export default function GenerateImageBtn({
     const file = e?.target?.files?.[0];
 
     if (!file) return;
-
-    if (file.size > 1024 * 1024) {
+    const maxSize = Number(process.env.NEXT_PUBLIC_MAX_IMAGE_UPLOAD_SIZE);
+    if (!isNaN(maxSize) && file.size > maxSize * 1024 * 1024) {
       toast({
-        variant: "destructive",
-        description: "File size should be less than 1MB.",
+        variant: "default",
+        description: "File size should be less than 3MB.",
       });
       return;
     }

@@ -31,7 +31,7 @@ export default function BannerSection() {
                 <div className="drop-shadow-2xl rounded-full overflow-hidden">
                   <Image
                     alt="banner-dp"
-                    src={`/images/${i}.jpg`}
+                    src={`/images/${i}.webp`}
                     style={{ objectFit: "contain" }}
                     fill
                     sizes="100vw"

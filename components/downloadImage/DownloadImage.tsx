@@ -18,6 +18,7 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
+  TouchSensor,
 } from "@dnd-kit/core";
 
 interface Params {
@@ -31,6 +32,7 @@ export default function DownloadImage({
   controler,
   disabled = false,
 }: Params) {
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
   const { setControlerValue } = useAppProvider();
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const imageLoadingTracker = useRef<{ [key: string]: boolean }>({});
@@ -152,6 +154,7 @@ export default function DownloadImage({
             className={`_imageWrapper absolute inset-0 z-50 ${borderRadius}`}
           >
             <DndContext
+              sensors={sensors}
               onDragEnd={(event) => {
                 setControlerValue({
                   transformX: calcPercentage(

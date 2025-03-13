@@ -96,7 +96,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email: user.email },
           include: { accounts: true },
         });
-        console.log(existingUser, "existingUser123");
 
         if (existingUser && account) {
           // Check if this provider is already linked
@@ -122,11 +121,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return true;
         } else {
           // Create a new user if no existing user is found
-          console.log("creating new user");
           return true;
         }
       } catch (error) {
-        console.log(error, "error123");
         return false;
       }
     },

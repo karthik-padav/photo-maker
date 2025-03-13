@@ -1,15 +1,5 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
 import { Inter as FontSans } from "next/font/google";
-
-import "./globals.css";
-
-// import "@fortawesome/fontawesome-svg-core/styles.css";
-// import { config } from "@fortawesome/fontawesome-svg-core";
-// config.autoAddCss = false;
-
 import { ThemeProvider } from "@/lib/theme-provider";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
@@ -31,6 +21,9 @@ const fontSans = FontSans({
 });
 
 export const metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_WEBSITE_URL || "https://dpg.vercel.app/"
+  ),
   title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
   description: constants.landingPage.subtitle,
   keywords: "photo editing, background remover, image editor, customize images",
@@ -41,10 +34,10 @@ export const metadata = {
     siteName: process.env.NEXT_PUBLIC_WEBSITE_NAME,
     images: [
       {
-        url: "https://yourwebsite.com/og-image.jpg",
+        url: "/images/logo.png",
         width: 1200,
-        height: 630,
-        alt: "Photo Maker",
+        height: 375,
+        alt: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
       },
     ],
     type: "website",
@@ -53,7 +46,7 @@ export const metadata = {
     card: "summary_large_image",
     title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
     description: constants.landingPage.subtitle,
-    images: ["https://yourwebsite.com/og-image.jpg"],
+    images: ["/images/logo.png"],
   },
 };
 

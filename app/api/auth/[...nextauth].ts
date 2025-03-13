@@ -9,6 +9,26 @@ import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
 
 const prisma = new PrismaClient();
 
+const CustomPrismaAdapter = (prisma) => {
+  const adapter = PrismaAdapter(prisma);
+
+  return {
+    ...adapter,
+    getUser: async (id) => {
+      // Force findFirst instead of findUnique
+      return await prisma.user.findFirst({
+        where: { id },
+      });
+    },
+    getUserByEmail: async (email) => {
+      // Force findFirst instead of findUnique
+      return await prisma.user.findFirst({
+        where: { email },
+      });
+    },
+  };
+};
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GitHub({
@@ -29,6 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  debug: true,
   session: { strategy: "jwt" },
   jwt: {
     encode: async ({ token, secret }: JWTEncodeParams<JWT>) => {
@@ -70,47 +91,49 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!user.email) return false; // Prevent accounts without emails
 
       // Check if a user with the same email exists
-      const existingUser = await prisma.user.findFirst({
-        where: { email: user.email },
-        include: { accounts: true },
-      });
-      console.log(existingUser, "existingUser123");
-      console.log(account, "account123");
+      try {
+        const existingUser = await prisma.user.findFirst({
+          where: { email: user.email },
+          include: { accounts: true },
+        });
+        console.log(existingUser, "existingUser123");
 
-      if (existingUser && account) {
-        // Check if this provider is already linked
-        const providerExists = existingUser.accounts.some(
-          (acc) => acc.provider === account.provider
-        );
-        console.log(providerExists, "providerExists123");
+        if (existingUser && account) {
+          // Check if this provider is already linked
+          const providerExists = existingUser.accounts.some(
+            (acc) => acc.provider === account.provider
+          );
 
-        if (!providerExists) {
-          await prisma.account.create({
-            data: {
-              userId: existingUser.id,
-              provider: account.provider,
-              providerAccountId: account.providerAccountId,
-              type: account.type,
-              access_token: account.access_token,
-              expires_at: account.expires_at,
-              token_type: account.token_type,
-              scope: account.scope,
-            },
-          });
+          if (!providerExists) {
+            await prisma.account.create({
+              data: {
+                userId: existingUser.id,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                type: account.type,
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                scope: account.scope,
+              },
+            });
+          }
+
+          return true;
+        } else {
+          // Create a new user if no existing user is found
+          console.log("creating new user");
+          return true;
         }
-
-        return true;
-      } else {
-        // Create a new user if no existing user is found
-        return true;
+      } catch (error) {
+        console.log(error, "error123");
+        return false;
       }
-
-      return true;
     },
     async session({ session }) {
       return session;
     },
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: CustomPrismaAdapter(prisma),
   secret: process.env.NEXT_AUTH_SECRET,
 });

@@ -1,5 +1,6 @@
 import constants from "@/lib/constants";
 import { Camera } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer({ data }: any) {
@@ -7,17 +8,26 @@ export default function Footer({ data }: any) {
     <footer className="py-4 w-full mx-auto border-t-2 border-slate-200 dark:border-gray-800">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-4">
-          <div className="py-2">
-            <Link
-              href="/"
-              className="flex items-center text-gray-600 dark:text-gray-300 pb-2"
-            >
-              <Camera className="mr-2 text-violet-500" />
-              <h1 className="text-base-content text-lg font-bold">
-                {process.env.NEXT_PUBLIC_LOGO_NAME}
-              </h1>
+          <div className="py-2 flex justify-center items-center flex-col">
+            <Link href="/" className="relative">
+              <Image
+                alt="Logo"
+                src="/images/logo.png"
+                width={130}
+                height={130}
+                priority
+                className="h-auto w-[80px] md:w-[130px] dark:hidden"
+              />
+              <Image
+                alt="Logo"
+                src="/images/logo_dark.png"
+                width={130}
+                height={130}
+                priority
+                className="h-auto w-[80px] md:w-[130px] hidden dark:block"
+              />
             </Link>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm text-gray-600 dark:text-gray-300 text-center mt-2">
               Copyright © {new Date().getFullYear()} - All rights reserved
             </p>
           </div>

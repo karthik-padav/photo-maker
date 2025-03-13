@@ -37,7 +37,7 @@ export default function Generate() {
             <EditBar />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
+          {/* <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
             {constants.pngBgCollections.map((item) => {
               if (!item.backgroundImagePath) return null;
               return (
@@ -89,7 +89,7 @@ export default function Generate() {
                 </div>
               );
             })}
-          </div>
+          </div> */}
         </>
       )}
     </main>

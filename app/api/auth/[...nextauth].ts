@@ -9,6 +9,26 @@ import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
 
 const prisma = new PrismaClient();
 
+const CustomPrismaAdapter = (prisma) => {
+  const adapter = PrismaAdapter(prisma);
+
+  return {
+    ...adapter,
+    getUser: async (id) => {
+      // Force findFirst instead of findUnique
+      return await prisma.user.findFirst({
+        where: { id },
+      });
+    },
+    getUserByEmail: async (email) => {
+      // Force findFirst instead of findUnique
+      return await prisma.user.findFirst({
+        where: { email },
+      });
+    },
+  };
+};
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GitHub({
@@ -114,6 +134,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: CustomPrismaAdapter(prisma),
   secret: process.env.NEXT_AUTH_SECRET,
 });

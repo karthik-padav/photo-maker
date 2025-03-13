@@ -68,7 +68,7 @@ export default function Background() {
                 >
                   <p className="flex justify-center items-center">None</p>
                 </div>
-                {constants.pngBgCollections.map((item) => {
+                {/* {constants.pngBgCollections.map((item) => {
                   if (item?.backgroundImagePath)
                     return (
                       <div
@@ -87,7 +87,7 @@ export default function Background() {
                       </div>
                     );
                   return null;
-                })}
+                })} */}
               </div>
             </ScrollArea>
           </div>

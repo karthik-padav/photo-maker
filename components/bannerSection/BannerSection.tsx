@@ -21,7 +21,7 @@ export default function BannerSection() {
       </div>
 
       <div className="flex justify-center">
-        {/* <div className="grid grid-cols-5 md:w-4/12 w-full ml-10">
+        <div className="grid grid-cols-5 md:w-4/12 w-full ml-10">
           {["dp-1", "dp-3", "dp-2", "dp-4", "dp-5"].map((i) => (
             <div
               key={i}
@@ -31,7 +31,7 @@ export default function BannerSection() {
                 <div className="drop-shadow-2xl rounded-full overflow-hidden">
                   <Image
                     alt="banner-dp"
-                    src={`/images/${i}.png`}
+                    src={`/images/${i}.jpg`}
                     style={{ objectFit: "contain" }}
                     fill
                     sizes="100vw"
@@ -40,7 +40,7 @@ export default function BannerSection() {
               </div>
             </div>
           ))}
-        </div> */}
+        </div>
       </div>
     </>
   );

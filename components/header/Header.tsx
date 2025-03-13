@@ -84,7 +84,11 @@ export default function Header() {
           .map((item) => (
             <div
               key={item.code}
-              className={isNav ? "border-b px-2 py-1" : `inline-block`}
+              className={
+                isNav
+                  ? "border-b px-2 py-1 dark:border-gray-800"
+                  : `inline-block`
+              }
             >
               {item?.requireSelectedImage ? (
                 <Button

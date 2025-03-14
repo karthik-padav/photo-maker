@@ -43,13 +43,25 @@ export default function GenerateImageBtn({
       });
       return;
     }
+    toast({
+      variant: "destructive",
+      description: "0.",
+    });
     setGlobalLoader(true);
     try {
+      toast({
+        variant: "destructive",
+        description: "1.",
+      });
       const blob = (await Promise.any([
-        onHfImageGenerate(e),
+        // onHfImageGenerate(e),
 
         onImageGenerate(e),
       ])) as Blob;
+      toast({
+        variant: "destructive",
+        description: "2.",
+      });
 
       const { data = null } = (await generateImage({
         blob,

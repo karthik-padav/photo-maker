@@ -49,6 +49,9 @@ export default function GenerateImageBtn({
         onHfImageGenerate(e),
         onImageGenerate(e),
       ])) as Blob;
+      // console.log("asdasd");
+      // const blob = (await onImageGenerate(e)) as Blob;
+      // console.log(blob, "blob123123");
 
       const { data = null } = (await generateImage({
         blob,
@@ -82,9 +85,9 @@ export default function GenerateImageBtn({
       <Button
         variant="ghost"
         className={className}
-        onClick={
-          () => inputFileRef?.current?.click()
-          // session?.user ? inputFileRef?.current?.click() : toggleLogin()
+        onClick={() =>
+          //  inputFileRef?.current?.click()
+          session?.user ? inputFileRef?.current?.click() : toggleLogin()
         }
         disabled={globalLoader}
       >

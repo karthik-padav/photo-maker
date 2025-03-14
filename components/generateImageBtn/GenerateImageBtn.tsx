@@ -43,28 +43,17 @@ export default function GenerateImageBtn({
       });
       return;
     }
-    toast({
-      variant: "destructive",
-      description: "0.",
-    });
     setGlobalLoader(true);
     try {
       const blob = (await Promise.any([
         onHfImageGenerate(e),
-
-        // onImageGenerate(e),
+        onImageGenerate(e),
       ])) as Blob;
-      toast({
-        variant: "destructive",
-        description: "2.",
-      });
 
       const { data = null } = (await generateImage({
         blob,
         fileName: file.name,
-      })) as {
-        data: SelectedImage;
-      };
+      })) as { data: SelectedImage };
 
       if (data) {
         setSelectedImage(data);
@@ -93,8 +82,9 @@ export default function GenerateImageBtn({
       <Button
         variant="ghost"
         className={className}
-        onClick={() =>
-          session?.user ? inputFileRef?.current?.click() : toggleLogin()
+        onClick={
+          () => inputFileRef?.current?.click()
+          // session?.user ? inputFileRef?.current?.click() : toggleLogin()
         }
         disabled={globalLoader}
       >

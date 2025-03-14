@@ -19,6 +19,7 @@ import {
   useSensors,
   PointerSensor,
   TouchSensor,
+  MouseSensor,
 } from "@dnd-kit/core";
 
 interface Params {
@@ -32,7 +33,13 @@ export default function DownloadImage({
   controler,
   disabled = false,
 }: Params) {
-  const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
+  const sensors = useSensors(
+    useSensor(MouseSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: { distance: 5 },
+      pressDelay: 100,
+    })
+  );
   const { setControlerValue } = useAppProvider();
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const imageLoadingTracker = useRef<{ [key: string]: boolean }>({});

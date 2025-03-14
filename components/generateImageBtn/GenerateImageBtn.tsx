@@ -44,29 +44,38 @@ export default function GenerateImageBtn({
       return;
     }
     setGlobalLoader(true);
-    const blob = (await onHfImageGenerate(e)) as Blob;
+    try {
+      const blob = (await onHfImageGenerate(e)) as Blob;
 
-    // const blob = (await onImageGenerate(e)) as Blob;
+      // const blob = (await onImageGenerate(e)) as Blob;
 
-    const { data = null } = (await generateImage({
-      blob,
-      fileName: file.name,
-    })) as {
-      data: SelectedImage;
-    };
+      const { data = null } = (await generateImage({
+        blob,
+        fileName: file.name,
+      })) as {
+        data: SelectedImage;
+      };
 
-    if (data) {
-      setSelectedImage(data);
-      router.push("/generate");
-    } else {
+      if (data) {
+        setSelectedImage(data);
+        router.push("/generate");
+      } else {
+        toast({
+          variant: "destructive",
+          description: "Oops! Something went wrong.",
+        });
+      }
+
+      if (inputFileRef.current) inputFileRef.current.value = "";
+    } catch (error) {
+      console.log("error", error);
       toast({
         variant: "destructive",
-        description: "Oops! Something went wrong.",
+        description: (error as Error).message,
       });
+    } finally {
+      setGlobalLoader(false);
     }
-
-    if (inputFileRef.current) inputFileRef.current.value = "";
-    setGlobalLoader(false);
   }
 
   return (

@@ -54,7 +54,7 @@ export default function GenerateImageBtn({
         description: "1.",
       });
       const blob = (await Promise.any([
-        onHfImageGenerate(e),
+        // onHfImageGenerate(e),
 
         onImageGenerate(e),
       ])) as Blob;

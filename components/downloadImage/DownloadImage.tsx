@@ -17,7 +17,6 @@ import {
   useDraggable,
   useSensor,
   useSensors,
-  PointerSensor,
   TouchSensor,
   MouseSensor,
 } from "@dnd-kit/core";
@@ -28,16 +27,11 @@ interface Params {
   disabled?: boolean;
 }
 
-export default function DownloadImage({
-  image,
-  controler,
-  disabled = false,
-}: Params) {
+export default function DownloadImage({ image, controler }: Params) {
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(TouchSensor, {
       activationConstraint: { distance: 5 },
-      pressDelay: 100,
     })
   );
   const { setControlerValue } = useAppProvider();

@@ -245,7 +245,7 @@ export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
       };
     };
 
-    reader.readAsArrayBuffer(file); // ✅ Read file as ArrayBuffer
+    reader.readAsArrayBuffer(file);
   });
 }
 

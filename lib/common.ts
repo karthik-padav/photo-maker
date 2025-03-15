@@ -209,6 +209,7 @@ export async function onHfImageGenerate(
     const response = await fetch(
       `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`
     );
+    console.log("Return from HF");
     return await response.blob();
   }
   return;
@@ -236,6 +237,7 @@ export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
       worker.onmessage = async (message) => {
         if (message.data.success) {
           const blob = message.data.blob;
+          console.log("Return from IMG");
           resolve(blob);
         } else {
           console.error("Background removal failed:", message.data.error);

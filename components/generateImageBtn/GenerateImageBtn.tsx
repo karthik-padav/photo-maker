@@ -49,9 +49,7 @@ export default function GenerateImageBtn({
         onHfImageGenerate(e),
         onImageGenerate(e),
       ])) as Blob;
-      // console.log("asdasd");
-      // const blob = (await onImageGenerate(e)) as Blob;
-      // console.log(blob, "blob123123");
+      console.log("Blob Size:", blob.size / (1024 * 1024), "MB");
 
       const { data = null } = (await generateImage({
         blob,

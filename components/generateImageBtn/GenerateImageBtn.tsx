@@ -45,10 +45,21 @@ export default function GenerateImageBtn({
     }
     setGlobalLoader(true);
     try {
+      if (
+        process.env.NEXT_PUBLIC_ENABLE_IMGL != "true" &&
+        process.env.NEXT_PUBLIC_ENABLE_HF != "true"
+      ) {
+        toast({
+          variant: "destructive",
+          description: "Oops! No background remover found.",
+        });
+        return;
+      }
       const blob = (await Promise.any([
-        onHfImageGenerate(e),
-        onImageGenerate(e),
+        process.env.NEXT_PUBLIC_ENABLE_HF === "true" && onHfImageGenerate(e),
+        process.env.NEXT_PUBLIC_ENABLE_IMGL === "true" && onImageGenerate(e),
       ])) as Blob;
+
       console.log("Blob Size:", blob.size / (1024 * 1024), "MB");
 
       const { data = null } = (await generateImage({

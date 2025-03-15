@@ -56,7 +56,7 @@ export default function GenerateImageBtn({
         return;
       }
       const blob = (await Promise.any([
-        process.env.NEXT_PUBLIC_ENABLE_HF === "true" && onHfImageGenerate(e),
+        // process.env.NEXT_PUBLIC_ENABLE_HF === "true" && onHfImageGenerate(e),
         process.env.NEXT_PUBLIC_ENABLE_IMGL === "true" && onImageGenerate(e),
       ])) as Blob;
 
@@ -94,9 +94,9 @@ export default function GenerateImageBtn({
       <Button
         variant="ghost"
         className={className}
-        onClick={() =>
-          //  inputFileRef?.current?.click()
-          session?.user ? inputFileRef?.current?.click() : toggleLogin()
+        onClick={
+          // () => inputFileRef?.current?.click()
+          () => (session?.user ? inputFileRef?.current?.click() : toggleLogin())
         }
         disabled={globalLoader}
       >

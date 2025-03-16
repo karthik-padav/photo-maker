@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { generateImage } from "@/lib/actions/services";
 import { removeBackground } from "@imgly/background-removal";
 import imageCompression from "browser-image-compression";
+import { usePathname } from "next/navigation";
 
 export default function GenerateImageBtn({
   className = constants.btnClass,
@@ -32,6 +33,7 @@ export default function GenerateImageBtn({
     setSelectedImage,
   } = useAppProvider();
   const { toast } = useToast();
+  const pathname = usePathname();
 
   async function onImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e?.target?.files?.[0];
@@ -70,37 +72,37 @@ export default function GenerateImageBtn({
         promises.push(onImageGenerate(e));
       let blob = (await Promise.any(promises)) as Blob;
 
-      console.log(
-        "Blob Size Before Compression:",
-        blob.size / (1024 * 1024),
-        "MB"
-      );
       if (blob.size / (1024 * 1024) > 4) {
         const compressedFile = new File([blob], file.name, { type: blob.type });
         blob = await imageCompression(compressedFile, options);
-        console.log(
-          "Blob Size After Compression:",
-          blob.size / (1024 * 1024),
-          "MB"
-        );
       }
 
-      const { data = null } = (await generateImage({
-        blob,
-        fileName: file.name,
-      })) as { data: SelectedImage };
-
-      if (data) {
-        setSelectedImage(data);
-        router.push("/generate");
-      } else {
+      if (blob) pathname != "/generate" && router.push("/generate");
+      else
         toast({
           variant: "destructive",
           description: "Oops! Something went wrong.",
         });
-      }
 
-      if (inputFileRef.current) inputFileRef.current.value = "";
+      void (async () => {
+        try {
+          const { data = null } = (await generateImage({
+            blob,
+            fileName: file.name,
+          })) as { data: SelectedImage };
+
+          if (data) {
+            setSelectedImage(data);
+          } else {
+            toast({
+              variant: "destructive",
+              description: "Oops! Something went wrong.",
+            });
+          }
+        } catch (error) {
+          console.error("Error generating image:", error);
+        }
+      })();
     } catch (error) {
       console.log("error", error);
       toast({
@@ -109,6 +111,7 @@ export default function GenerateImageBtn({
       });
     } finally {
       setGlobalLoader(false);
+      if (inputFileRef.current) inputFileRef.current.value = "";
     }
   }
 

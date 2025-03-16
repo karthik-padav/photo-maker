@@ -16,7 +16,7 @@ export default function Footer({ data }: any) {
                 width={130}
                 height={130}
                 priority
-                className="h-auto w-[80px] md:w-[130px] dark:hidden"
+                className="h-auto w-[100px] md:w-[130px] dark:hidden"
               />
               <Image
                 alt="Logo"
@@ -24,7 +24,7 @@ export default function Footer({ data }: any) {
                 width={130}
                 height={130}
                 priority
-                className="h-auto w-[80px] md:w-[130px] hidden dark:block"
+                className="h-auto w-[100px] md:w-[130px] hidden dark:block"
               />
             </Link>
             <p className="text-sm text-gray-600 dark:text-gray-300 text-center mt-2">

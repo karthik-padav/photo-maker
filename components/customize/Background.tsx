@@ -25,7 +25,7 @@ export default function Background() {
     let _controlerValue = { ...controlerValue };
     if (_controlerValue?.backgroundImagePath) {
       _controlerValue.backgroundImagePath = "";
-      _controlerValue.backgroundScale = "1`";
+      _controlerValue.backgroundScale = "1";
     }
     setControlerValue({
       ..._controlerValue,

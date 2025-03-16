@@ -67,6 +67,16 @@ export default function Header() {
   const router = useRouter();
   const { toast } = useToast();
 
+  useEffect(() => {
+    preload()
+      .then(() => {
+        console.log("Assets preloaded successfully");
+      })
+      .catch((error) => {
+        console.error("Error preloading assets:", error);
+      });
+  }, []);
+
   function renderList(isNav = false) {
     return (
       <>
@@ -138,7 +148,7 @@ export default function Header() {
               width={130}
               height={130}
               priority
-              className="h-auto w-[80px] md:w-[130px] dark:hidden"
+              className="h-auto w-[100px] md:w-[130px] dark:hidden"
             />
             <Image
               alt="Logo"
@@ -146,7 +156,7 @@ export default function Header() {
               width={130}
               height={130}
               priority
-              className="h-auto w-[80px] md:w-[130px] hidden dark:block"
+              className="h-auto w-[100px] md:w-[130px] hidden dark:block"
             />
           </Link>
           <div className="flex items-center">

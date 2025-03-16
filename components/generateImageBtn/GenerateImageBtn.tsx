@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { generateImage } from "@/lib/actions/services";
+import { removeBackground } from "@imgly/background-removal";
+import imageCompression from "browser-image-compression";
 
 export default function GenerateImageBtn({
   className = constants.btnClass,
@@ -55,12 +57,32 @@ export default function GenerateImageBtn({
         });
         return;
       }
-      const blob = (await Promise.any([
-        // process.env.NEXT_PUBLIC_ENABLE_HF === "true" && onHfImageGenerate(e),
-        process.env.NEXT_PUBLIC_ENABLE_IMGL === "true" && onImageGenerate(e),
+      const options = {
+        maxSizeMB: 4,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+      let blob = (await Promise.any([
+        process.env.NEXT_PUBLIC_ENABLE_HF === "true" && onHfImageGenerate(e),
+        process.env.NEXT_PUBLIC_ENABLE_IMGL === "true" &&
+          removeBackground(file),
+        // process.env.NEXT_PUBLIC_ENABLE_IMGL === "true" && onImageGenerate(e),
       ])) as Blob;
 
-      console.log("Blob Size:", blob.size / (1024 * 1024), "MB");
+      console.log(
+        "Blob Size Before Compression:",
+        blob.size / (1024 * 1024),
+        "MB"
+      );
+      if (blob.size / (1024 * 1024) > 4) {
+        const compressedFile = new File([blob], file.name, { type: blob.type });
+        blob = await imageCompression(compressedFile, options);
+        console.log(
+          "Blob Size After Compression:",
+          blob.size / (1024 * 1024),
+          "MB"
+        );
+      }
 
       const { data = null } = (await generateImage({
         blob,

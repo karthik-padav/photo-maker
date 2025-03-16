@@ -216,42 +216,6 @@ export async function onHfImageGenerate(
   return;
 }
 
-// export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
-//   const file = e?.target?.files?.[0];
-//   if (!file) return null;
-
-//   return new Promise((resolve) => {
-//     const reader = new FileReader();
-//     reader.onload = async () => {
-//       if (!reader.result) return;
-
-//       const arrayBuffer = reader.result as ArrayBuffer;
-//       const uint8Array = new Uint8Array(arrayBuffer);
-
-//       const worker = new Worker(
-//         new URL("@/workers/backgroundWorker.ts", import.meta.url),
-//         { type: "module" }
-//       );
-
-//       worker.postMessage({ imageData: uint8Array });
-
-//       worker.onmessage = async (message) => {
-//         if (message.data.success) {
-//           const blob = message.data.blob;
-//           console.log("Return from IMG");
-//           resolve(blob);
-//         } else {
-//           console.error("Background removal failed:", message.data.error);
-//           resolve(null);
-//         }
-//         worker.terminate();
-//       };
-//     };
-
-//     reader.readAsArrayBuffer(file);
-//   });
-// }
-
 export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
   const file = e?.target?.files?.[0];
   if (!file) return null;
@@ -261,17 +225,27 @@ export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
     reader.onload = async () => {
       if (!reader.result) return;
 
-      const blob = new Blob([reader.result], { type: "image/png" });
+      const arrayBuffer = reader.result as ArrayBuffer;
+      const uint8Array = new Uint8Array(arrayBuffer);
 
-      console.log("Calling removeBackground directly on mobile...");
-      try {
-        const resultBlob = await removeBackground(blob);
-        console.log("removeBackground result:", resultBlob);
+      const worker = new Worker(
+        new URL("@/workers/backgroundWorker.ts", import.meta.url),
+        { type: "module" }
+      );
 
-        resolve(resultBlob);
-      } catch (error) {
-        console.error("Error calling removeBackground:", error);
-      }
+      worker.postMessage({ imageData: uint8Array });
+
+      worker.onmessage = async (message) => {
+        if (message.data.success) {
+          const blob = message.data.blob;
+          console.log("Return from IMG");
+          resolve(blob);
+        } else {
+          console.error("Background removal failed:", message.data.error);
+          resolve(null);
+        }
+        worker.terminate();
+      };
     };
 
     reader.readAsArrayBuffer(file);

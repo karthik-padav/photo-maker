@@ -62,12 +62,17 @@ export default function GenerateImageBtn({
         maxWidthOrHeight: 1920,
         useWebWorker: true,
       };
-      let blob = (await Promise.any([
-        process.env.NEXT_PUBLIC_ENABLE_HF === "true" && onHfImageGenerate(e),
-        process.env.NEXT_PUBLIC_ENABLE_IMGL === "true" &&
-          removeBackground(file),
-        // process.env.NEXT_PUBLIC_ENABLE_IMGL === "true" && onImageGenerate(e),
-      ])) as Blob;
+      let blob = (await Promise.any(
+        [
+          process.env.NEXT_PUBLIC_ENABLE_HF === "true"
+            ? onHfImageGenerate(e)
+            : null,
+          process.env.NEXT_PUBLIC_ENABLE_IMGL === "true"
+            ? removeBackground(file)
+            : null,
+          // process.env.NEXT_PUBLIC_ENABLE_IMGL === "true" && onImageGenerate(e),
+        ].filter((i) => i)
+      )) as Blob;
 
       console.log(
         "Blob Size Before Compression:",

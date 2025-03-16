@@ -213,17 +213,19 @@ export async function onHfImageGenerate(
     console.log("Return from HF");
     return await response.blob();
   }
-  return;
+  return null;
 }
 
-export async function onImageGenerate(e: React.ChangeEvent<HTMLInputElement>) {
+export async function onImageGenerate(
+  e: React.ChangeEvent<HTMLInputElement>
+): Promise<Blob | null> {
   const file = e?.target?.files?.[0];
   if (!file) return null;
 
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = async () => {
-      if (!reader.result) return;
+      if (!reader.result) return null;
 
       const arrayBuffer = reader.result as ArrayBuffer;
       const uint8Array = new Uint8Array(arrayBuffer);

@@ -3,7 +3,7 @@
 import { Image as LImage, Square } from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
 import { useSession } from "next-auth/react";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { downloadBlob, onDownload } from "@/lib/common";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -60,7 +60,8 @@ const MENU_ITEMS = [
 ];
 
 export default function Customize() {
-  const { selectedImage, controlerValue, user } = useAppProvider();
+  const { selectedImage, controlerValue, user, globalLoader } =
+    useAppProvider();
   const router = useRouter();
   const session = useSession();
   const imageWrapperRef = useRef(null);
@@ -81,22 +82,37 @@ export default function Customize() {
       return;
     }
 
-    await onDownload(imageWrapperRef.current, async (blob) => {
-      setLoader(true);
+    setLoader(true);
+    try {
+      // const element = document.getElementById(
+      //   "wrapper"
+      // ) as HTMLDivElement | null;
+      // if (!element) throw new Error("Element not found");
+      // console.log(element, "element");
+
+      const result = await onDownload(imageWrapperRef.current);
+      if (!result) {
+        throw new Error("Failed to download image");
+      }
+      const { blob } = result;
       if (selectedImage?.id && blob && controlerValue) {
         const { data } = await createControler({
           controler: controlerValue,
           imageId: selectedImage.id,
           blob,
         });
-        if (data)
+        if (data) {
           downloadBlob(
             blob,
-            `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}.png`
+            `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}`
           );
+        }
       }
+    } catch (error) {
+      throw new Error(String(error));
+    } finally {
       setLoader(false);
-    });
+    }
   }
 
   const borderRadius = controlerValue?.border?.value
@@ -150,7 +166,7 @@ export default function Customize() {
           <div
             className={`w-full aspect-w-1 aspect-h-1 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25] relative ${borderRadius}`}
           >
-            <div ref={imageWrapperRef} className="w-full h-full">
+            <div id="wrapper" ref={imageWrapperRef} className="w-full h-full">
               {selectedImage && (
                 <DownloadImage
                   image={selectedImage}

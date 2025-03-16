@@ -16,7 +16,10 @@ export default function GlobalLoader() {
             className="w-52 m-auto"
           />
           <p>We&apos;re generating your image...</p>
-          <p>This may take a few minutes. Thanks for your patience!</p>
+          <p>
+            This may take a few minutes depending on the image size. Thanks for
+            your patience!
+          </p>
         </div>
       </div>
     );

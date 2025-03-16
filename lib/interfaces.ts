@@ -18,7 +18,7 @@ export interface ControlerValue {
 }
 
 export interface SelectedImage {
-  id: string;
+  id?: string;
   imagePath: string;
 }
 

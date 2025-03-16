@@ -1,7 +1,8 @@
 import { ControlerValue } from "./interfaces";
-import { toPng } from "html-to-image";
+import { toPng, toJpeg } from "html-to-image";
 import { client } from "@gradio/client";
 import { removeBackground } from "@imgly/background-removal";
+import html2canvas from "html2canvas";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -172,19 +173,31 @@ export const extractValues = (input: string) =>
     ?.slice(1)
     .map(parseFloat) || [];
 
-export const onDownload = (
-  el: HTMLDivElement | null,
-  callback = (blob: Blob, dataUrl: string) => {}
-) => {
+export async function onDownload(el: HTMLDivElement | null) {
   if (!el) return;
-  toPng(el, { cacheBust: true, quality: 1, pixelRatio: 5 })
-    .then(async (dataUrl) => {
-      let blob = base64ToBlob(dataUrl, "image/png");
-      blob = (await compressImageBlob(blob)) as Blob;
-      callback(blob, dataUrl);
-    })
-    .catch(console.log);
-};
+  // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const dataUrl = await toPng(el, {
+    cacheBust: false,
+    quality: 1,
+    pixelRatio: 5,
+  });
+
+  // const bounds = el.getBoundingClientRect();
+
+  // const canvas = await html2canvas(el, {
+  //   scale: 10, // Increase resolution without distortion
+  //   useCORS: true,
+  //   backgroundColor: null, // Transparent background
+  //   width: el.offsetWidth,
+  //   height: el.offsetHeight,
+  // });
+  // const dataUrl = canvas.toDataURL("image/png");
+  let blob = base64ToBlob(dataUrl, "image/png");
+
+  blob = (await compressImageBlob(blob)) as Blob;
+  return { blob, dataUrl };
+}
 
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
@@ -201,7 +214,6 @@ export async function onHfImageGenerate(
   e: React.ChangeEvent<HTMLInputElement>
 ) {
   const file = e?.target?.files?.[0];
-
   const app = await client("https://briaai-bria-rmbg-1-4.hf.space/");
   const result = (await app.predict("/predict", [file])) as {
     data: { path: string };
@@ -210,7 +222,7 @@ export async function onHfImageGenerate(
     const response = await fetch(
       `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`
     );
-    console.log("Return from HF");
+    console.log("HF triggered");
     return await response.blob();
   }
   return null;
@@ -240,7 +252,7 @@ export async function onImageGenerate(
       worker.onmessage = async (message) => {
         if (message.data.success) {
           const blob = message.data.blob;
-          console.log("Return from IMG");
+          console.log("imgly triggered");
           resolve(blob);
         } else {
           console.error("Background removal failed:", message.data.error);
@@ -281,7 +293,7 @@ async function compressImageBlob(
       canvas.toBlob(
         (blob) =>
           blob ? resolve(blob) : reject(new Error("Compression failed")),
-        "image/jpeg",
+        "image/png",
         quality
       );
     };

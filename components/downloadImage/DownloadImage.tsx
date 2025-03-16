@@ -62,7 +62,7 @@ export default function DownloadImage({ image, controler }: Params) {
           ? imageLoadingTracker.current.bgImage
           : true)
       )
-        setLoader(true);
+        setLoader(false);
     },
     [controler]
   );

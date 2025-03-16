@@ -13,7 +13,7 @@ import bgImages from "@/assets/bgImage/images.json";
 export default function Generate() {
   const router = useRouter();
   const { selectedImage, controlerValue, setControlerValue } = useAppProvider();
-  const imageWrapperRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  // const imageWrapperRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const session = useSession();
   if (!selectedImage || !session?.data) router.push("/");
 
@@ -45,11 +45,11 @@ export default function Generate() {
                 <div key={item.key}>
                   <div
                     className="aspect-w-1 aspect-h-1 relative"
-                    ref={(e: HTMLDivElement) => {
-                      if (imageWrapperRef.current) {
-                        imageWrapperRef.current[item.key] = e;
-                      }
-                    }}
+                    // ref={(e: HTMLDivElement) => {
+                    //   if (imageWrapperRef.current) {
+                    //     imageWrapperRef.current[item.key] = e;
+                    //   }
+                    // }}
                   >
                     <div
                       className={`w-full h-full border-white dark:border-gray-800 border-4 drop-shadow-2xl overflow-hidden ${borderRadius}`}
@@ -66,17 +66,19 @@ export default function Generate() {
                         loading="lazy"
                       />
 
-                      <Image
-                        className="z-40"
-                        placeholder="blur"
-                        blurDataURL={constants.blurDataURL}
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imagePath}`}
-                        fill
-                        sizes="100%"
-                        style={{ objectFit: "cover" }}
-                        alt={`Editable image: ${selectedImage.id}`}
-                        loading="lazy"
-                      />
+                      {selectedImage.imagePath && (
+                        <Image
+                          className="z-40"
+                          placeholder="blur"
+                          blurDataURL={constants.blurDataURL}
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imagePath}`}
+                          fill
+                          sizes="100%"
+                          style={{ objectFit: "cover" }}
+                          alt={`Editable image: ${selectedImage.id}`}
+                          loading="lazy"
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="text-center -mt-6 md:-mt-7">

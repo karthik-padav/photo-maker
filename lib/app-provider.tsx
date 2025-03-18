@@ -16,6 +16,7 @@ type Theme = {
   selectedImage: SelectedImage | null;
   globalLoader: boolean;
   user: User | null;
+  bgImages: { key: string; url: string }[];
 };
 
 const defaultValue: Theme = {
@@ -32,11 +33,18 @@ const defaultValue: Theme = {
   selectedImage: null,
   globalLoader: false,
   user: null,
+  bgImages: [] as { key: string; url: string }[],
 };
 
 const ThemeContext = createContext<Theme>(defaultValue);
 
-export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+export const AppProvider = ({
+  children,
+  bgImages = [],
+}: {
+  children: React.ReactNode;
+  bgImages: { key: string; url: string }[];
+}) => {
   let localStoredData: {
     selectedImage: SelectedImage | null;
     controlerValue: ControlerValue | null;
@@ -117,6 +125,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setGlobalLoader,
         user,
         setUserValue,
+        bgImages,
       }}
     >
       {children}

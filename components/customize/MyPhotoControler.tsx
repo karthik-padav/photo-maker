@@ -47,11 +47,11 @@ export default function MyPhotoControler() {
             list: constants.solidColorCollection,
             type: "bg",
           },
-          {
-            label: "Outline Gradients",
-            list: constants.gradientColorCollection,
-            type: "bgg",
-          },
+          // {
+          //   label: "Outline Gradients",
+          //   list: constants.gradientColorCollection,
+          //   type: "bgg",
+          // },
         ]}
       />
     </>

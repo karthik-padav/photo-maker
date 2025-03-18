@@ -8,11 +8,11 @@ import constants from "@/lib/constants";
 import EditBar from "@/components/editBar";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import bgImages from "@/assets/bgImage/images.json";
 
 export default function Generate() {
   const router = useRouter();
-  const { selectedImage, controlerValue, setControlerValue } = useAppProvider();
+  const { selectedImage, controlerValue, setControlerValue, bgImages } =
+    useAppProvider();
   // const imageWrapperRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const session = useSession();
   if (!selectedImage || !session?.data) router.push("/");
@@ -31,7 +31,7 @@ export default function Generate() {
     : "";
 
   return (
-    <main className="text-black body-font container">
+    <main className="text-black body-font px-5 md:px-0 md:container">
       {selectedImage && (
         <>
           <div className="mb-12 flex flex-wrap gap-2">
@@ -43,14 +43,7 @@ export default function Generate() {
               if (!item.url) return null;
               return (
                 <div key={item.key}>
-                  <div
-                    className="aspect-w-1 aspect-h-1 relative"
-                    // ref={(e: HTMLDivElement) => {
-                    //   if (imageWrapperRef.current) {
-                    //     imageWrapperRef.current[item.key] = e;
-                    //   }
-                    // }}
-                  >
+                  <div className="aspect-w-1 aspect-h-1 relative">
                     <div
                       className={`w-full h-full border-white dark:border-gray-800 border-4 drop-shadow-2xl overflow-hidden ${borderRadius}`}
                     >

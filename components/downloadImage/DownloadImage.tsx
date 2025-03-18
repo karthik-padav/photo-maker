@@ -46,21 +46,43 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
   }, [imageWrapperRef?.current?.offsetWidth]);
 
   const [_image, setImage] = useState<HTMLImageElement | null>(null);
+  const [bgImage, setBgImage] = useState<HTMLImageElement | null>(null);
+
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const img = new Image();
-    img.src = `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`;
-    // img.src =
-    //   "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D";
-    img.crossOrigin = "anonymous";
-    img.onload = () => setImage(img);
+    if (image.imagePath) {
+      const img = new Image();
+      img.src = `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`;
+      // img.src =
+      //   "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D";
+      img.crossOrigin = "anonymous";
+      img.onload = () => setImage(img);
+    }
   }, [image.imagePath]);
+
+  useEffect(() => {
+    if (controler?.backgroundImagePath) {
+      const bgImg = new Image();
+      // bgImg.src = controler.backgroundImagePath;
+      bgImg.src =
+        "https://photo-maker.s3.ap-south-1.amazonaws.com/bg-collection/26.jpg";
+
+      bgImg.crossOrigin = "anonymous";
+      bgImg.onload = () => setBgImage(bgImg);
+    } else setBgImage(null);
+  }, [controler?.backgroundImagePath]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!_image || !ctx || !canvas) return;
+    const borderRadiusPercent =
+      controler?.border?.value === "rounded-xl"
+        ? 0
+        : controler?.border?.value === "rounded-3xl"
+        ? 4
+        : 50;
 
     const parentWidth = canvas.parentElement?.clientWidth || _image.width;
 
@@ -74,6 +96,41 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Apply Clipping (overflow hidden effect)
+    ctx.save();
+    ctx.beginPath();
+
+    if (borderRadiusPercent > 49) {
+      // ✅ Clip to a circle
+      const radius = canvas.width / 2;
+      ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
+    } else if (borderRadiusPercent > -1) {
+      // ✅ Clip to a rounded rectangle
+      const adjustedBorderRadius =
+        (borderRadiusPercent / 100) * (canvas.width / 2);
+      ctx.moveTo(adjustedBorderRadius, 0);
+      ctx.arcTo(
+        canvas.width,
+        0,
+        canvas.width,
+        canvas.height,
+        adjustedBorderRadius
+      );
+      ctx.arcTo(
+        canvas.width,
+        canvas.height,
+        0,
+        canvas.height,
+        adjustedBorderRadius
+      );
+      ctx.arcTo(0, canvas.height, 0, 0, adjustedBorderRadius);
+      ctx.arcTo(0, 0, canvas.width, 0, adjustedBorderRadius);
+    }
+
+    ctx.closePath();
+    ctx.clip();
+    // ✅ Apply clip to keep everything inside the shape
+
     const scaleFactor =
       Math.min(canvas.width / _image!.width, canvas.height / _image!.height) *
       scale;
@@ -84,6 +141,80 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     const centerY = position.y + scaledHeight / 2;
 
     ctx.save(); // Save current transformation state
+
+    // DRAW BACKGROUND START
+    if (bgImage) {
+      const bgScale = controler?.backgroundScale
+        ? Number(controler.backgroundScale)
+        : 1;
+      const bgRotate = controler?.backgroundRotate
+        ? Number(controler.backgroundRotate)
+        : 0;
+      const scaleFactor =
+        Math.min(canvas.width / bgImage.width, canvas.height / bgImage.height) *
+        bgScale;
+      const bgWidth = bgImage.width * scaleFactor;
+      const bgHeight = bgImage.height * scaleFactor;
+
+      const radians = (bgRotate * Math.PI) / 180;
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(radians);
+
+      ctx.drawImage(bgImage, -bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+    } else if (controler?.backgroundColorType === "bg") {
+      // Solid Background Color (No Rotation)
+      ctx.fillStyle = controler.backgroundColor || "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    } else if (controler?.backgroundColorType === "bgg") {
+      // Background Gradient with Rotation & Scaling
+      const bgScale = controler?.backgroundScale
+        ? Number(controler.backgroundScale)
+        : 1;
+      const bgRotate = controler?.backgroundRotate
+        ? Number(controler.backgroundRotate)
+        : 0;
+
+      const radians = (bgRotate * Math.PI) / 180;
+
+      // Scale factor calculation (similar to bgImage)
+      const bgWidth = canvas.width * bgScale;
+      const bgHeight = canvas.height * bgScale;
+
+      // Apply transformations
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(radians);
+      ctx.scale(bgScale, bgScale); // ✅ Scale the background gradient
+
+      // Create the gradient
+      const gradient = ctx.createLinearGradient(
+        -bgWidth / 2,
+        0,
+        bgWidth / 2,
+        0
+      );
+      const gradientColors =
+        controler.backgroundColor &&
+        controler.backgroundColor.match(/rgb\((\d+, \d+, \d+)\)/g);
+      if (gradientColors) {
+        gradient.addColorStop(0, gradientColors[0]);
+        gradient.addColorStop(1, gradientColors[1]);
+      } else {
+        gradient.addColorStop(0, "red");
+        gradient.addColorStop(1, "yellow");
+      }
+
+      ctx.fillStyle = gradient;
+
+      // Draw the gradient background
+      ctx.fillRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight);
+
+      ctx.restore(); // ✅ Restore previous state
+
+      // Reset transformations
+      // ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+    // DRAW BACKGROUND END
 
     // OUTER BORDER START
     if (
@@ -97,12 +228,6 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
         : 1;
 
       const halfBorder = borderWidth / 2; // Keeps the border inside the canvas
-      const borderRadiusPercent =
-        controler?.border?.value === "rounded-xl"
-          ? 0
-          : controler?.border?.value === "rounded-3xl"
-          ? 4
-          : 50;
 
       ctx.save();
       ctx.globalAlpha = borderOpacity;
@@ -171,10 +296,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
       ctx.stroke();
       ctx.restore();
     }
-
-    // DRAW BACKGROUND START
-
-    // DRAW BACKGROUND END
+    // OUTER BORDER END
 
     // Move origin to the center of the image
     ctx.translate(centerX, centerY);
@@ -198,8 +320,6 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     }
     // ===================== OUTLINE FOR IMAGE END =====================
 
-    // OUTER BORDER END
-
     // Draw image centered at (0,0) after transformation
     ctx.drawImage(
       _image,
@@ -210,6 +330,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     );
 
     ctx.restore(); // Restore the previous state
+
     console.log(canvasRef.current, "canvasRef.current");
   }, [
     _image,
@@ -221,6 +342,11 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     controler?.outerBorderWidth,
     controler?.outerBorderColor,
     controler?.outerBorderOpacity,
+    bgImage,
+    controler?.backgroundColor,
+    controler?.backgroundRotate,
+    controler?.backgroundScale,
+    controler?.border?.value,
   ]);
 
   const handleMouseDown = (e) => {
@@ -254,7 +380,6 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
   };
   return (
     <>
-      {/* <button onClick={downloadCanvasAsImage}>Download Image</button> */}
       <div
         ref={imageWrapperRef}
         className={`w-full h-full overflow-hidden`}
@@ -266,6 +391,9 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchMove={handleMouseMove}
+          onTouchEnd={handleMouseUp}
         />
       </div>
     </>

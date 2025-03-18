@@ -103,7 +103,7 @@ export default function Header() {
               {item?.requireSelectedImage ? (
                 <Button
                   variant="ghost"
-                  className={`text-md p-0 hover:bg-transparent hover:text-violet-500 md:mr-6 md:inline md:py-0 py-2 h-auto ${
+                  className={`w-full text-left text-md p-0 hover:bg-transparent hover:text-violet-500 md:mr-6 md:inline block md:py-0 py-2 h-auto ${
                     pathname === item.href && "text-violet-500"
                   }`}
                   onClick={() =>

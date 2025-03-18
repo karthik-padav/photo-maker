@@ -12,7 +12,7 @@ import LoginPopup from "@/components/loginPopup";
 import constants from "@/lib/constants";
 import Script from "next/script";
 import GlobalLoader from "@/components/globalLoader";
-import { getWebsiteData } from "@/lib/actions/services";
+import { getAllBgImage, getWebsiteData } from "@/lib/actions/services";
 import Analytics from "@/components/Analytics";
 
 const fontSans = FontSans({
@@ -57,7 +57,8 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   const { data: websiteDate } = await getWebsiteData();
-
+  const { data: bgImages } = await getAllBgImage();
+  console.log(bgImages, "bgImages");
   return (
     <html lang="en">
       <body
@@ -89,7 +90,7 @@ export default async function RootLayout({
           </>
         )}
         <SessionProvider session={session}>
-          <AppProvider>
+          <AppProvider bgImages={bgImages}>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"

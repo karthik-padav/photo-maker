@@ -24,15 +24,10 @@ interface Params {
   image: SelectedImage;
   controler?: ControlerValue;
   disabled?: boolean;
-  saveCanvas: (canvas: HTMLCanvasElement | null) => void;
+  canvasRef: React.RefObject<HTMLCanvasElement>;
 }
 
-export default function DownloadImage({
-  image,
-  controler,
-  saveCanvas = () => {},
-}: Params) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+export default function DownloadImage({ image, controler, canvasRef }: Params) {
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const { setControlerValue } = useAppProvider();
 
@@ -50,22 +45,6 @@ export default function DownloadImage({
       });
   }, [imageWrapperRef?.current?.offsetWidth]);
 
-  // const downloadCanvasAsImage = () => {
-  //   const canvas = canvasRef.current;
-  //   if (!canvas) return;
-
-  //   // Convert canvas to a data URL
-  //   const imageURI = canvas.toDataURL("image/png");
-
-  //   // Create a download link
-  //   const link = document.createElement("a");
-  //   link.href = imageURI;
-  //   link.download = "canvas-image.png"; // File name
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
-
   const [_image, setImage] = useState<HTMLImageElement | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
@@ -74,7 +53,7 @@ export default function DownloadImage({
     img.src = `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`;
     // img.src =
     //   "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D";
-
+    img.crossOrigin = "anonymous";
     img.onload = () => setImage(img);
   }, [image.imagePath]);
 
@@ -231,7 +210,7 @@ export default function DownloadImage({
     );
 
     ctx.restore(); // Restore the previous state
-    saveCanvas(canvasRef.current);
+    console.log(canvasRef.current, "canvasRef.current");
   }, [
     _image,
     position,

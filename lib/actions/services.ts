@@ -131,3 +131,9 @@ export async function getWebsiteData() {
     "https://raw.githubusercontent.com/karthik-padav/public-data/refs/heads/main/upssp.json"
   );
 }
+
+export async function getAllBgImage() {
+  return await axios.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/getAllBgImage`
+  );
+}

@@ -76,15 +76,13 @@ export function bgControlers(controlerValue: ControlerValue | null) {
       20,
       controlerValue?.backgroundRotate || 0
     ),
-    ...(controlerValue?.backgroundImagePath && {
-      backgroundScale: createRangeControl(
-        "Background Scale",
-        0.5,
-        2,
-        0.1,
-        controlerValue?.backgroundScale || 1
-      ),
-    }),
+    backgroundScale: createRangeControl(
+      "Background Scale",
+      0.5,
+      2,
+      0.1,
+      controlerValue?.backgroundScale || 1
+    ),
   };
 }
 

@@ -68,6 +68,7 @@ export default function Customize() {
   const [activeTab, setActiveTab] = useState("MY_PHOTO");
   const [showDialog, setShowDialog] = useState(false);
   const [isloading, setLoader] = useState(false);
+  const downloadImageRef = useRef<HTMLCanvasElement | null>(null);
 
   if (!selectedImage || !session?.data) router.push("/");
 
@@ -171,6 +172,7 @@ export default function Customize() {
                 <DownloadImage
                   image={selectedImage}
                   controler={controlerValue ?? undefined}
+                  saveCanvas={(canvas) => (downloadImageRef.current = canvas)}
                 />
               )}
             </div>

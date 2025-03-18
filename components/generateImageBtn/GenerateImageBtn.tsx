@@ -77,32 +77,20 @@ export default function GenerateImageBtn({
         blob = await imageCompression(compressedFile, options);
       }
 
-      if (blob) pathname != "/generate" && router.push("/generate");
-      else
+      const { data = null } = (await generateImage({
+        blob,
+        fileName: file.name,
+      })) as { data: SelectedImage };
+
+      if (data) {
+        setSelectedImage(data);
+      } else {
         toast({
           variant: "destructive",
           description: "Oops! Something went wrong.",
         });
-
-      void (async () => {
-        try {
-          const { data = null } = (await generateImage({
-            blob,
-            fileName: file.name,
-          })) as { data: SelectedImage };
-
-          if (data) {
-            setSelectedImage(data);
-          } else {
-            toast({
-              variant: "destructive",
-              description: "Oops! Something went wrong.",
-            });
-          }
-        } catch (error) {
-          console.error("Error generating image:", error);
-        }
-      })();
+      }
+      pathname != "/generate" && router.push("/generate");
     } catch (error) {
       console.log("error", error);
       toast({

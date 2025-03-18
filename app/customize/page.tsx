@@ -129,7 +129,7 @@ export default function Customize() {
     : "";
 
   return (
-    <main className="text-black container mx-auto">
+    <main className="text-black px-5 md:px-0 md:container mx-auto">
       <div className="mb-12 flex flex-wrap gap-2">
         <EditBar />
         <Button

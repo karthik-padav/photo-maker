@@ -85,30 +85,37 @@ export default function Customize() {
 
     setLoader(true);
     try {
-      // const element = document.getElementById(
-      //   "wrapper"
-      // ) as HTMLDivElement | null;
-      // if (!element) throw new Error("Element not found");
-      // console.log(element, "element");
+      if (!downloadImageRef.current) return;
 
-      const result = await onDownload(imageWrapperRef.current);
-      if (!result) {
-        throw new Error("Failed to download image");
-      }
-      const { blob } = result;
-      if (selectedImage?.id && blob && controlerValue) {
-        const { data } = await createControler({
-          controler: controlerValue,
-          imageId: selectedImage.id,
-          blob,
-        });
-        if (data) {
-          downloadBlob(
-            blob,
-            `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}`
-          );
-        }
-      }
+      // Convert canvas to a data URL
+      const imageURI = downloadImageRef.current.toDataURL("image/png");
+
+      // Create a download link
+      const link = document.createElement("a");
+      link.href = imageURI;
+      link.download = "canvas-image.png"; // File name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // const result = await onDownload(imageWrapperRef.current);
+      // if (!result) {
+      //   throw new Error("Failed to download image");
+      // }
+      // const { blob } = result;
+      // if (selectedImage?.id && blob && controlerValue) {
+      //   const { data } = await createControler({
+      //     controler: controlerValue,
+      //     imageId: selectedImage.id,
+      //     blob,
+      //   });
+      //   if (data) {
+      //     downloadBlob(
+      //       blob,
+      //       `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}`
+      //     );
+      //   }
+      // }
     } catch (error) {
       throw new Error(String(error));
     } finally {

@@ -8,6 +8,7 @@ import constants from "@/lib/constants";
 import EditBar from "@/components/editBar";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function Generate() {
   const router = useRouter();
@@ -28,9 +29,9 @@ export default function Generate() {
     router.push("/customize");
   }
 
-  const borderRadius = controlerValue?.border?.value
+  const borderRadius = controlerValue?.border
     ? controlerValue.border.value
-    : "";
+    : 50;
 
   return (
     <main className="text-black body-font px-5 md:px-0 md:container">
@@ -47,7 +48,14 @@ export default function Generate() {
                 <div key={item.key}>
                   <div className="aspect-w-1 aspect-h-1 relative">
                     <div
-                      className={`w-full h-full border-white dark:border-gray-800 border-4 drop-shadow-2xl overflow-hidden ${borderRadius}`}
+                      className={cn(
+                        "w-full h-full border-white dark:border-gray-800 border-4 drop-shadow-2xl overflow-hidden asdas",
+                        borderRadius > 49
+                          ? "rounded-full"
+                          : borderRadius > 19
+                          ? "rounded-2xl"
+                          : ""
+                      )}
                     >
                       <Image
                         className="z-40"

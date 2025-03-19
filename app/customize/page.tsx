@@ -113,10 +113,6 @@ export default function Customize() {
     }
   }
 
-  const borderRadius = controlerValue?.border
-    ? controlerValue.border.value
-    : 50;
-
   return (
     <main className="text-black px-2 md:px-0 md:container mx-auto">
       <div className="mb-12 flex flex-wrap gap-2">

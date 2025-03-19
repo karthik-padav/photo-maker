@@ -159,6 +159,10 @@ const constants = {
   gradientColorCollection: [
     {
       id: uid(16),
+      color: "",
+    },
+    {
+      id: uid(16),
       color:
         "linear-gradient(to right, rgb(142, 158, 171), rgb(238, 242, 243))",
     },
@@ -346,7 +350,7 @@ const constants = {
     { title: "Square", value: 0 },
   ],
   solidColorCollection: [
-    { id: uid(16), color: "rgb(255, 255, 255)" },
+    { id: uid(16), color: "" },
     { id: uid(16), color: "rgb(195, 200, 215)" },
     { id: uid(16), color: "rgb(102, 124, 137)" },
     { id: uid(16), color: "rgb(237, 99, 55)" },

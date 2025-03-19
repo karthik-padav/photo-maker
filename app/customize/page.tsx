@@ -4,7 +4,7 @@ import { Image as LImage, Square } from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
 import { useSession } from "next-auth/react";
 import { useRef, useState, useCallback, useEffect } from "react";
-import { downloadBlob, onDownload } from "@/lib/common";
+import { downloadBlob, resizedImage } from "@/lib/common";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -70,7 +70,12 @@ export default function Customize() {
   const [isloading, setLoader] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  if (!selectedImage || !session?.data) router.push("/");
+  // Redirect after component mounts
+  useEffect(() => {
+    if (!selectedImage || !session?.data) {
+      router.push("/");
+    }
+  }, [selectedImage, session?.data, router]);
 
   async function downloadImage() {
     const ENABLE_PAYMENT = process.env.NEXT_PUBLIC_ENABLE_PAYMENT === "true";
@@ -88,35 +93,19 @@ export default function Customize() {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      // Convert canvas to a data URL
-      const imageURI = canvas.toDataURL("image/png");
-
-      // Create a download link
-      const link = document.createElement("a");
-      link.href = imageURI;
-      link.download = "canvas-image.png"; // File name
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // const result = await onDownload(imageWrapperRef.current);
-      // if (!result) {
-      //   throw new Error("Failed to download image");
-      // }
-      // const { blob } = result;
-      // if (selectedImage?.id && blob && controlerValue) {
-      //   const { data } = await createControler({
-      //     controler: controlerValue,
-      //     imageId: selectedImage.id,
-      //     blob,
-      //   });
-      //   if (data) {
-      //     downloadBlob(
-      //       blob,
-      //       `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}`
-      //     );
-      //   }
-      // }
+      const blob = (await resizedImage(canvas)) as Blob;
+      if (selectedImage?.id && blob && controlerValue) {
+        const { data } = await createControler({
+          controler: controlerValue,
+          imageId: selectedImage.id,
+          blob,
+        });
+        if (data)
+          downloadBlob(
+            blob,
+            `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}`
+          );
+      }
     } catch (error) {
       throw new Error(String(error));
     } finally {
@@ -124,12 +113,12 @@ export default function Customize() {
     }
   }
 
-  const borderRadius = controlerValue?.border?.value
+  const borderRadius = controlerValue?.border
     ? controlerValue.border.value
-    : "";
+    : 50;
 
   return (
-    <main className="text-black px-5 md:px-0 md:container mx-auto">
+    <main className="text-black px-2 md:px-0 md:container mx-auto">
       <div className="mb-12 flex flex-wrap gap-2">
         <EditBar />
         <Button
@@ -170,11 +159,9 @@ export default function Customize() {
           {activeTab === "BACKGROUND" && <Background />}
         </div>
         <div
-          className={`col-span-12 md:col-span-6 bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl p-4 md:p-8 bg-background flex justify-center items-center`}
+          className={`col-span-12 md:col-span-6 bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl p-2 md:p-8 bg-background flex justify-center items-center`}
         >
-          <div
-            className={`w-full aspect-w-1 aspect-h-1 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25] relative ${borderRadius}`}
-          >
+          <div className="w-full aspect-w-1 aspect-h-1 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25] relative">
             <div id="wrapper" ref={imageWrapperRef} className="w-full h-full">
               {selectedImage && (
                 <DownloadImage

@@ -47,9 +47,7 @@ export async function createControler(body: Params) {
     backgroundColorType,
     backgroundRotate,
     backgroundColor,
-    ...(border?.title && border.value
-      ? { borderTitle: border.title, borderValue: border.value }
-      : {}),
+    borderRadius: border?.value || 0,
     ...(transformX && transformY ? { transformX, transformY } : {}),
   };
   formData.append("file", blob);

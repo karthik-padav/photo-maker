@@ -171,31 +171,31 @@ export const extractValues = (input: string) =>
     ?.slice(1)
     .map(parseFloat) || [];
 
-export async function onDownload(el: HTMLDivElement | null) {
-  if (!el) return;
-  // await new Promise((resolve) => setTimeout(resolve, 1000));
+export const resizedImage = async (originalCanvas) => {
+  if (!originalCanvas) return;
 
-  const dataUrl = await toPng(el, {
-    cacheBust: false,
-    quality: 1,
-    pixelRatio: 5,
+  const targetSize = 800;
+
+  // Create an offscreen canvas for resizing
+  const offscreenCanvas = document.createElement("canvas");
+  const ctx = offscreenCanvas.getContext("2d");
+
+  if (!ctx) return;
+
+  // Set the new canvas dimensions
+  offscreenCanvas.width = targetSize;
+  offscreenCanvas.height = targetSize;
+
+  // Draw the original image resized onto the new canvas
+  ctx.drawImage(originalCanvas, 0, 0, targetSize, targetSize);
+
+  // Convert the resized canvas to a Blob (returning a Promise)
+  return new Promise((resolve) => {
+    offscreenCanvas.toBlob((blob) => {
+      resolve(blob);
+    }, "image/png");
   });
-
-  // const bounds = el.getBoundingClientRect();
-
-  // const canvas = await html2canvas(el, {
-  //   scale: 10, // Increase resolution without distortion
-  //   useCORS: true,
-  //   backgroundColor: null, // Transparent background
-  //   width: el.offsetWidth,
-  //   height: el.offsetHeight,
-  // });
-  // const dataUrl = canvas.toDataURL("image/png");
-  let blob = base64ToBlob(dataUrl, "image/png");
-
-  blob = (await compressImageBlob(blob)) as Blob;
-  return { blob, dataUrl };
-}
+};
 
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
@@ -270,31 +270,3 @@ const base64ToBlob = (base64: string, mimeType: string) => {
     type: mimeType,
   });
 };
-
-async function compressImageBlob(
-  imageBlob: Blob,
-  maxWidth = 800,
-  quality = 0.7
-) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = URL.createObjectURL(imageBlob);
-    img.onload = () => {
-      URL.revokeObjectURL(img.src);
-      const canvas = Object.assign(document.createElement("canvas"), {
-        width: img.width * Math.min(maxWidth / img.width, 1),
-        height: img.height * Math.min(maxWidth / img.width, 1),
-      });
-      canvas
-        .getContext("2d")
-        ?.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(
-        (blob) =>
-          blob ? resolve(blob) : reject(new Error("Compression failed")),
-        "image/png",
-        quality
-      );
-    };
-    img.onerror = reject;
-  });
-}

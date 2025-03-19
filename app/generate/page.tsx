@@ -2,7 +2,7 @@
 
 import { useAppProvider } from "@/lib/app-provider";
 import { useSession } from "next-auth/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import constants from "@/lib/constants";
 import EditBar from "@/components/editBar";
@@ -13,9 +13,11 @@ export default function Generate() {
   const router = useRouter();
   const { selectedImage, controlerValue, setControlerValue, bgImages } =
     useAppProvider();
-  // const imageWrapperRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const session = useSession();
-  if (!selectedImage || !session?.data) router.push("/");
+
+  useEffect(() => {
+    if (!selectedImage || !session?.data) router.push("/");
+  }, [selectedImage, session?.data, router]);
 
   function handleRedirect(item: { id: string; backgroundImagePath?: string }) {
     if (item?.backgroundImagePath)
@@ -40,7 +42,7 @@ export default function Generate() {
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
             {bgImages.map((item) => {
-              if (!item.url) return null;
+              if (!item.key) return null;
               return (
                 <div key={item.key}>
                   <div className="aspect-w-1 aspect-h-1 relative">
@@ -51,7 +53,7 @@ export default function Generate() {
                         className="z-40"
                         placeholder="blur"
                         blurDataURL={constants.blurDataURL}
-                        src={item.url}
+                        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.key}`}
                         fill
                         sizes="100%"
                         style={{ objectFit: "cover" }}
@@ -79,7 +81,7 @@ export default function Generate() {
                       onClick={() =>
                         handleRedirect({
                           id: item.key,
-                          backgroundImagePath: item.url,
+                          backgroundImagePath: item.key,
                         })
                       }
                       className="drop-shadow-2xl rounded-full py-2 px-4 md:py-4 md:px-6 bg-violet-500 hover:bg-violet-500 text-white"

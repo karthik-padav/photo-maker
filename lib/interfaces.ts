@@ -1,5 +1,5 @@
 export interface ControlerValue {
-  border?: { title: string; value: string };
+  border?: { title: string; value: number };
   rotate?: number | string;
   scale?: number | string;
   transformX?: number;

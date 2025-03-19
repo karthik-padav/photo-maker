@@ -341,9 +341,9 @@ const constants = {
     },
   ],
   borders: [
-    { title: "Round", value: "rounded-full" },
-    { title: "Rounded Corners", value: "rounded-3xl" },
-    { title: "Square", value: "rounded-xl" },
+    { title: "Round", value: 50 },
+    { title: "Rounded Corners", value: 20 },
+    { title: "Square", value: 0 },
   ],
   solidColorCollection: [
     { id: uid(16), color: "rgb(255, 255, 255)" },

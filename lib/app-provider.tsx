@@ -27,7 +27,7 @@ const defaultValue: Theme = {
   setGlobalLoader: () => {},
   setUserValue: () => {},
   controlerValue: {
-    border: { title: "Round", value: "rounded-full" },
+    border: { title: "Round", value: 50 },
     pngBorderColor: "rgb(255, 255, 255)",
   },
   selectedImage: null,

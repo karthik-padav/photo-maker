@@ -67,11 +67,10 @@ model Image {
  
 model Controler {
   id                       String     @id @default(uuid())
-  userId                   String?
+  userId                   String
   imageId                  String? 
   bucket                   String?
-  borderTitle              String?
-  borderValue              String?
+  borderRadius              String?
   imageWrapperSize         String?
   rotate                   String?
   scale                    String?

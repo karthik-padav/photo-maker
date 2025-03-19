@@ -14,10 +14,9 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import ColorPicker from "../colorPicker";
 import Image from "next/image";
-import bgImages from "@/assets/bgImage/images.json";
 
 export default function Background() {
-  const { controlerValue, setControlerValue } = useAppProvider();
+  const { controlerValue, setControlerValue, bgImages } = useAppProvider();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const controler: any = bgControlers(controlerValue);
 
@@ -70,7 +69,7 @@ export default function Background() {
                   <p className="flex justify-center items-center">None</p>
                 </div>
                 {bgImages.map((item) => {
-                  if (item?.url)
+                  if (item?.key)
                     return (
                       <div
                         key={item.key}
@@ -78,7 +77,7 @@ export default function Background() {
                         onClick={() => handleBg(item.url)}
                       >
                         <Image
-                          src={item.url}
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.key}`}
                           placeholder="blur"
                           blurDataURL={constants.blurDataURL}
                           fill

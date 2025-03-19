@@ -6,7 +6,7 @@ import { ControlerValue, MyContoler, SelectedImage } from "@/lib/interfaces";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Download, Loader2, Pencil, Trash2 } from "lucide-react";
 import {
@@ -44,7 +44,10 @@ export default function MyPhotosWrapper({
     () => controlerData
   );
   const session = useSession();
-  if (!session?.data) router.push("/");
+
+  useEffect(() => {
+    if (!session?.data) router.push("/");
+  }, [session?.data, router]);
 
   const downloadImage = async (imageUrl: string) => {
     const response = await fetch(imageUrl);

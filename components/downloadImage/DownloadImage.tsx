@@ -1,15 +1,6 @@
 "use client";
 
 import { useAppProvider } from "@/lib/app-provider";
-// import Image from "next/image";
-// import constants from "@/lib/constants";
-// import {
-//   calcPercentage,
-//   calcPx,
-//   getBorderStyles,
-//   getImageStyle,
-// } from "@/lib/common";
-// import { useAppProvider } from "../../lib/app-provider";
 import { ControlerValue, SelectedImage } from "@/lib/interfaces";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -19,6 +10,7 @@ import {
   drawOuterBorder,
   imageOutline,
 } from "./utils";
+import { calcPercentage, calcPx } from "@/lib/common";
 
 interface Params {
   image: SelectedImage;
@@ -31,15 +23,22 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const { setControlerValue } = useAppProvider();
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
     if (imageWrapperRef?.current?.offsetWidth)
       setControlerValue({
-        imageWrapperSize: imageWrapperRef?.current?.offsetWidth,
+        imageWrapperSize: imageWrapperRef.current.offsetWidth,
       });
   }, [imageWrapperRef?.current?.offsetWidth]);
+
+  const imageWrapperWidth =
+    imageWrapperRef?.current?.offsetWidth || controler?.imageWrapperSize || 300;
+
+  const position = {
+    x: calcPx(imageWrapperWidth, controler?.transformX || 0),
+    y: calcPx(imageWrapperWidth, controler?.transformY || 0),
+  };
 
   const [_image, setImage] = useState<HTMLImageElement | null>(null);
   const [bgImage, setBgImage] = useState<HTMLImageElement | null>(null);
@@ -50,8 +49,6 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     if (image.imagePath) {
       const img = new Image();
       img.src = `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`;
-      // img.src =
-      //   "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D";
       img.crossOrigin = "anonymous";
       img.onload = () => setImage(img);
     }
@@ -60,9 +57,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
   useEffect(() => {
     if (controler?.backgroundImagePath) {
       const bgImg = new Image();
-      bgImg.src = controler.backgroundImagePath;
-      // bgImg.src =
-      //   "https://photo-maker.s3.ap-south-1.amazonaws.com/bg-collection/26.jpg";
+      bgImg.src = `${process.env.NEXT_PUBLIC_IMAGE_URL}${controler.backgroundImagePath}`;
 
       bgImg.crossOrigin = "anonymous";
       bgImg.onload = () => setBgImage(bgImg);
@@ -70,15 +65,24 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
   }, [controler?.backgroundImagePath]);
 
   useEffect(() => {
+    const preventScroll = (e: TouchEvent) => {
+      if (canvasRef.current?.contains(e.target as Node)) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("touchmove", preventScroll, { passive: false });
+
+    return () => {
+      document.removeEventListener("touchmove", preventScroll);
+    };
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!_image || !ctx || !canvas) return;
-    const borderRadiusPercent =
-      controler?.border?.value === "rounded-xl"
-        ? 0
-        : controler?.border?.value === "rounded-3xl"
-        ? 4
-        : 50;
+    const borderRadiusPercent = controler?.border ? controler.border.value : 50;
 
     const parentWidth = canvas.parentElement?.clientWidth || _image.width;
 
@@ -104,23 +108,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
       // ✅ Clip to a rounded rectangle
       const adjustedBorderRadius =
         (borderRadiusPercent / 100) * (canvas.width / 2);
-      ctx.moveTo(adjustedBorderRadius, 0);
-      ctx.arcTo(
-        canvas.width,
-        0,
-        canvas.width,
-        canvas.height,
-        adjustedBorderRadius
-      );
-      ctx.arcTo(
-        canvas.width,
-        canvas.height,
-        0,
-        canvas.height,
-        adjustedBorderRadius
-      );
-      ctx.arcTo(0, canvas.height, 0, 0, adjustedBorderRadius);
-      ctx.arcTo(0, 0, canvas.width, 0, adjustedBorderRadius);
+      ctx.roundRect(0, 0, canvas.width, canvas.height, adjustedBorderRadius);
     }
 
     ctx.closePath();
@@ -348,7 +336,6 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-
     if (
       x >= position.x &&
       x <= position.x + (_image?.width || 0) &&
@@ -363,20 +350,45 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
   const handleMouseMove = (e) => {
     if (!dragging || !canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
-    setPosition({
-      x: e.clientX - rect.left - offset.x,
-      y: e.clientY - rect.top - offset.y,
+    const x = e.clientX - rect.left - offset.x;
+    const y = e.clientY - rect.top - offset.y;
+    setControlerValue({
+      transformX: calcPercentage(imageWrapperWidth, x),
+      transformY: calcPercentage(imageWrapperWidth, y),
     });
   };
 
   const handleMouseUp = () => {
     setDragging(false);
   };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleMouseDown({
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    } as MouseEvent);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleMouseMove({
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    } as MouseEvent);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    handleMouseUp();
+  };
   return (
     <>
       <div
         ref={imageWrapperRef}
-        className={`w-full h-full overflow-hidden`}
+        className={`w-full h-full overflow-hidden cursor-move`}
         onDragOver={(e) => e.preventDefault()}
       >
         <canvas
@@ -385,9 +397,9 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          onTouchStart={handleMouseDown}
-          onTouchMove={handleMouseMove}
-          onTouchEnd={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         />
       </div>
     </>

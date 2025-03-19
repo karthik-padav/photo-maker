@@ -58,7 +58,6 @@ export default async function RootLayout({
   const session = await auth();
   const { data: websiteDate } = await getWebsiteData();
   const { data: bgImages } = await getAllBgImage();
-  console.log(bgImages, "bgImages");
   return (
     <html lang="en">
       <body

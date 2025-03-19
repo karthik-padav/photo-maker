@@ -33,11 +33,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
-  const [start, setStart] = useState({ x: 0, y: 0 });
 
-  console.log(position, "position");
-  console.log(start, "start");
-  console.log(controler, "controler123");
   useEffect(() => {
     if (imageWrapperRef?.current?.offsetWidth)
       setControlerValue({
@@ -64,9 +60,9 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
   useEffect(() => {
     if (controler?.backgroundImagePath) {
       const bgImg = new Image();
-      // bgImg.src = controler.backgroundImagePath;
-      bgImg.src =
-        "https://photo-maker.s3.ap-south-1.amazonaws.com/bg-collection/26.jpg";
+      bgImg.src = controler.backgroundImagePath;
+      // bgImg.src =
+      //   "https://photo-maker.s3.ap-south-1.amazonaws.com/bg-collection/26.jpg";
 
       bgImg.crossOrigin = "anonymous";
       bgImg.onload = () => setBgImage(bgImg);
@@ -330,8 +326,6 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     );
 
     ctx.restore(); // Restore the previous state
-
-    console.log(canvasRef.current, "canvasRef.current");
   }, [
     _image,
     position,

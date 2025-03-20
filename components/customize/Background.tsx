@@ -74,7 +74,7 @@ export default function Background() {
                       <div
                         key={item.key}
                         className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer bg-white"
-                        onClick={() => handleBg(item.url)}
+                        onClick={() => handleBg(item.key)}
                       >
                         <Image
                           src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.key}`}

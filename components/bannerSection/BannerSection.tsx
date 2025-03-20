@@ -33,8 +33,8 @@ export default function BannerSection() {
                     alt="banner-dp"
                     src={`/images/${i}.webp`}
                     style={{ objectFit: "contain" }}
-                    fill
-                    sizes="100vw"
+                    width={130}
+                    height={130}
                   />
                 </div>
               </div>

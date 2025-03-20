@@ -2,7 +2,7 @@
 
 import { useAppProvider } from "@/lib/app-provider";
 import { ControlerValue, SelectedImage } from "@/lib/interfaces";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   createCanvasRadius,
   drawBackground,
@@ -296,11 +296,28 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
       controler?.pngShadow !== "0" ||
       controler?.pngBorderColor?.length
     ) {
-      if (controler?.pngBorderColor) ctx.shadowColor = controler.pngBorderColor;
-      if (controler?.pngShadow)
-        ctx.shadowBlur = Number(controler.pngShadow) * 10;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
+      if (
+        !isNaN(Number(controler?.pngShadow)) &&
+        Number(controler?.pngShadow)
+      ) {
+        if (controler?.pngBorderColor)
+          ctx.shadowColor = controler.pngBorderColor;
+        ctx.shadowBlur = Number(controler?.pngShadow) * 3;
+      }
+
+      for (var x = -2; x <= 2; x++) {
+        for (var y = -2; y <= 2; y++) {
+          ctx.shadowOffsetX = x;
+          ctx.shadowOffsetY = y;
+          ctx.drawImage(
+            _image,
+            -scaledWidth / 2,
+            -scaledHeight / 2,
+            scaledWidth,
+            scaledHeight
+          );
+        }
+      }
     }
     // ===================== OUTLINE FOR IMAGE END =====================
 

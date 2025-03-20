@@ -351,7 +351,7 @@ const constants = {
   ],
   solidColorCollection: [
     { id: uid(16), color: "" },
-    { id: uid(16), color: "rgb(195, 200, 215)" },
+    { id: uid(16), color: "rgb(255, 255, 255)" },
     { id: uid(16), color: "rgb(102, 124, 137)" },
     { id: uid(16), color: "rgb(237, 99, 55)" },
     { id: uid(16), color: "rgb(255, 65, 108)" },

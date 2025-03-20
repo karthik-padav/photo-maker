@@ -296,28 +296,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
       controler?.pngShadow !== "0" ||
       controler?.pngBorderColor?.length
     ) {
-      if (
-        !isNaN(Number(controler?.pngShadow)) &&
-        Number(controler?.pngShadow)
-      ) {
-        if (controler?.pngBorderColor)
-          ctx.shadowColor = controler.pngBorderColor;
-        ctx.shadowBlur = Number(controler?.pngShadow) * 3;
-      }
-
-      for (var x = -2; x <= 2; x++) {
-        for (var y = -2; y <= 2; y++) {
-          ctx.shadowOffsetX = x;
-          ctx.shadowOffsetY = y;
-          ctx.drawImage(
-            _image,
-            -scaledWidth / 2,
-            -scaledHeight / 2,
-            scaledWidth,
-            scaledHeight
-          );
-        }
-      }
+      drawShadowed({ ctx, scaledWidth, scaledHeight });
     }
     // ===================== OUTLINE FOR IMAGE END =====================
 
@@ -348,6 +327,41 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     controler?.border?.value,
   ]);
 
+  const drawShadowed = useCallback(
+    ({ ctx, scaledWidth, scaledHeight }) => {
+      if (!_image) return;
+      if (
+        controler?.pngShadow?.length ||
+        controler?.pngShadow !== "0" ||
+        controler?.pngBorderColor?.length
+      ) {
+        if (
+          !isNaN(Number(controler?.pngShadow)) &&
+          Number(controler?.pngShadow)
+        ) {
+          if (controler?.pngBorderColor)
+            ctx.shadowColor = controler.pngBorderColor;
+          ctx.shadowBlur = Number(controler?.pngShadow) * 3;
+
+          for (var x = -2; x <= 2; x++) {
+            for (var y = -2; y <= 2; y++) {
+              ctx.shadowOffsetX = x;
+              ctx.shadowOffsetY = y;
+              ctx.drawImage(
+                _image,
+                -scaledWidth / 2,
+                -scaledHeight / 2,
+                scaledWidth,
+                scaledHeight
+              );
+            }
+          }
+        }
+      }
+    },
+    [_image, controler?.pngShadow, controler?.pngBorderColor]
+  );
+  console.log(controler, "controler");
   const handleMouseDown = (e) => {
     if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();

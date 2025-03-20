@@ -141,14 +141,14 @@ export default function Header() {
     <header className="body-font">
       <div className="container mx-auto p-5">
         <div className="flex justify-between items-center">
-          <Link href="/" className="relative">
+          <Link href="/" className="relative h-auto w-[100px] md:w-[130px] ">
             <Image
               alt="Logo"
               src="/images/logo.png"
+              style={{ objectFit: "contain" }}
               width={130}
               height={130}
-              priority
-              className="h-auto w-[100px] md:w-[130px] dark:hidden"
+              className="dark:hidden"
             />
             <Image
               alt="Logo"
@@ -156,7 +156,7 @@ export default function Header() {
               width={130}
               height={130}
               priority
-              className="h-auto w-[100px] md:w-[130px] hidden dark:block"
+              className="hidden dark:block"
             />
           </Link>
           <div className="flex items-center">

@@ -138,25 +138,16 @@ export default function Header() {
     process.env.NEXT_PUBLIC_ENABLE_PAYMENT == "true" &&
     (user?.credit || user.credit === 0);
   return (
-    <header className="body-font">
-      <div className="container mx-auto p-5">
+    <header className="body-font py-5">
+      <div className="container px-5 md:px-0 mx-auto">
         <div className="flex justify-between items-center">
-          <Link href="/" className="relative h-auto w-[100px] md:w-[130px] ">
+          <Link href="/" className="relative h-auto w-[100px] md:w-[110px] ">
             <Image
               alt="Logo"
-              src="/images/logo.png"
-              style={{ objectFit: "contain" }}
-              width={130}
-              height={130}
-              className="dark:hidden"
-            />
-            <Image
-              alt="Logo"
-              src="/images/logo_dark.png"
-              width={130}
-              height={130}
+              src="/images/logo.webp"
               priority
-              className="hidden dark:block"
+              width={130}
+              height={130}
             />
           </Link>
           <div className="flex items-center">

@@ -6,25 +6,16 @@ import Link from "next/link";
 export default function Footer({ data }: any) {
   return (
     <footer className="py-4 w-full mx-auto border-t-2 border-slate-200 dark:border-gray-800">
-      <div className="container mx-auto">
+      <div className="container px-5 md:px-0 mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-4">
           <div className="py-2">
-            <Link href="/" className="relative">
+            <Link href="/" className="relative h-auto w-[100px] md:w-[110px]">
               <Image
                 alt="Logo"
-                src="/images/logo.png"
+                src="/images/logo.webp"
                 width={130}
                 height={130}
                 priority
-                className="h-auto w-[100px] md:w-[130px] dark:hidden"
-              />
-              <Image
-                alt="Logo"
-                src="/images/logo_dark.png"
-                width={130}
-                height={130}
-                priority
-                className="h-auto w-[100px] md:w-[130px] hidden dark:block"
               />
             </Link>
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">

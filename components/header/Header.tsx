@@ -91,35 +91,39 @@ export default function Header() {
                 return true;
             }
           })
-          .map((item) => (
+          .map((item, index) => (
             <div
               key={item.code}
-              className={
+              className={`text-lg ${
                 isNav
-                  ? "border-b px-2 py-1 dark:border-gray-800"
-                  : `inline-block`
-              }
+                  ? `${
+                      index != constants.headerMenuList.length - 1 && "border-b"
+                    } px-2 py-1 dark:border-gray-800`
+                  : "inline-block"
+              }`}
             >
               {item?.requireSelectedImage ? (
                 <Button
                   variant="ghost"
-                  className={`w-full text-left text-md p-0 hover:bg-transparent hover:text-violet-500 md:mr-6 md:inline block md:py-0 py-2 h-auto ${
+                  className={`w-full text-left p-0 hover:bg-transparent hover:text-violet-500 md:mr-6 md:inline block md:py-0 py-2 h-auto ${
                     pathname === item.href && "text-violet-500"
                   }`}
-                  onClick={() =>
+                  onClick={() => {
+                    setNavbarOpen(false);
                     selectedImage
                       ? router.push(item.href)
                       : toast({
                           description:
                             "Please Upload An Image Before Proceeding.",
-                        })
-                  }
+                        });
+                  }}
                 >
                   {item.title}
                 </Button>
               ) : (
                 <Link
-                  className={`text-md md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500 ${
+                  onClick={() => setNavbarOpen(false)}
+                  className={`md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500 font-medium ${
                     pathname === item.href && "text-violet-500"
                   }`}
                   href={item.href}
@@ -168,18 +172,25 @@ export default function Header() {
                 </div>
               </div>
             )}
-            <Button
-              className="md:hidden mr-2 text-accent-foreground hover:text-violet-500"
-              variant="outline"
-              size="icon"
-              onClick={() => setNavbarOpen(!navbarOpen)}
-            >
-              <AlignJustify />
-            </Button>
+
+            <div className="mr-4 md:hidden">
+              <DropdownMenu open={navbarOpen} onOpenChange={setNavbarOpen}>
+                <DropdownMenuTrigger asChild>
+                  <AlignJustify className="w-8 h-8" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="min-w-[100vw] border-0 px-4"
+                >
+                  {renderList(true)}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
             <DropdownMenu open={dropDownMenu} onOpenChange={setDropdownMenu}>
               <DropdownMenuTrigger asChild>
                 {session?.user?.image ? (
-                  <div className="text-accent-foreground rounded-full h-8 w-8 md:h-10 md:w-10 border overflow-hidden">
+                  <div className="text-accent-foreground rounded-full h-10 w-10 border overflow-hidden">
                     <img alt="Profile Picture" src={`${session.user.image}`} />
                   </div>
                 ) : (
@@ -196,21 +207,21 @@ export default function Header() {
                 {session?.user && (
                   <>
                     <div className="px-2 py-1.5">
-                      <p className="text-md">{session.user.name}</p>
-                      <p className="text-xs">{session.user.email}</p>
+                      <p className="">{session.user.name}</p>
+                      <p className="text-sm">{session.user.email}</p>
                     </div>
                     <hr className="my-2 border border-slate-200 dark:border-gray-800" />
                   </>
                 )}
                 <>
-                  <p className="px-2 py-1.5 text-sm">Theme</p>
+                  <p className="px-2 py-1.5 text-md">Theme</p>
                   {themes.map((item) => (
                     <DropdownMenuItem
                       key={item.code}
                       onClick={() => setTheme(item.code)}
                     >
                       {item.icon}{" "}
-                      <span className="ml-2 text-sm">{item.label}</span>
+                      <span className="ml-2 text-md">{item.label}</span>
                     </DropdownMenuItem>
                   ))}
                 </>
@@ -220,7 +231,7 @@ export default function Header() {
                     <>
                       <Link href="/myphotos">
                         <DropdownMenuItem className="cursor-pointer">
-                          <span className="ml-2 text-sm">My photos</span>
+                          <span className="ml-2 text-md">My photos</span>
                         </DropdownMenuItem>
                       </Link>
                       <DropdownMenuItem
@@ -230,7 +241,7 @@ export default function Header() {
                           setControlerValue(null);
                         }}
                       >
-                        <span className="ml-2 text-sm"> Sign Out</span>
+                        <span className="ml-2 text-md"> Sign Out</span>
                       </DropdownMenuItem>
                     </>
                   ) : (
@@ -240,7 +251,7 @@ export default function Header() {
                         toggleLogin();
                       }}
                     >
-                      <span className="ml-2 text-sm"> Sign In</span>
+                      <span className="ml-2 text-md"> Sign In</span>
                     </DropdownMenuItem>
                   )}
                 </>
@@ -248,11 +259,6 @@ export default function Header() {
             </DropdownMenu>
           </div>
         </div>
-        {navbarOpen && (
-          <nav className="mt-4 text-base justify-center md:hidden font-semibold text-gray-600 dark:text-gray-300 border-t border-x border-slate-200 dark:border-gray-800">
-            {renderList(true)}
-          </nav>
-        )}
       </div>
     </header>
   );

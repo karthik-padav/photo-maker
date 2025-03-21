@@ -44,7 +44,7 @@ export default function Career() {
           type="text"
           onChange={(e) => setKeyword(e.target.value)}
           placeholder="Search Keyword"
-          className="my-8 drop-shadow-xl border p-8 text-md"
+          className="my-8 drop-shadow-xl border p-8"
         />
         <div className="grid grid-cols-2 gap-4">
           {constants.careers

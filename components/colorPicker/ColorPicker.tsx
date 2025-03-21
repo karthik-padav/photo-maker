@@ -80,7 +80,7 @@ export default function ColorPicker({
   return (
     <>
       <div className="md:hidden">
-        <Accordion type="multiple" className="w-full">
+        <Accordion type="multiple" className="w-full text-sm md:text-lg">
           {colorList.map((item, index) => (
             <AccordionItem value={`index_${index}`} key={`index_${index}`}>
               <AccordionTrigger className="text-left text-gray-600 dark:text-gray-300">

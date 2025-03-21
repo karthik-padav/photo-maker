@@ -62,7 +62,7 @@ export default async function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "dark:bg-gray-900 font-sans antialiased",
+          "dark:bg-gray-900 font-sans antialiased text-lg",
           fontSans.variable
         )}
       >

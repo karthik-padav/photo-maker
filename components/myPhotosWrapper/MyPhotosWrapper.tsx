@@ -87,13 +87,13 @@ export default function MyPhotosWrapper({
         <TabsList className="flex md:inline-block bg-background drop-shadow-2xl dark:text-white drop-shadow-2xl md:mb-10 mb-4 rounded-full h-auto md:p-2">
           <TabsTrigger
             value={tabs.photos}
-            className="md:text-lg text-sm block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
+            className="md:text-lg text-md text-wrap block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
           >
             Uploaded Photos
           </TabsTrigger>
           <TabsTrigger
             value={tabs.downloads}
-            className="md:text-lg text-sm block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
+            className="md:text-lg text-md text-wrap block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
           >
             Downloaded Photos
           </TabsTrigger>

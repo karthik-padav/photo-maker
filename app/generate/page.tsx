@@ -12,8 +12,13 @@ import { cn } from "@/lib/utils";
 
 export default function Generate() {
   const router = useRouter();
-  const { selectedImage, controlerValue, setControlerValue, bgImages } =
-    useAppProvider();
+  const {
+    selectedImage,
+    controlerValue,
+    setControlerValue,
+    bgImages,
+    globalLoader,
+  } = useAppProvider();
   const session = useSession();
 
   useEffect(() => {
@@ -74,7 +79,7 @@ export default function Generate() {
                           className="z-40"
                           placeholder="blur"
                           blurDataURL={constants.blurDataURL}
-                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${selectedImage.imagePath}`}
+                          src={selectedImage.imagePath}
                           fill
                           sizes="100%"
                           style={{ objectFit: "cover" }}
@@ -92,7 +97,12 @@ export default function Generate() {
                           backgroundImagePath: item.key,
                         })
                       }
-                      className="drop-shadow-2xl rounded-full py-2 px-4 md:py-4 md:px-6 bg-violet-500 hover:bg-violet-500 text-white"
+                      disabled={globalLoader}
+                      className={`
+                        ${
+                          globalLoader ? "cursor-progress" : ""
+                        } drop-shadow-2xl rounded-full py-2 px-4 md:py-4 md:px-6 bg-violet-500 hover:bg-violet-500 text-white
+                      `}
                     >
                       Customize
                     </Button>

@@ -3,13 +3,6 @@
 import { useAppProvider } from "@/lib/app-provider";
 import { ControlerValue, SelectedImage } from "@/lib/interfaces";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  createCanvasRadius,
-  drawBackground,
-  drawImageLayer,
-  drawOuterBorder,
-  imageOutline,
-} from "./utils";
 import { calcPercentage, calcPx } from "@/lib/common";
 
 interface Params {
@@ -48,7 +41,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
   useEffect(() => {
     if (image.imagePath) {
       const img = new Image();
-      img.src = `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`;
+      img.src = image.imagePath;
       img.crossOrigin = "anonymous";
       img.onload = () => setImage(img);
     }
@@ -58,7 +51,6 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     if (controler?.backgroundImagePath) {
       const bgImg = new Image();
       bgImg.src = `${process.env.NEXT_PUBLIC_IMAGE_URL}${controler.backgroundImagePath}`;
-
       bgImg.crossOrigin = "anonymous";
       bgImg.onload = () => setBgImage(bgImg);
     } else setBgImage(null);

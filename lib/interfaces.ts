@@ -20,6 +20,7 @@ export interface ControlerValue {
 export interface SelectedImage {
   id: string;
   imagePath: string;
+  key: string;
 }
 
 export interface SessionData {

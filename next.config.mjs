@@ -10,12 +10,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "stqwqcvysz.**",
+        hostname: "utfs.io",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "utfs.io",
+        hostname: "briaai-bria-rmbg-1-4.hf.space",
         pathname: "/**",
       },
     ],

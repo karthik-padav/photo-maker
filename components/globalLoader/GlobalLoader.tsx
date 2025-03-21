@@ -1,26 +1,15 @@
 "use client";
 
-import Lottie from "lottie-react";
-import lottiefilesLoader from "@/assets/lottiefiles/loader.json";
 import { useAppProvider } from "@/lib/app-provider";
+import { LoaderCircle } from "lucide-react";
 
 export default function GlobalLoader() {
   const { globalLoader } = useAppProvider();
   if (globalLoader)
     return (
-      <div className="flex justify-center items-center fixed top-0 bottom-0 right-0 left-0 bg-neutral-950/90">
-        <div className="text-center text-white p-2">
-          <Lottie
-            animationData={lottiefilesLoader}
-            loop={true}
-            className="w-52 m-auto"
-          />
-          <p>We&apos;re generating your image...</p>
-          <p>
-            This may take a few minutes depending on the image size. Thanks for
-            your patience!
-          </p>
-        </div>
+      <div className="flex justify-center items-center fixed top-5 right-5 bg-violet-500/90 max-w-full text-white p-4 rounded-sm ">
+        <p>We&apos;re Generating Your Image</p>
+        <LoaderCircle className="animate-spin w-8 h-8 ml-2" />
       </div>
     );
   return null;

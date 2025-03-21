@@ -155,7 +155,12 @@ export default function MyPhotosWrapper({
                     <Button
                       variant="ghost"
                       onClick={() => {
-                        setSelectedImage(i);
+                        debugger;
+                        setSelectedImage({
+                          id: i.id,
+                          imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${i.imagePath}`,
+                          key: i.imagePath,
+                        });
                         router.push("/customize");
                       }}
                       className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
@@ -241,7 +246,12 @@ export default function MyPhotosWrapper({
                       <Button
                         variant="ghost"
                         onClick={() => {
-                          setSelectedImage(image);
+                          debugger;
+                          setSelectedImage({
+                            id: image.id,
+                            imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`,
+                            key: image.imagePath,
+                          });
                           setControlerValue(controler);
                           router.push("/customize");
                         }}

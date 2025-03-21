@@ -79,7 +79,7 @@ export function bgControlers(controlerValue: ControlerValue | null) {
     backgroundScale: createRangeControl(
       "Background Scale",
       0.5,
-      2,
+      3,
       0.1,
       controlerValue?.backgroundScale || 1
     ),
@@ -217,10 +217,11 @@ export async function onHfImageGenerate(
     data: { path: string };
   };
   if (result?.data?.[0]?.path) {
+    console.log("HF triggered");
+    return `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`;
     const response = await fetch(
       `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`
     );
-    console.log("HF triggered");
     return await response.blob();
   }
   return null;

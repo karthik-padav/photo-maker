@@ -108,7 +108,7 @@ export default async function RootLayout({
                 </div>
               </div>
               <LoginPopup />
-              <GlobalLoader />
+              {/* <GlobalLoader /> */}
             </ThemeProvider>
           </AppProvider>
         </SessionProvider>

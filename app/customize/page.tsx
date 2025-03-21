@@ -37,7 +37,7 @@ const MENU_ITEMS = [
           <Image
             placeholder="blur"
             blurDataURL={constants.blurDataURL}
-            src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`}
+            src={image.imagePath}
             fill
             sizes="100%"
             style={{ objectFit: "cover" }}
@@ -121,7 +121,7 @@ export default function Customize() {
           variant="ghost"
           disabled={isloading}
           onClick={downloadImage}
-          className={`${constants.btnClass} rounded-full mr-4`}
+          className={`${constants.btnClass} rounded-full mr-4 relative`}
         >
           {isloading && (
             <span className="absolute top-0 bottom-0 left-o right-0 w-full flex justify-center items-center">

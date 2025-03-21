@@ -111,7 +111,7 @@ export default function Header() {
                       ? router.push(item.href)
                       : toast({
                           description:
-                            "Please upload an image before proceeding.",
+                            "Please Upload An Image Before Proceeding.",
                         })
                   }
                 >

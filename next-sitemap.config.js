@@ -6,9 +6,9 @@ export default {
   additionalPaths: async (config) => [
     { loc: "/", lastmod: new Date().toISOString() },
     { loc: "/about-us", lastmod: new Date().toISOString() },
-    { loc: "/customize", lastmod: new Date().toISOString() },
-    { loc: "/generate", lastmod: new Date().toISOString() },
-    { loc: "/myphotos", lastmod: new Date().toISOString() },
+    // { loc: "/customize", lastmod: new Date().toISOString() },
+    // { loc: "/generate", lastmod: new Date().toISOString() },
+    // { loc: "/myphotos", lastmod: new Date().toISOString() },
     { loc: "/privacy-policy", lastmod: new Date().toISOString() },
     { loc: "/terms-and-conditions", lastmod: new Date().toISOString() },
   ],

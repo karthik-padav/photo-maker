@@ -44,7 +44,7 @@ export default function Background() {
   }
   return (
     <>
-      <p className="pb-1">Background Image</p>
+      <p className="pb-1 text-sm md:lg">Background Image</p>
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerTrigger
           className={`bg-background p-4 dark:text-white hover:text-white hover:bg-violet-500 drop-shadow-2xl mb-2 rounded-md`}
@@ -53,14 +53,14 @@ export default function Background() {
         </DrawerTrigger>
 
         <DrawerContent>
-          <div className="container mx-auto">
+          <div className="px-4 md:container text-sm">
             <DrawerHeader className="flex justify-between items-center">
-              <DrawerTitle>Select Background Image</DrawerTitle>
+              <DrawerTitle className="text-sm">Background Images</DrawerTitle>
               <Button variant="ghost" onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
             </DrawerHeader>
-            <ScrollArea className="h-[70vh] w-full p-4">
+            <ScrollArea className="h-[70vh] w-full">
               <div className="grid grid-cols-3 md:grid-cols-8 gap-4">
                 <div
                   className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer bg-white border-2 border-dashed border-[#9C92AC20]"
@@ -99,8 +99,8 @@ export default function Background() {
       {Object.keys(controler).map((key: string) => {
         const data = controler[key];
         return (
-          <div className="border-white drop-shadow-md pt-4" key={key}>
-            <p className="flex justify-between mb-1">
+          <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
+            <p className="flex justify-between mb-1 text-sm md:lg">
               {data.label}
               <span>
                 {data?.attr?.value || 0}

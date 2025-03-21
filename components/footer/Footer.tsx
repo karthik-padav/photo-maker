@@ -18,7 +18,7 @@ export default function Footer({ data }: any) {
                 priority
               />
             </Link>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
+            <p className="text-md text-gray-600 dark:text-gray-300 mt-2">
               Copyright © {new Date().getFullYear()} - All rights reserved
             </p>
           </div>
@@ -29,7 +29,7 @@ export default function Footer({ data }: any) {
               {constants.footerCompanyList.map((item) => (
                 <li
                   key={item.code}
-                  className="pb-2 text-sm text-gray-600 dark:text-gray-300"
+                  className="pb-2 text-md text-gray-600 dark:text-gray-300"
                 >
                   <Link className="hover:text-violet-400" href={item.href}>
                     {item.title}
@@ -53,7 +53,7 @@ export default function Footer({ data }: any) {
                   .map((item: any) => (
                     <li
                       key={item.code}
-                      className="pb-2 text-sm text-gray-600 dark:text-gray-300"
+                      className="pb-2 text-md text-gray-600 dark:text-gray-300"
                     >
                       <Link
                         className="hover:text-violet-400"

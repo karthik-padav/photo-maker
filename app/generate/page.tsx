@@ -42,7 +42,7 @@ export default function Generate() {
     <main className="text-black body-font px-5 md:px-0 md:container">
       {selectedImage && (
         <>
-          <div className="mb-12 flex flex-wrap gap-2">
+          <div className="mb-4 md:mb-12 flex flex-wrap gap-2">
             <EditBar />
           </div>
 

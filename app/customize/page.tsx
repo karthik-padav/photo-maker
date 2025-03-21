@@ -115,7 +115,7 @@ export default function Customize() {
 
   return (
     <main className="text-black px-2 md:px-0 md:container mx-auto">
-      <div className="mb-12 flex flex-wrap gap-2">
+      <div className="mb-4 md:mb-12 flex flex-wrap gap-2">
         <EditBar />
         <Button
           variant="ghost"
@@ -133,21 +133,27 @@ export default function Customize() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pb-6">
         <div className="col-span-12 md:col-span-2 rounded-md">
-          {MENU_ITEMS.map(({ label, code, icon }) => (
-            <Button
-              key={code}
-              variant="ghost"
-              onClick={() => setActiveTab(code)}
-              className={`${constants.btnClass} w-full mb-2 justify-start ${
-                activeTab === code
-                  ? "bg-violet-500 text-white"
-                  : "bg-background"
-              }`}
-            >
-              {icon(selectedImage)}
-              <span className="px-2">{label}</span>
-            </Button>
-          ))}
+          <div className="grid md:grid-cols-1 grid-cols-3 md:gap-0 gap-4">
+            {MENU_ITEMS.map(({ label, code, icon }) => (
+              <Button
+                key={code}
+                variant="ghost"
+                onClick={() => setActiveTab(code)}
+                className={`${
+                  constants.btnClass
+                } p-1 py-2 w-full mb-2 justify-start ${
+                  activeTab === code
+                    ? "bg-violet-500 text-white"
+                    : "bg-background"
+                }`}
+              >
+                <div className="w-full flex md:flex-row flex-col items-center md:justify-center">
+                  {icon(selectedImage)}
+                  <span className="px-2 text-sm md:mt-0 mt-2">{label}</span>
+                </div>
+              </Button>
+            ))}
+          </div>
         </div>
         <div className="col-span-12 md:col-span-4 drop-shadow-2xl p-4 bg-background dark:text-white">
           {activeTab === "MY_PHOTO" && <MyPhotoControler />}

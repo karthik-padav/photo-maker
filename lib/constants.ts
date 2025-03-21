@@ -3,7 +3,7 @@ import { uid } from "uid";
 
 const constants = {
   btnClass:
-    "bg-background drop-shadow-2xl dark:text-white hover:text-white hover:bg-violet-500 drop-shadow-2xl py-2 px-4 md:py-4 md:px-6 text-sm",
+    "bg-background drop-shadow-2xl dark:text-white hover:text-white hover:bg-violet-500 drop-shadow-2xl py-2 px-4 md:py-4 md:px-6",
   blurDataURL: "/images/image-placeholder.webp",
   headerMenuList: [
     { code: "HOME", title: "Home", href: "/" },

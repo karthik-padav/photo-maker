@@ -13,8 +13,8 @@ export default function Border() {
       {Object.keys(controler).map((key: string) => {
         const data = controler[key];
         return (
-          <div className="border-white drop-shadow-md pt-4" key={key}>
-            <p className="flex justify-between mb-1">
+          <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
+            <p className="flex justify-between mb-1 text-sm md:lg">
               {data.label}
               <span>
                 {data?.attr?.value || 0}

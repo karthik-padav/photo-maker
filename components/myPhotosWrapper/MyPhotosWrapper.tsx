@@ -82,18 +82,18 @@ export default function MyPhotosWrapper({
   }
 
   return (
-    <main className="text-black body-font container mx-auto">
+    <main className="text-black body-font md:container md:p-0 px-4 mx-auto">
       <Tabs defaultValue={tabs.photos} className="w-full">
-        <TabsList className="bg-background drop-shadow-2xl dark:text-white drop-shadow-2xl mb-10 rounded-full md:h-14">
+        <TabsList className="flex md:inline-block bg-background drop-shadow-2xl dark:text-white drop-shadow-2xl md:mb-10 mb-4 rounded-full h-auto md:p-2">
           <TabsTrigger
             value={tabs.photos}
-            className="mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 md:h-12"
+            className="md:text-lg text-sm block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
           >
             Uploaded Photos
           </TabsTrigger>
           <TabsTrigger
             value={tabs.downloads}
-            className="data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 md:h-12"
+            className="md:text-lg text-sm block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
           >
             Downloaded Photos
           </TabsTrigger>
@@ -155,7 +155,6 @@ export default function MyPhotosWrapper({
                     <Button
                       variant="ghost"
                       onClick={() => {
-                        debugger;
                         setSelectedImage({
                           id: i.id,
                           imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${i.imagePath}`,
@@ -246,7 +245,6 @@ export default function MyPhotosWrapper({
                       <Button
                         variant="ghost"
                         onClick={() => {
-                          debugger;
                           setSelectedImage({
                             id: image.id,
                             imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`,
@@ -300,14 +298,14 @@ export default function MyPhotosWrapper({
             <Button
               variant="ghost"
               onClick={() => toggleDialog(null)}
-              className={`${constants.btnClass} rounded-full hover:bg-background hover:text-accent-foreground`}
+              className={`${constants.btnClass} mb-2 rounded-full hover:bg-background hover:text-accent-foreground`}
             >
               Cancel
             </Button>
             <Button
               disabled={loader}
               onClick={onDelete}
-              className={`${constants.btnClass} rounded-full flex justify-center items-center bg-violet-500`}
+              className={`${constants.btnClass} mb-2 rounded-full flex justify-center items-center bg-violet-500`}
             >
               {loader && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin absolute" />

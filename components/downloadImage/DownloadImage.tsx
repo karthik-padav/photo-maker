@@ -361,7 +361,6 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     },
     [_image, controler?.pngShadow, controler?.pngBorderColor]
   );
-  console.log(controler, "controler");
   const handleMouseDown = (e) => {
     if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();

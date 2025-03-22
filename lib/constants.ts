@@ -1,4 +1,4 @@
-import { Google, Github, Facebook } from "@/assets/icons";
+import { Google, Github, Facebook, LinkedIn } from "@/assets/icons";
 import { uid } from "uid";
 
 const constants = {
@@ -37,6 +37,12 @@ const constants = {
       labelPrefix: "Sign in with ",
       label: "GitHub",
       icon: Github,
+    },
+    {
+      code: "linkedin",
+      labelPrefix: "Sign in with ",
+      label: "LinkedIn",
+      icon: LinkedIn,
     },
   ],
   footerCompanyList: [

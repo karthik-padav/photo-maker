@@ -32,30 +32,32 @@ export default function LoginPopup() {
             {constants.landingPage.login_title}
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           {constants.loginProvider?.map((item) => (
             <Button
               className={`relative text-accent-foreground px-2 py-3 rounded-lg ${
                 loader && "cursor-not-allowed"
               }`}
               key={item.code}
-              onClick={() => {
-                signinHandler(item.code);
-              }}
+              onClick={() => signinHandler(item.code)}
               disabled={!!loader}
               variant="secondary"
             >
-              {loader == item.code ? (
+              {loader == item.code && (
                 <span className="absolute top-0 bottom-0 left-o right-0 w-full flex justify-center items-center">
-                  <LoaderCircle className="animate-spin" />
+                  <LoaderCircle className="text-violet-500 animate-spin" />
                 </span>
-              ) : (
-                <div className={`${loader ? "opacity-0" : ""}`}>
-                  <item.icon className="mr-2 h-8 w-8 md:h-6 w-6" />
-                  <span className="mr-1 md:hidden">{item.labelPrefix}</span>
-                  {item.label}
-                </div>
               )}
+              <p
+                className={`flex justify-center items-center ${
+                  loader == item.code ? "opacity-0" : ""
+                }`}
+              >
+                <item.icon className="mr-2 h-10 w-10" />
+                <span className="mr-1 md:hidden">
+                  {item.labelPrefix} {item.label}
+                </span>
+              </p>
             </Button>
           ))}
         </div>

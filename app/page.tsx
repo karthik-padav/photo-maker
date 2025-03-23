@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Image from "next/image";
 
 export default async function Home() {
   return (
@@ -19,6 +20,29 @@ export default async function Home() {
           {constants.landingPage.subtitle}
         </p>
         <BannerSection />
+        <div className="flex justify-center">
+          <div className="grid grid-cols-5 md:w-3/5 w-full ml-10">
+            {["dp-1", "dp-3", "dp-2", "dp-4", "dp-5"].map((i) => (
+              <div
+                key={i}
+                className="-ml-10 border-4 border-white drop-shadow-2xl rounded-full overflow-hidden relative"
+              >
+                <div className="aspect-w-1 aspect-h-1 w-full bg-cover">
+                  <div className="drop-shadow-2xl rounded-full overflow-hidden">
+                    <Image
+                      alt="banner-dp"
+                      src={`/images/${i}.webp`}
+                      style={{ objectFit: "contain" }}
+                      priority
+                      width={400}
+                      height={400}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto pb-10 md:pb-20">

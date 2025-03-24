@@ -8,7 +8,7 @@ import { downloadBlob, resizedImage } from "@/lib/common";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import DownloadImage from "@/components/downloadImage";
+import DownloadImageHtml from "@/components/downloadImageHtml";
 import { createControler } from "@/lib/actions/services";
 import {
   AlertDialog,
@@ -166,10 +166,9 @@ export default function Customize() {
           <div className="w-full aspect-w-1 aspect-h-1 outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25] relative">
             <div id="wrapper" ref={imageWrapperRef} className="w-full h-full">
               {selectedImage && (
-                <DownloadImage
+                <DownloadImageHtml
                   image={selectedImage}
                   controler={controlerValue ?? undefined}
-                  canvasRef={canvasRef}
                 />
               )}
             </div>

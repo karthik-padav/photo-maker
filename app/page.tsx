@@ -34,8 +34,8 @@ export default async function Home() {
                       src={`/images/${i}.webp`}
                       style={{ objectFit: "contain" }}
                       priority
-                      width={400}
-                      height={400}
+                      width={200}
+                      height={200}
                     />
                   </div>
                 </div>

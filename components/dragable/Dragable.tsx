@@ -6,7 +6,7 @@ interface Position {
 }
 
 export default function Dragable(imgProps) {
-  const { style, defaultAxis, onUpdate } = { ...imgProps };
+  const { style = {}, defaultAxis = {}, onUpdate = () => {} } = { ...imgProps };
   if (!imgProps?.src) return null;
   const [position, setPosition] = useState<Position>({
     x: defaultAxis?.x || 0,

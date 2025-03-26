@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useSession } from "next-auth/react";
 import { uid } from "uid";
+import ADS from "@/components/ads";
 
 const tabs = {
   photos: "MY_PHOTOS",
@@ -82,208 +83,220 @@ export default function MyPhotosWrapper({
   }
 
   return (
-    <main className="text-black body-font md:container md:p-0 px-4 mx-auto">
-      <Tabs defaultValue={tabs.photos} className="w-full">
-        <TabsList className="flex md:inline-block bg-background drop-shadow-2xl dark:text-white drop-shadow-2xl md:mb-10 mb-4 rounded-full h-auto md:p-2">
-          <TabsTrigger
-            value={tabs.photos}
-            className="md:text-lg text-md text-wrap block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
-          >
-            Uploaded Photos
-          </TabsTrigger>
-          <TabsTrigger
-            value={tabs.downloads}
-            className="md:text-lg text-md text-wrap block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
-          >
-            Downloaded Photos
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value={tabs.photos}>
-          {loader && !imageList.length && (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i}>
-                  <div className="aspect-w-1 aspect-h-1">
-                    <div className="animate-pulse w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full">
-                      <div className="rounded-full bg-slate-100 h-full w-full" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          {!loader && !imageList.length && (
-            <div className="flex flex-col justify-center items-center h-80">
-              <div className="relative md:h-32 md:w-32 h-14 w-14">
-                <Image
-                  placeholder="blur"
-                  blurDataURL={constants.blurDataURL}
-                  src="/images/no-data.png"
-                  fill
-                  sizes="100%"
-                  style={{ objectFit: "contain" }}
-                  alt="no-data"
-                  loading="lazy"
-                />
-              </div>
-              <p className="my-2 dark:text-white">No data found</p>
-            </div>
-          )}
-
-          {!loader && imageList.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
-              {imageList.map((i) => (
-                <div key={i.id}>
-                  <div className="aspect-w-1 aspect-h-1">
-                    <div
-                      className={`border-white dark:border-gray-800 w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
-                    >
-                      <Image
-                        placeholder="blur"
-                        blurDataURL={constants.blurDataURL}
-                        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${i.imagePath}`}
-                        fill
-                        sizes="100%"
-                        style={{ objectFit: "cover" }}
-                        alt="profile pic"
-                        quality={10}
-                        loading="lazy"
-                      />
-                    </div>
-                  </div>
-                  <div className="text-center -mt-6 md:-mt-7">
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        setSelectedImage({
-                          id: i.id,
-                          imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${i.imagePath}`,
-                          key: i.imagePath,
-                        });
-                        router.push("/customize");
-                      }}
-                      className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                    >
-                      <Pencil />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() =>
-                        toggleDialog({ id: i.id, tab: tabs.photos })
-                      }
-                      className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
-                    >
-                      <Trash2 />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </TabsContent>
-        <TabsContent value={tabs.downloads}>
-          {loader && controlerList.length === 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i}>
-                  <div className="aspect-w-1 aspect-h-1">
-                    <div className="animate-pulse w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full">
-                      <div className="rounded-full bg-slate-100 h-full w-full" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          {!loader && controlerList.length === 0 && (
-            <div className="flex flex-col justify-center items-center h-80">
-              <div className="relative md:h-32 md:w-32 h-14 w-14">
-                <Image
-                  placeholder="blur"
-                  blurDataURL={constants.blurDataURL}
-                  src="/images/no-data.png"
-                  fill
-                  sizes="100%"
-                  style={{ objectFit: "contain" }}
-                  alt="no-data"
-                  loading="lazy"
-                />
-              </div>
-              <p className="my-2 dark:text-white">No data found</p>
-            </div>
-          )}
-          {!loader && controlerList.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-12">
-              {controlerList.map((i, index) => {
-                const {
-                  controler = {} as ControlerValue,
-                  image = {} as SelectedImage,
-                  id,
-                  downloadedImagePath,
-                } = i;
-                if (!downloadedImagePath) return null;
-                return (
-                  <div key={index}>
-                    <div className="aspect-w-1 aspect-h-1">
-                      <div
-                        className={`border-white dark:border-gray-800 w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
-                      >
-                        <Image
-                          placeholder="blur"
-                          blurDataURL={constants.blurDataURL}
-                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${downloadedImagePath}`}
-                          fill
-                          sizes="100%"
-                          style={{ objectFit: "contain" }}
-                          alt="profile pic"
-                          quality={10}
-                          loading="lazy"
-                        />
+    <main className="body-font md:container md:p-0 px-4 mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pb-6">
+        <div className="col-span-2">
+          <ADS />
+        </div>
+        <div className="col-span-8">
+          <Tabs defaultValue={tabs.photos} className="w-full">
+            <TabsList className="flex md:inline-block bg-background drop-shadow-2xl dark:text-white drop-shadow-2xl md:mb-10 mb-4 rounded-full h-auto md:p-2">
+              <TabsTrigger
+                value={tabs.photos}
+                className="text-wrap block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
+              >
+                Uploaded Photos
+              </TabsTrigger>
+              <TabsTrigger
+                value={tabs.downloads}
+                className="text-wrap block md:inline-flex w-full md:w-auto md:mr-2 data-[state=active]:bg-violet-500 rounded-full data-[state=active]:text-white hover:text-white hover:bg-violet-500 py-2 px-4"
+              >
+                Downloaded Photos
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value={tabs.photos}>
+              {loader && !imageList.length && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i}>
+                      <div className="aspect-w-1 aspect-h-1">
+                        <div className="animate-pulse w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full">
+                          <div className="rounded-full bg-slate-100 h-full w-full" />
+                        </div>
                       </div>
                     </div>
-                    <div className="text-center -mt-6 md:-mt-7">
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setSelectedImage({
-                            id: image.id,
-                            imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`,
-                            key: image.imagePath,
-                          });
-                          setControlerValue(controler);
-                          router.push("/customize");
-                        }}
-                        className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                      >
-                        <Pencil />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          downloadedImagePath &&
-                          downloadImage(downloadedImagePath)
-                        }
-                        className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
-                      >
-                        <Download />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          id && toggleDialog({ id: id, tab: tabs.downloads })
-                        }
-                        className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
-                      >
-                        <Trash2 />
-                      </Button>
-                    </div>
+                  ))}
+                </div>
+              )}
+              {!loader && !imageList.length && (
+                <div className="flex flex-col justify-center items-center h-80">
+                  <div className="relative md:h-32 md:w-32 h-14 w-14">
+                    <Image
+                      placeholder="blur"
+                      blurDataURL={constants.blurDataURL}
+                      src="/images/no-data.png"
+                      fill
+                      sizes="100%"
+                      style={{ objectFit: "contain" }}
+                      alt="no-data"
+                      loading="lazy"
+                    />
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+                  <p className="my-2 dark:text-white">No data found</p>
+                </div>
+              )}
+
+              {!loader && imageList.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12">
+                  {imageList.map((i) => (
+                    <div key={i.id}>
+                      <div className="aspect-w-1 aspect-h-1">
+                        <div
+                          className={`border-white dark:border-gray-800 w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
+                        >
+                          <Image
+                            placeholder="blur"
+                            blurDataURL={constants.blurDataURL}
+                            src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${i.imagePath}`}
+                            fill
+                            sizes="100%"
+                            style={{ objectFit: "cover" }}
+                            alt="profile pic"
+                            quality={10}
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                      <div className="text-center -mt-6 md:-mt-7">
+                        <Button
+                          variant="ghost"
+                          onClick={() => {
+                            setSelectedImage({
+                              id: i.id,
+                              imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${i.imagePath}`,
+                              key: i.imagePath,
+                            });
+                            router.push("/customize");
+                          }}
+                          className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                        >
+                          <Pencil />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() =>
+                            toggleDialog({ id: i.id, tab: tabs.photos })
+                          }
+                          className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+            <TabsContent value={tabs.downloads}>
+              {loader && controlerList.length === 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i}>
+                      <div className="aspect-w-1 aspect-h-1">
+                        <div className="animate-pulse w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full">
+                          <div className="rounded-full bg-slate-100 h-full w-full" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {!loader && controlerList.length === 0 && (
+                <div className="flex flex-col justify-center items-center h-80">
+                  <div className="relative md:h-32 md:w-32 h-14 w-14">
+                    <Image
+                      placeholder="blur"
+                      blurDataURL={constants.blurDataURL}
+                      src="/images/no-data.png"
+                      fill
+                      sizes="100%"
+                      style={{ objectFit: "contain" }}
+                      alt="no-data"
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="my-2 dark:text-white">No data found</p>
+                </div>
+              )}
+              {!loader && controlerList.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-12">
+                  {controlerList.map((i, index) => {
+                    const {
+                      controler = {} as ControlerValue,
+                      image = {} as SelectedImage,
+                      id,
+                      downloadedImagePath,
+                    } = i;
+                    if (!downloadedImagePath) return null;
+                    return (
+                      <div key={index}>
+                        <div className="aspect-w-1 aspect-h-1">
+                          <div
+                            className={`border-white dark:border-gray-800 w-full h-full border-white border-2 md:border-4 drop-shadow-2xl rounded-full overflow-hidden`}
+                          >
+                            <Image
+                              placeholder="blur"
+                              blurDataURL={constants.blurDataURL}
+                              src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${downloadedImagePath}`}
+                              fill
+                              sizes="100%"
+                              style={{ objectFit: "contain" }}
+                              alt="profile pic"
+                              quality={10}
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                        <div className="text-center -mt-6 md:-mt-7">
+                          <Button
+                            variant="ghost"
+                            onClick={() => {
+                              debugger;
+                              setSelectedImage({
+                                id: image.id,
+                                imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`,
+                                key: image.imagePath,
+                              });
+                              setControlerValue(controler);
+                              router.push("/customize");
+                            }}
+                            className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                          >
+                            <Pencil />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            onClick={() =>
+                              downloadedImagePath &&
+                              downloadImage(downloadedImagePath)
+                            }
+                            className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
+                          >
+                            <Download />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            onClick={() =>
+                              id &&
+                              toggleDialog({ id: id, tab: tabs.downloads })
+                            }
+                            className="h-10 w-10 p-0 hover:bg-red-500 dark:bg-red-500 text-red-500 dark:text-white drop-shadow-2xl rounded-full bg-background hover:text-white"
+                          >
+                            <Trash2 />
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+        <div className="col-span-2">
+          <ADS />
+        </div>
+      </div>
 
       <AlertDialog open={!!selectedId}>
         <AlertDialogContent>

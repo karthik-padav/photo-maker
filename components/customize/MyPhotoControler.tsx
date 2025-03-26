@@ -14,7 +14,7 @@ export default function MyPhotoControler() {
         const data = controler[key];
         return (
           <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
-            <p className="flex justify-between mb-1 text-sm md:lg">
+            <p className="flex justify-between mb-1">
               {data.label}
               <span>
                 {data?.attr?.value || 0}
@@ -22,12 +22,7 @@ export default function MyPhotoControler() {
               </span>
             </p>
             <input
-              onChange={(e) =>
-                setControlerValue({
-                  ...controlerValue,
-                  [key]: e.target.value,
-                })
-              }
+              onChange={(e) => setControlerValue({ [key]: e.target.value })}
               {...data.attr}
             />
           </div>
@@ -36,22 +31,19 @@ export default function MyPhotoControler() {
 
       <ColorPicker
         onClick={(obj: { [key: string]: string }) =>
-          setControlerValue({
-            ...controlerValue,
-            pngBorderColor: obj.color,
-          })
+          setControlerValue({ pngBorderColor: obj.color })
         }
         colorList={[
           {
-            label: "Outline Solid Color",
+            label: "Outline Solid",
             list: constants.solidColorCollection,
             type: "bg",
           },
-          // {
-          //   label: "Outline Gradients",
-          //   list: constants.gradientColorCollection,
-          //   type: "bgg",
-          // },
+          {
+            label: "Outline Gradients",
+            list: constants.gradientColorCollection,
+            type: "bgg",
+          },
         ]}
       />
     </>

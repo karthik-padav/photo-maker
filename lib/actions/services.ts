@@ -19,6 +19,7 @@ export async function createControler(body: Params) {
     transformX,
     transformY,
     pngShadow,
+    pngShadowOpacity,
     pngBorderColor,
     outerBorderOpacity,
     outerBorderWidth,
@@ -30,13 +31,14 @@ export async function createControler(body: Params) {
     backgroundRotate,
     backgroundImagePath,
     backgroundScale,
-  } = { ...rest, ...rest.controler };
+  } = { ...rest.controler, ...rest };
 
   let payload = {
     imageWrapperSize,
     rotate,
     scale,
     pngShadow,
+    pngShadowOpacity,
     pngBorderColor,
     outerBorderColor,
     outerBorderOpacity,

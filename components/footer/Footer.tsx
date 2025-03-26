@@ -18,19 +18,16 @@ export default function Footer({ data }: any) {
                 priority
               />
             </Link>
-            <p className="text-md text-gray-600 dark:text-gray-300 mt-2">
+            <p className="text-md mt-2">
               Copyright © {new Date().getFullYear()} - All rights reserved
             </p>
           </div>
 
           <div className="py-2">
-            <p className="text-lg text-violet-500 pb-2 font-bold">Company</p>
+            <p className="text-violet-500 pb-2 font-bold">Company</p>
             <ul>
               {constants.footerCompanyList.map((item) => (
-                <li
-                  key={item.code}
-                  className="pb-2 text-md text-gray-600 dark:text-gray-300"
-                >
+                <li key={item.code} className="pb-2 text-md">
                   <Link className="hover:text-violet-400" href={item.href}>
                     {item.title}
                   </Link>
@@ -41,9 +38,7 @@ export default function Footer({ data }: any) {
 
           {data?.ourProducts && (
             <div className="py-2">
-              <p className="text-lg text-violet-500 pb-2 font-bold">
-                Our products
-              </p>
+              <p className="text-violet-500 pb-2 font-bold">Our products</p>
               <ul>
                 {data.ourProducts
                   .filter(
@@ -51,10 +46,7 @@ export default function Footer({ data }: any) {
                       item.code !== process.env.NEXT_PUBLIC_WEBSITE_CODE
                   )
                   .map((item: any) => (
-                    <li
-                      key={item.code}
-                      className="pb-2 text-md text-gray-600 dark:text-gray-300"
-                    >
+                    <li key={item.code} className="pb-2 text-md">
                       <Link
                         className="hover:text-violet-400"
                         href={item.href}

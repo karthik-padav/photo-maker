@@ -1,8 +1,5 @@
 import { ControlerValue } from "./interfaces";
-import { toPng, toJpeg } from "html-to-image";
 import { client } from "@gradio/client";
-import { removeBackground } from "@imgly/background-removal";
-import html2canvas from "html2canvas";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -36,14 +33,20 @@ export function myPhotoControlers(controlerValue: ControlerValue | null) {
       10,
       controlerValue?.rotate || 0
     ),
-    scale: createRangeControl("Scale", 0.5, 2, 0.1, controlerValue?.scale || 1),
+    scale: createRangeControl("Zoom", 0.5, 2, 0.1, controlerValue?.scale || 1),
     pngShadow: createRangeControl(
       "Outline",
       0,
       5,
       1,
-      controlerValue?.pngShadow || 0,
-      "col-span-4"
+      controlerValue?.pngShadow || 0
+    ),
+    pngShadowOpacity: createRangeControl(
+      "Outline Shade",
+      0,
+      1,
+      0.1,
+      controlerValue?.pngShadowOpacity || 1
     ),
   };
 }
@@ -53,8 +56,8 @@ export function borderControlers(controlerValue: ControlerValue | null) {
     outerBorderWidth: createRangeControl(
       "Border Thickness",
       0,
-      40,
-      5,
+      100,
+      10,
       controlerValue?.outerBorderWidth || 0
     ),
     outerBorderOpacity: createRangeControl(
@@ -77,7 +80,7 @@ export function bgControlers(controlerValue: ControlerValue | null) {
       controlerValue?.backgroundRotate || 0
     ),
     backgroundScale: createRangeControl(
-      "Background Scale",
+      "Zoom",
       0.5,
       3,
       0.1,
@@ -94,15 +97,17 @@ export const hexToRgb = (hex: string) => {
   )}, ${parseInt(hex.substring(4, 6), 16)})`;
 };
 
-const rgbToRgba = (rgb: string = "", opacity: string = "1") => {
-  const rgbValues = rgb.match(/\d+/g);
-  return rgbValues?.length ? `rgba(${rgbValues.join(", ")}, ${opacity})` : "";
-};
+export function rgbToRgba(rgbGradient, opacity = "1") {
+  return rgbGradient.replace(/rgb\((\d+), (\d+), (\d+)\)/g, (_, r, g, b) => {
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  });
+}
 
 export function getBorderColor(controlerValue: ControlerValue) {
   const rgbColors = (controlerValue?.pngBorderColor || "").match(
     /rgb\(\d{1,3}, \d{1,3}, \d{1,3}\)/g
   );
+
   const px = controlerValue?.pngShadow;
   if (!px || px === "0" || !rgbColors?.length) return {};
 
@@ -121,10 +126,13 @@ export function getBorderColor(controlerValue: ControlerValue) {
     "var(--stroke-neg) var(--stroke-pos)",
     "var(--stroke-neg) var(--stroke-neg)",
   ]
-    .map(
-      (shadow, index) =>
-        `drop-shadow(${shadow} 0 ${rgbColors[index % rgbColors.length]})`
-    )
+    .map((shadow, index) => {
+      const rgba = rgbToRgba(
+        rgbColors[index % rgbColors.length],
+        controlerValue?.pngShadowOpacity || "1"
+      );
+      return `drop-shadow(${shadow} 0 ${rgba})`;
+    })
     .join(" ");
 
   return { ...strokeVars, filter: dropShadows };
@@ -134,42 +142,51 @@ export function getImageStyle(controlerValue?: ControlerValue) {
   return controlerValue
     ? {
         scale: controlerValue.scale,
-        transform: `rotate(${controlerValue.rotate}deg)`,
+        transform: `rotate(${
+          controlerValue?.rotate || 0
+        }deg) translate(${calcPx(
+          controlerValue?.imageWrapperSize || 100,
+          controlerValue?.transformX || 0
+        )}px, ${calcPx(
+          controlerValue?.imageWrapperSize || 100,
+          controlerValue?.transformY || 0
+        )}px)`,
+
         ...getBorderColor(controlerValue),
       }
     : {};
 }
 
-export function getBorderStyles(
-  controlerValue?: ControlerValue,
-  currentWidth?: number
-) {
-  const outerBorderWidth =
-    controlerValue?.outerBorderWidth &&
-    currentWidth &&
-    controlerValue?.imageWrapperSize
-      ? (Number(controlerValue.outerBorderWidth) * currentWidth) /
-        controlerValue.imageWrapperSize
-      : controlerValue?.outerBorderWidth;
+export function getOuterBorderStyle(controlerValue?: ControlerValue) {
+  if (
+    !controlerValue?.outerBorderWidth ||
+    controlerValue.outerBorderWidth === "0" ||
+    controlerValue?.outerBorderOpacity === "0"
+  )
+    return {};
+  let style = { backgroundColor: "transparent" };
+  if (controlerValue?.outerBorderWidth) {
+    style["borderWidth"] = `${controlerValue.outerBorderWidth}px`;
+    style["borderStyle"] = "solid";
+  }
+  if (
+    controlerValue?.outerBorderColor &&
+    controlerValue.outerBorderColor.includes("linear-gradient")
+  ) {
+    style["borderImageSource"] = rgbToRgba(
+      controlerValue.outerBorderColor,
+      controlerValue?.outerBorderOpacity || "1"
+    );
+    style["borderImageSlice"] = "1";
+  } else
+    style["borderColor"] =
+      rgbToRgba(
+        controlerValue.outerBorderColor,
+        controlerValue?.outerBorderOpacity || "1"
+      ) || "white";
 
-  return outerBorderWidth && outerBorderWidth !== "0"
-    ? {
-        borderWidth: `${outerBorderWidth}px`,
-        borderColor: rgbToRgba(
-          controlerValue?.outerBorderColor || "",
-          controlerValue?.outerBorderOpacity || "1"
-        ),
-      }
-    : {};
+  return style;
 }
-
-export const getClientSideCookie = (name: string) => document.cookie;
-
-export const extractValues = (input: string) =>
-  input
-    .match(/translate\(([-\d.]+)%, ([-\d.]+)%\)/)
-    ?.slice(1)
-    .map(parseFloat) || [];
 
 export const resizedImage = async (originalCanvas) => {
   if (!originalCanvas) return;
@@ -219,10 +236,6 @@ export async function onHfImageGenerate(
   if (result?.data?.[0]?.path) {
     console.log("HF triggered");
     return `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`;
-    const response = await fetch(
-      `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`
-    );
-    return await response.blob();
   }
   return null;
 }
@@ -264,10 +277,3 @@ export async function onImageGenerate(
     reader.readAsArrayBuffer(file);
   });
 }
-
-const base64ToBlob = (base64: string, mimeType: string) => {
-  const byteString = atob(base64.split(",")[1] || base64);
-  return new Blob([Uint8Array.from(byteString, (c) => c.charCodeAt(0))], {
-    type: mimeType,
-  });
-};

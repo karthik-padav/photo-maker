@@ -34,7 +34,7 @@ export default function Career() {
   };
 
   return (
-    <main className="text-black body-font">
+    <main className="body-font">
       <section className="px-5 md:px-0 md:container mx-auto py-10">
         <h1 className="title-font pb-2 md:pb-4 font-medium md:text-5xl text-3xl text-gray-600 dark:text-white">
           Current Job Openings

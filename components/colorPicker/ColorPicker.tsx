@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 export default function ColorPicker({
   onClick,
@@ -24,7 +25,7 @@ export default function ColorPicker({
 
   function colorBox(item) {
     return (
-      <div className={`grid grid-cols-8 md:grid-cols-8 gap-2`}>
+      <div className={`grid grid-cols-8 md:grid-cols-8 lg:grid-cols-12 gap-2`}>
         {item.list.map((i) => {
           let style = {
             background: i.color,
@@ -53,11 +54,11 @@ export default function ColorPicker({
         {item.type === "bg" && (
           <>
             <div
-              className="rounded-full aspect-w-1 aspect-h-1 cursor-pointer border border-slate-200 dark:border-gray-800"
+              className="rounded-full aspect-w-1 aspect-h-1 cursor-pointer"
               onClick={() => colorInput.current?.click()}
             >
               <div className="flex justify-center items-center h-full w-full">
-                <Pipette className="h-[1.5rem] w-[1.5rem]" />
+                <Pipette className="h-[1.3rem] w-[1.3rem]" />
               </div>
               <input
                 ref={colorInput}
@@ -80,13 +81,13 @@ export default function ColorPicker({
   return (
     <>
       <div className="md:hidden">
-        <Accordion type="multiple" className="w-full text-sm md:text-lg">
+        <Accordion type="multiple" className="w-full">
           {colorList.map((item, index) => (
             <AccordionItem value={`index_${index}`} key={`index_${index}`}>
-              <AccordionTrigger className="text-left text-gray-600 dark:text-gray-300">
+              <AccordionTrigger className="text-left">
                 {item.label}
               </AccordionTrigger>
-              <AccordionContent className="text-left text-gray-600 dark:text-gray-300">
+              <AccordionContent className="text-left">
                 {colorBox(item)}
               </AccordionContent>
             </AccordionItem>
@@ -94,13 +95,28 @@ export default function ColorPicker({
         </Accordion>
       </div>
 
-      <div className="hidden md:block">
-        {colorList.map((item) => (
-          <div key={item.type} className="py-2">
-            <p className="pb-4">{item.label}</p>
-            {colorBox(item)}
+      <div className="hidden md:block md:pt-4 pt-2">
+        {colorList.length > 1 ? (
+          <Tabs defaultValue={colorList[0].type} className="w-full">
+            <TabsList className={`grid w-full grid-cols-${colorList.length}`}>
+              {colorList.map((item) => (
+                <TabsTrigger value={item.type} key={item.type}>
+                  {item.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {colorList.map((item) => (
+              <TabsContent value={item.type} key={item.type}>
+                <div className="mt-4">{colorBox(item)}</div>
+              </TabsContent>
+            ))}
+          </Tabs>
+        ) : (
+          <div className="border-white drop-shadow-md">
+            <p className="mb-2">{colorList[0].label}</p>
+            {colorBox(colorList[0])}
           </div>
-        ))}
+        )}
       </div>
     </>
   );

@@ -15,6 +15,7 @@ export interface ControlerValue {
   backgroundRotate?: string;
   backgroundImagePath?: string;
   backgroundScale?: string;
+  pngShadowOpacity?: string;
 }
 
 export interface SelectedImage {

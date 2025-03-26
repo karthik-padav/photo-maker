@@ -14,7 +14,7 @@ export default function Border() {
         const data = controler[key];
         return (
           <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
-            <p className="flex justify-between mb-1 text-sm md:lg">
+            <p className="flex justify-between mb-1">
               {data.label}
               <span>
                 {data?.attr?.value || 0}
@@ -40,7 +40,7 @@ export default function Border() {
         }
         colorList={[
           {
-            label: "Border Color",
+            label: "Solid",
             list: constants.solidColorCollection,
             type: "bg",
           },

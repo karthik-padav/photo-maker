@@ -94,7 +94,7 @@ export default function Header() {
           .map((item, index) => (
             <div
               key={item.code}
-              className={`text-lg ${
+              className={`${
                 isNav
                   ? `${
                       index != constants.headerMenuList.length - 1 && "border-b"
@@ -155,7 +155,7 @@ export default function Header() {
             />
           </Link>
           <div className="flex items-center">
-            <nav className="text-base justify-center font-semibold md:block hidden text-gray-600 dark:text-gray-300">
+            <nav className="text-base justify-center font-semibold md:block hidden">
               {renderList()}
             </nav>
             {showCoin && (

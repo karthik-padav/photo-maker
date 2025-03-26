@@ -70,7 +70,7 @@ model Controler {
   userId                   String
   imageId                  String? 
   bucket                   String?
-  borderRadius              String?
+  borderRadius             String?
   imageWrapperSize         String?
   rotate                   String?
   scale                    String?
@@ -78,6 +78,7 @@ model Controler {
   transformX               String?
   transformY               String?
   pngBorderColor           String?
+  pngShadowOpacity         String?
   outerBorderColor         String?
   outerBorderOpacity       String?
   outerBorderWidth         String?

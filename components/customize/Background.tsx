@@ -46,7 +46,7 @@ export default function Background() {
       <p className="pb-1 md:pt-4 pt-2">Background Image</p>
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerTrigger
-          className={`bg-background p-4 dark:text-white hover:text-white hover:bg-violet-500 drop-shadow-2xl mb-2 rounded-md`}
+          className={`bg-background p-2 md:p-4 dark:text-white hover:text-white hover:bg-violet-500 drop-shadow-2xl mb-2 rounded-md`}
         >
           <LImage />
         </DrawerTrigger>

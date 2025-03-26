@@ -20,7 +20,7 @@ const createRangeControl = (
     max,
     step,
     value,
-    className: `w-full slider dark:bg-accent bg-gray-200 ${extraClass}`,
+    className: `w-full slider bg-violet-500 rounded-full ${extraClass}`,
   },
 });
 

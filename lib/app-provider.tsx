@@ -29,6 +29,7 @@ const defaultValue: Theme = {
   controlerValue: {
     border: { title: "Round", value: 50 },
     pngBorderColor: "rgb(0, 0, 0)",
+    outerBorderColor: "rgb(0, 0, 0)",
   },
   selectedImage: null,
   globalLoader: false,

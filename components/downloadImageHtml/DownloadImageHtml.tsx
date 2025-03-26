@@ -4,8 +4,6 @@ import { useAppProvider } from "@/lib/app-provider";
 import { ControlerValue, SelectedImage } from "@/lib/interfaces";
 import { useEffect, useRef } from "react";
 import { calcPercentage, calcPx, getImageStyle, rgbToRgba } from "@/lib/common";
-import { Button } from "../ui/button";
-import * as htmlToImage from "html-to-image";
 import Dragable from "../dragable";
 
 interface Params {
@@ -14,34 +12,12 @@ interface Params {
   disabled?: boolean;
 }
 
-function donwload() {
-  const node = document.getElementById("my-node");
-  if (node) {
-    htmlToImage
-      .toPng(node)
-      .then((dataUrl) => {
-        const link = document.createElement("a");
-        link.href = dataUrl;
-        link.download = "image"; // Set the filename
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link); // Clean up
-      })
-      .catch((err) => {
-        console.error("oops, something went wrong!", err);
-      });
-  } else {
-    console.error("Node not found!");
-  }
-}
-
 export default function DownloadImageHtml({ image, controler }: Params) {
   if (!image.imagePath) return null;
   const imageStyle = getImageStyle(controler);
   const borderRadius = { borderRadius: `${controler?.border?.value || 0}%` };
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const { setControlerValue } = useAppProvider();
-
   useEffect(() => {
     if (imageWrapperRef?.current?.offsetWidth)
       setControlerValue({
@@ -110,11 +86,11 @@ export default function DownloadImageHtml({ image, controler }: Params) {
           alt="image"
           className="w-full h-full absolute object-contain z-30 cursor-grabbing"
           crossOrigin="anonymous"
-          defaultAxis={{
+          position={{
             x: calcPx(imageWrapperWidth, controler?.transformX || 0),
             y: calcPx(imageWrapperWidth, controler?.transformY || 0),
           }}
-          style={{ ...imageStyle, ...borderRadius }}
+          style={imageStyle}
           onUpdate={({ x, y }) => {
             const transformX = calcPercentage(imageWrapperWidth, x);
             const transformY = calcPercentage(imageWrapperWidth, y);

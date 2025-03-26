@@ -23,7 +23,7 @@ export default function Border() {
             </p>
             <input
               onChange={(e) => {
-                setControlerValue({ ...controlerValue, [key]: e.target.value });
+                setControlerValue({ [key]: e.target.value });
               }}
               {...data.attr}
             />
@@ -33,10 +33,7 @@ export default function Border() {
 
       <ColorPicker
         onClick={(obj: { [key: string]: string }) =>
-          setControlerValue({
-            ...controlerValue,
-            outerBorderColor: obj.color,
-          })
+          setControlerValue({ outerBorderColor: obj.color })
         }
         colorList={[
           {

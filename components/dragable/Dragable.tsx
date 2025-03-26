@@ -6,17 +6,17 @@ interface Position {
 }
 
 export default function Dragable(imgProps) {
-  const { style = {}, defaultAxis = {}, onUpdate = () => {} } = { ...imgProps };
+  const { style = {}, position = {}, onUpdate = () => {} } = { ...imgProps };
   if (!imgProps?.src) return null;
-  const [position, setPosition] = useState<Position>({
-    x: defaultAxis?.x || 0,
-    y: defaultAxis?.y || 0,
-  });
+  // const [position, setPosition] = useState<Position>({
+  //   x: defaultAxis?.x || 0,
+  //   y: defaultAxis?.y || 0,
+  // });
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState<Position>({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (!dragging) onUpdate(position);
+    // if (!dragging) onUpdate(position);
 
     // Disable scrolling when dragging
     const disableScroll = (e: TouchEvent) => {
@@ -47,7 +47,7 @@ export default function Dragable(imgProps) {
       e.preventDefault();
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
-      setPosition({ x: clientX - offset.x, y: clientY - offset.y });
+      onUpdate({ x: clientX - offset.x, y: clientY - offset.y });
     },
     [dragging, offset]
   );
@@ -64,7 +64,6 @@ export default function Dragable(imgProps) {
         ...style,
         left: `${position.x}px`,
         top: `${position.y}px`,
-        transform: "translate(0, 0)",
       }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}

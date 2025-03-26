@@ -42,7 +42,7 @@ export function myPhotoControlers(controlerValue: ControlerValue | null) {
       controlerValue?.pngShadow || 0
     ),
     pngShadowOpacity: createRangeControl(
-      "Outline Opacity",
+      "Outline Shade",
       0,
       1,
       0.1,
@@ -142,7 +142,9 @@ export function getImageStyle(controlerValue?: ControlerValue) {
   return controlerValue
     ? {
         scale: controlerValue.scale,
-        transform: `rotate(${controlerValue.rotate}deg) translate(${calcPx(
+        transform: `rotate(${
+          controlerValue?.rotate || 0
+        }deg) translate(${calcPx(
           controlerValue?.imageWrapperSize || 100,
           controlerValue?.transformX || 0
         )}px, ${calcPx(
@@ -185,14 +187,6 @@ export function getOuterBorderStyle(controlerValue?: ControlerValue) {
 
   return style;
 }
-
-export const getClientSideCookie = (name: string) => document.cookie;
-
-export const extractValues = (input: string) =>
-  input
-    .match(/translate\(([-\d.]+)%, ([-\d.]+)%\)/)
-    ?.slice(1)
-    .map(parseFloat) || [];
 
 export const resizedImage = async (originalCanvas) => {
   if (!originalCanvas) return;
@@ -282,15 +276,4 @@ export async function onImageGenerate(
 
     reader.readAsArrayBuffer(file);
   });
-}
-
-const base64ToBlob = (base64: string, mimeType: string) => {
-  const byteString = atob(base64.split(",")[1] || base64);
-  return new Blob([Uint8Array.from(byteString, (c) => c.charCodeAt(0))], {
-    type: mimeType,
-  });
-};
-
-export function dataURLtoBase64(dataURL) {
-  return dataURL.split(",")[1]; // Extract only the Base64 part
 }

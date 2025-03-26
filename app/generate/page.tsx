@@ -29,7 +29,6 @@ export default function Generate() {
   function handleRedirect(item: { id: string; backgroundImagePath?: string }) {
     if (item?.backgroundImagePath)
       setControlerValue({
-        ...controlerValue,
         backgroundImagePath: item.backgroundImagePath,
       });
     router.push("/customize");

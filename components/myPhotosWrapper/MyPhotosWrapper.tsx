@@ -251,6 +251,7 @@ export default function MyPhotosWrapper({
                           <Button
                             variant="ghost"
                             onClick={() => {
+                              debugger;
                               setSelectedImage({
                                 id: image.id,
                                 imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`,

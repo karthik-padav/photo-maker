@@ -22,12 +22,7 @@ export default function MyPhotoControler() {
               </span>
             </p>
             <input
-              onChange={(e) =>
-                setControlerValue({
-                  ...controlerValue,
-                  [key]: e.target.value,
-                })
-              }
+              onChange={(e) => setControlerValue({ [key]: e.target.value })}
               {...data.attr}
             />
           </div>
@@ -36,10 +31,7 @@ export default function MyPhotoControler() {
 
       <ColorPicker
         onClick={(obj: { [key: string]: string }) =>
-          setControlerValue({
-            ...controlerValue,
-            pngBorderColor: obj.color,
-          })
+          setControlerValue({ pngBorderColor: obj.color })
         }
         colorList={[
           {

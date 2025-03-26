@@ -60,7 +60,6 @@ export default function DownloadImageHtml({ image, controler }: Params) {
             style={{
               background: controler.backgroundColor,
               transform: `rotate(${controler.backgroundRotate}deg)`,
-              ...borderRadius,
             }}
           />
         )}
@@ -76,7 +75,6 @@ export default function DownloadImageHtml({ image, controler }: Params) {
               transform: `scale(${controler?.backgroundScale || 1}) rotate(${
                 controler?.backgroundRotate || 0
               }deg)`,
-              ...borderRadius,
             }}
           />
         )}

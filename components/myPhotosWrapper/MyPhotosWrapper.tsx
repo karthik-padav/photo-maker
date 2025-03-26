@@ -51,12 +51,18 @@ export default function MyPhotosWrapper({
   }, [session?.data, router]);
 
   const downloadImage = async (imageUrl: string) => {
+    const getImageExtension = () => {
+      const extension = (imageUrl || "").split(".").pop();
+      return extension ? extension.split(/\#|\?/)[0] : "png";
+    };
     const response = await fetch(imageUrl);
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}.jpg`;
+    a.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(
+      16
+    )}.${getImageExtension()}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -251,7 +257,6 @@ export default function MyPhotosWrapper({
                           <Button
                             variant="ghost"
                             onClick={() => {
-                              debugger;
                               setSelectedImage({
                                 id: image.id,
                                 imagePath: `${process.env.NEXT_PUBLIC_IMAGE_URL}${image.imagePath}`,
@@ -268,7 +273,9 @@ export default function MyPhotosWrapper({
                             variant="ghost"
                             onClick={() =>
                               downloadedImagePath &&
-                              downloadImage(downloadedImagePath)
+                              downloadImage(
+                                `${process.env.NEXT_PUBLIC_IMAGE_URL}${downloadedImagePath}`
+                              )
                             }
                             className="h-10 w-10 mr-2 p-0 hover:bg-violet-500 dark:bg-violet-500 dark:text-white text-violet-500 drop-shadow-2xl rounded-full bg-background hover:text-white"
                           >

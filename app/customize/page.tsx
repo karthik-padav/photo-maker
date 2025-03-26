@@ -96,7 +96,6 @@ export default function Customize() {
       // const blob = await (await fetch(dataURL)).blob();
 
       if (selectedImage?.id && blob && controlerValue) {
-        debugger;
         const { data } = await createControler({
           controler: controlerValue,
           imageId: selectedImage.id,

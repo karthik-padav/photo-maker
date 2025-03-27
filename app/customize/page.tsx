@@ -8,7 +8,6 @@ import { downloadBlob, resizedImage } from "@/lib/common";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import DownloadImageHtml from "@/components/downloadImageHtml";
 import { createControler } from "@/lib/actions/services";
 import {
   AlertDialog,
@@ -39,6 +38,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import * as htmlToImage from "html-to-image";
 import ADS from "@/components/ads";
+import DownloadImage from "@/components/downloadImage";
 
 const MENU_ITEMS = [
   {
@@ -86,38 +86,15 @@ export default function Customize() {
 
     setLoader(true);
 
-    try {
-      const node = document.getElementById("wrapper");
-      if (!node) return false;
-      let canvas = await htmlToImage.toCanvas(node);
-
-      const blob = (await resizedImage(canvas)) as Blob;
-      // let dataURL = canvas.toDataURL("image/png");
-      // const blob = await (await fetch(dataURL)).blob();
-
-      if (selectedImage?.id && blob && controlerValue) {
-        const { data } = await createControler({
-          controler: controlerValue,
-          imageId: selectedImage.id,
-          blob,
-        });
-        if (data)
-          downloadBlob(
-            blob,
-            `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}`
-          );
-      }
-    } catch (error) {
-      throw new Error(String(error));
-    } finally {
-      setLoader(false);
-    }
-
     // try {
-    //   const canvas = canvasRef.current;
-    //   if (!canvas) return;
+    //   const node = document.getElementById("wrapper");
+    //   if (!node) return false;
+    //   let canvas = await htmlToImage.toCanvas(node);
 
     //   const blob = (await resizedImage(canvas)) as Blob;
+    //   // let dataURL = canvas.toDataURL("image/png");
+    //   // const blob = await (await fetch(dataURL)).blob();
+
     //   if (selectedImage?.id && blob && controlerValue) {
     //     const { data } = await createControler({
     //       controler: controlerValue,
@@ -135,6 +112,29 @@ export default function Customize() {
     // } finally {
     //   setLoader(false);
     // }
+
+    try {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const blob = (await resizedImage(canvas)) as Blob;
+      if (selectedImage?.id && blob && controlerValue) {
+        const { data } = await createControler({
+          controler: controlerValue,
+          imageId: selectedImage.id,
+          blob,
+        });
+        if (data)
+          downloadBlob(
+            blob,
+            `${process.env.NEXT_PUBLIC_WEBSITE_CODE}_${uid(16)}`
+          );
+      }
+    } catch (error) {
+      throw new Error(String(error));
+    } finally {
+      setLoader(false);
+    }
   }
 
   function donwload() {
@@ -192,9 +192,10 @@ export default function Customize() {
                   className="w-full h-full"
                 >
                   {selectedImage && (
-                    <DownloadImageHtml
+                    <DownloadImage
                       image={selectedImage}
                       controler={controlerValue ?? undefined}
+                      canvasRef={canvasRef}
                     />
                   )}
                 </div>

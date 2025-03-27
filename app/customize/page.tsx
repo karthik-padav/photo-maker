@@ -201,7 +201,7 @@ export default function Customize() {
                 </div>
               </div>
             </div>
-            <div className="drop-shadow-2xl p-2 md:p-4 bg-background">
+            <div className="drop-shadow-2xl p-6 md:p-4 bg-background">
               <Tabs defaultValue="MY_PHOTO" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   {MENU_ITEMS.map((item) => (

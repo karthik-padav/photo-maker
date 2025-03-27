@@ -41,13 +41,6 @@ export function myPhotoControlers(controlerValue: ControlerValue | null) {
       1,
       controlerValue?.pngShadow || 0
     ),
-    pngShadowOpacity: createRangeControl(
-      "Outline Shade",
-      0,
-      1,
-      0.1,
-      controlerValue?.pngShadowOpacity || 1
-    ),
   };
 }
 
@@ -127,10 +120,7 @@ export function getBorderColor(controlerValue: ControlerValue) {
     "var(--stroke-neg) var(--stroke-neg)",
   ]
     .map((shadow, index) => {
-      const rgba = rgbToRgba(
-        rgbColors[index % rgbColors.length],
-        controlerValue?.pngShadowOpacity || "1"
-      );
+      const rgba = rgbToRgba(rgbColors[index % rgbColors.length], "1");
       return `drop-shadow(${shadow} 0 ${rgba})`;
     })
     .join(" ");

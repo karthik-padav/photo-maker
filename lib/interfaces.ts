@@ -7,7 +7,6 @@ export interface ControlerValue {
   transformX?: number;
   transformY?: number;
   pngBorderColor?: string;
-  pngShadowOpacity?: string;
   backgroundColorType?: string;
   backgroundColor?: string;
   outerBorderColor?: string;

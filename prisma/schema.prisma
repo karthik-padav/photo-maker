@@ -78,7 +78,6 @@ model Controler {
   transformX               String?
   transformY               String?
   pngBorderColor           String?
-  pngShadowOpacity         String?
   outerBorderColor         String?
   outerBorderOpacity       String?
   outerBorderWidth         String?

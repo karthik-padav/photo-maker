@@ -27,6 +27,7 @@ export default function Background() {
       _controlerValue.backgroundScale = "1";
     }
     setControlerValue({
+      ..._controlerValue,
       backgroundColorType: obj.type,
       backgroundColor: obj.color,
     });
@@ -38,7 +39,10 @@ export default function Background() {
       _controlerValue.backgroundColor = "";
       _controlerValue.backgroundColorType = "";
     }
-    setControlerValue({ backgroundImagePath: value });
+    setControlerValue({
+      ..._controlerValue,
+      backgroundImagePath: value,
+    });
     setIsOpen(false);
   }
   return (

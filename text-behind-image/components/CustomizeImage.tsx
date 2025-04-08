@@ -261,24 +261,24 @@ export default function CustomizeImage() {
     // link.href = dataUrl;
     // link.click();
 
-    // const stage = stageRef.current;
-    // if (!stage) return;
+    const stage = stageRef.current;
+    if (!stage) return;
 
-    // const dataURL = stage.toDataURL({ pixelRatio: 2, mimeType: "image/png" });
-    // const link = document.createElement("a");
-    // link.download = "text-behind-image";
-    // link.href = dataURL;
-    // link.click();
+    const dataURL = stage.toDataURL({ pixelRatio: 2, mimeType: "image/png" });
+    const link = document.createElement("a");
+    link.download = "text-behind-image";
+    link.href = dataURL;
+    link.click();
 
-    const json = stageRef.current?.toJSON();
-    const blob = new Blob([json || ""], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+    // const json = stageRef.current?.toJSON();
+    // const blob = new Blob([json || ""], { type: "application/json" });
+    // const url = URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "canvas.json";
-    a.click();
-    URL.revokeObjectURL(url);
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.download = "canvas.json";
+    // a.click();
+    // URL.revokeObjectURL(url);
   }
 
   console.log(controler, "image123");

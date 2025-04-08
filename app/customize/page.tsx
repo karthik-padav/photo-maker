@@ -36,7 +36,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import * as htmlToImage from "html-to-image";
 import ADS from "@/components/ads";
 import DownloadImage from "@/components/downloadImage";
 
@@ -137,27 +136,6 @@ export default function Customize() {
     }
   }
 
-  function donwload() {
-    const node = document.getElementById("wrapper");
-    if (node) {
-      htmlToImage
-        .toPng(node)
-        .then((dataUrl) => {
-          const link = document.createElement("a");
-          link.href = dataUrl;
-          link.download = "image"; // Set the filename
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link); // Clean up
-        })
-        .catch((err) => {
-          console.error("oops, something went wrong!", err);
-        });
-    } else {
-      console.error("Node not found!");
-    }
-  }
-
   return (
     <main className="px-2 md:px-0 md:container mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pb-6">
@@ -201,7 +179,7 @@ export default function Customize() {
                 </div>
               </div>
             </div>
-            <div className="drop-shadow-2xl p-2 md:p-4 bg-background">
+            <div className="drop-shadow-2xl p-6 md:p-4 bg-background">
               <Tabs defaultValue="MY_PHOTO" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   {MENU_ITEMS.map((item) => (

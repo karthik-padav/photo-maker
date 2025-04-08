@@ -36,7 +36,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import * as htmlToImage from "html-to-image";
 import ADS from "@/components/ads";
 import DownloadImage from "@/components/downloadImage";
 
@@ -134,27 +133,6 @@ export default function Customize() {
       throw new Error(String(error));
     } finally {
       setLoader(false);
-    }
-  }
-
-  function donwload() {
-    const node = document.getElementById("wrapper");
-    if (node) {
-      htmlToImage
-        .toPng(node)
-        .then((dataUrl) => {
-          const link = document.createElement("a");
-          link.href = dataUrl;
-          link.download = "image"; // Set the filename
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link); // Clean up
-        })
-        .catch((err) => {
-          console.error("oops, something went wrong!", err);
-        });
-    } else {
-      console.error("Node not found!");
     }
   }
 

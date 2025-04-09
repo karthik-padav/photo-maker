@@ -128,7 +128,6 @@ export default function CustomizeImage() {
       }
       const imagePath =
         typeof resp === "string" ? resp : URL.createObjectURL(resp);
-      console.log(resp, "resp123");
 
       const imageSrc = new window.Image();
       imageSrc.src = URL.createObjectURL(file);
@@ -258,7 +257,7 @@ export default function CustomizeImage() {
         </div>
         <div className="drop-shadow-xl bg-background border border-input p-2 md:p-4">
           <div className="flex justify-between items-center">
-            <div className="mt-2 flex-1 ">
+            <div className="mt-2 flex-1">
               <label className="text-sm font-medium flex justify-between items-center w-full">
                 <span>Background Blur</span>
                 <span>{controler.bgBlur}</span>

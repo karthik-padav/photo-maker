@@ -210,7 +210,7 @@ export default function Header() {
                       <p className="">{session.user.name}</p>
                       <p className="text-sm">{session.user.email}</p>
                     </div>
-                    <hr className="my-2 border border-slate-200 dark:border-gray-800" />
+                    <hr className="my-2 border border-input dark:border-gray-800" />
                   </>
                 )}
                 <>
@@ -225,7 +225,7 @@ export default function Header() {
                     </DropdownMenuItem>
                   ))}
                 </>
-                <hr className="my-2 border border-slate-200 dark:border-gray-800" />
+                <hr className="my-2 border border-input dark:border-gray-800" />
                 <>
                   {session ? (
                     <>

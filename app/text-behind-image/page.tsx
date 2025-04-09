@@ -57,7 +57,7 @@ export default function TextBehindImage() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="relative border bg-white/80 backdrop-blur-lg rounded-2xl hover:bg-gradient-to-b hover:from-white hover:to-gray-50 transition-all duration-300 shadow-sm hover:shadow-lg p-4"
+                  className="relative border border-input bg-background backdrop-blur-lg rounded-2xl transition-all duration-300 shadow-sm hover:shadow-lg p-4"
                 >
                   <p className="rounded-md text-2xl md:text-4xl bg-violet-500 font-bold text-white flex justify-center items-center h-10 w-10 md:h-12 md:w-12 mb-2">
                     {index + 1}
@@ -71,7 +71,7 @@ export default function TextBehindImage() {
             </div>
           </section>
 
-          <section className="text-center px-0 flex flex-col justify-center mx-auto pb-10 md:pb-20">
+          <section className="px-0 flex flex-col justify-center mx-auto pb-10 md:pb-20">
             <CustomizeImage />
           </section>
         </div>

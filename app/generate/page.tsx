@@ -59,7 +59,7 @@ export default function Generate() {
                       <div className="aspect-w-1 aspect-h-1 relative">
                         <div
                           className={cn(
-                            "w-full h-full border-white dark:border-gray-800 border-4 drop-shadow-2xl overflow-hidden asdas",
+                            "w-full h-full border-input border-4 drop-shadow-2xl overflow-hidden asdas",
                             borderRadius > 49
                               ? "rounded-full"
                               : borderRadius > 19

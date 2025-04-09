@@ -47,6 +47,8 @@ import {
 import { uid } from "uid";
 import FontPicker from "./FontPicker";
 import { renderTextRange } from "../utils/common";
+import { Slider } from "@/components/ui/slider";
+import ColorPicker from "@/components/colorPicker";
 
 export default function Text({
   controler,
@@ -57,12 +59,7 @@ export default function Text({
   updateControler: (value) => void;
   disabled: boolean;
 }) {
-  function addNewText() {
-    let { texts = [] } = { ...controler };
-    const randomWord = getUniqueRandomWord(texts.map((i) => i.text));
-    texts.push(addText({ text: randomWord || "edit" }));
-    updateControler({ texts });
-  }
+  console.log("rederning Text");
 
   function deleteText(id: string) {
     let { texts = [] } = { ...controler };
@@ -86,37 +83,29 @@ export default function Text({
 
   return (
     <>
-      <Button
-        variant="outline"
-        className={cn(
-          "relative rounded-md text-sm",
-          disabled ? "cursor-progress" : ""
-        )}
-        disabled={disabled}
-        onClick={addNewText}
-      >
-        Add Text
-        <Plus className="ml-2 w-5 h-5 text-violet-500" />
-      </Button>
-
       <Accordion
         type="single"
         collapsible
-        className="w-full"
+        className={`w-full ${disabled ? "cursor-not-allowed" : ""}`}
         disabled={disabled}
+        defaultValue={controler?.texts?.[0]?.id}
       >
         {(controler?.texts || []).map((item, index) => (
-          <AccordionItem value={item.id} key={item.id}>
+          <AccordionItem
+            value={item.id}
+            key={item.id}
+            className="border-b border-input"
+          >
             <div className="flex items-center">
               <div className="grow">
                 <AccordionTrigger>{item.text}</AccordionTrigger>
               </div>
-              <div className="flex pl-2">
+              <div className="pl-2">
                 <Button
                   variant="ghost"
                   onClick={() => duplicate(index)}
                   disabled={disabled}
-                  className="p-2 mx-1 border hover:text-violet-500 dark:text-white drop-shadow-2xl bg-transparent"
+                  className="p-2 mx-1 border border-input hover:text-violet-500 dark:text-white drop-shadow-2xl bg-transparent"
                 >
                   <Copy className="h-5 w-5" />
                 </Button>
@@ -124,7 +113,7 @@ export default function Text({
                   variant="ghost"
                   onClick={() => deleteText(item.id)}
                   disabled={disabled}
-                  className="p-2 mx-1 border hover:text-red-500 dark:text-white drop-shadow-2xl bg-transparent"
+                  className="p-2 mx-1 border border-input hover:text-red-500 dark:text-white drop-shadow-2xl bg-transparent"
                 >
                   <Trash2 className="h-5 w-5" />
                 </Button>
@@ -134,15 +123,16 @@ export default function Text({
               <div className="flex justify-between items-center mt-2">
                 <input
                   type="text"
-                  className="flex rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-b-violet-500 disabled:cursor-not-allowed disabled:opacity-50 w-full"
+                  className="flex rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-b-violet-500 disabled:cursor-not-allowed disabled:opacity-50 w-full"
                   value={item.text}
+                  disabled={disabled}
                   onChange={(e) => handleField(e.target.value, "text", item)}
                 />
                 {renderFontStyles(item).map((b, index) => (
                   <Button
                     key={index}
                     variant={b?.variant as "ghost" | undefined}
-                    className="p-2 mx-1 border dark:text-white drop-shadow-2xl"
+                    className="p-2 mx-1 border border-input dark:text-white drop-shadow-2xl"
                     onClick={() => handleField(b.value, b.name, item)}
                     disabled={disabled}
                   >
@@ -150,11 +140,24 @@ export default function Text({
                   </Button>
                 ))}
               </div>
+              <ColorPicker
+                onClick={(obj: { [key: string]: string }) =>
+                  handleField(obj.color, "color", item)
+                }
+                disabled={disabled}
+                colorList={[
+                  {
+                    label: "Color",
+                    list: constants.solidColorCollection,
+                    type: "bg",
+                  },
+                ]}
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 mt-2">
                   <label className="text-sm font-medium">Font Size</label>
                   <input
-                    className="flex rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-b-violet-500 disabled:cursor-not-allowed disabled:opacity-50 w-full"
+                    className="flex rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-b-violet-500 disabled:cursor-not-allowed disabled:opacity-50 w-full"
                     min="10"
                     type="number"
                     value={item.fontSize}
@@ -176,25 +179,28 @@ export default function Text({
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {renderTextRange(item).map((i, index) => (
                   <div className="space-y-2 mt-2" key={index}>
                     <label className="text-sm font-medium flex justify-between items-center w-full">
                       <span>{i.label}</span>
                       <span>
                         {i.postfix
-                          ? `${i.attr.value}${i.postfix}`
-                          : i.attr.value}
+                          ? `${item[i.attr.name]}${i.postfix}`
+                          : item[i.attr.name]}
                       </span>
                     </label>
-                    <input
-                      className="slider bg-violet-500 rounded-full disabled:cursor-not-allowed disabled:opacity-50 w-full"
+
+                    <Slider
                       {...i.attr}
-                      type="range"
-                      disabled={disabled}
-                      onChange={(e) =>
-                        handleField(Number(e.target.value), i.attr.name, item)
+                      defaultValue={[item[i.attr.name]]}
+                      value={[item[i.attr.name]]}
+                      onValueChange={(value) =>
+                        handleField(value[0], i.attr.name, item)
                       }
+                      disabled={disabled}
+                      aria-label={i.label}
+                      className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 mt-2"
                     />
                   </div>
                 ))}

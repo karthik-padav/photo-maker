@@ -13,8 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 export default function ColorPicker({
   onClick,
   colorList = [],
+  disabled = false,
 }: {
   onClick: (data: { color?: string; type?: string }) => void;
+  disabled?: boolean;
   colorList?: {
     label: string;
     list: { id: string; color: string }[];
@@ -35,27 +37,35 @@ export default function ColorPicker({
           if (!i.color)
             return (
               <div
-                className="rounded-full w-full h-full aspect-w-1 aspect-h-1 cursor-pointer"
+                className={`${
+                  disabled ? "pointer-not-allowed" : "cursor-pointer"
+                } rounded-full w-full h-full aspect-w-1 aspect-h-1`}
                 key={i.id}
-                onClick={() => onClick({ color: "", type: "" })}
+                onClick={() => !disabled && onClick({ color: "", type: "" })}
               >
                 <Ban className="text-red-500" />
               </div>
             );
           return (
             <div
-              className="rounded-full w-full h-full aspect-w-1 aspect-h-1 cursor-pointer"
+              className={`${
+                disabled ? "pointer-not-allowed" : "cursor-pointer"
+              } rounded-full w-full h-full aspect-w-1 aspect-h-1`}
               style={style}
               key={i.id}
-              onClick={() => onClick({ color: i.color, type: item.type })}
+              onClick={() =>
+                !disabled && onClick({ color: i.color, type: item.type })
+              }
             />
           );
         })}
         {item.type === "bg" && (
           <>
             <div
-              className="rounded-full aspect-w-1 aspect-h-1 cursor-pointer"
-              onClick={() => colorInput.current?.click()}
+              className={`${
+                disabled ? "pointer-not-allowed" : "cursor-pointer"
+              } rounded-full aspect-w-1 aspect-h-1`}
+              onClick={() => !disabled && colorInput.current?.click()}
             >
               <div className="flex justify-center items-center h-full w-full">
                 <Pipette className="h-[1.3rem] w-[1.3rem]" />
@@ -63,6 +73,7 @@ export default function ColorPicker({
               <input
                 ref={colorInput}
                 onChange={(e) =>
+                  !disabled &&
                   onClick({
                     color: hexToRgb(e.target.value),
                     type: item.type,

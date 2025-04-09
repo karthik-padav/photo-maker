@@ -4,6 +4,7 @@ import {
   Download,
   Image as LImage,
   LoaderCircle,
+  Plus,
   RotateCcw,
   Square,
 } from "lucide-react";
@@ -32,9 +33,14 @@ import ImageSettings from "./ImageSettings";
 import Text from "./Text";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Dropzone from "@/components/dropzone";
-import { getDefaultControler } from "../utils/common";
+import {
+  addText,
+  getDefaultControler,
+  getUniqueRandomWord,
+} from "../utils/common";
 import CanvaEditor from "@/components/canvaEditor";
 import { Stage as StageType } from "konva/lib/Stage";
+import { Slider } from "@/components/ui/slider";
 
 const MENU_ITEMS = [
   {
@@ -56,23 +62,13 @@ export default function CustomizeImage() {
   const { toast } = useToast();
   const imageWrapperRef = useRef<HTMLDivElement>(null);
 
-  const [controler, setControler] = useState<TBIControlerValue>(() => {
-    // const savedValue = localStorage.getItem("savedValue");
-    let savedValue;
-    return savedValue ? JSON.parse(savedValue) : {};
+  const [controler, setControler] = useState<TBIControlerValue>({
+    texts: [addText({ text: "TEXT" })],
+    imageWrapperSize: 0,
+    bgBlur: 0,
+    imageSrc: null,
+    rbgSrc: null,
   });
-
-  // useEffect(() => {
-  //   const imageSrc = new window.Image();
-  //   imageSrc.src = "/images/temp_rm.jpg";
-  //   imageSrc.crossOrigin = "anonymous";
-  //   imageSrc.onload = () => updateControler({ imageSrc });
-
-  //   const rbgSrc = new window.Image();
-  //   rbgSrc.src = "/images/temp_rm.png";
-  //   rbgSrc.crossOrigin = "anonymous";
-  //   rbgSrc.onload = () => updateControler({ rbgSrc });
-  // }, []);
 
   useEffect(() => {
     if (imageWrapperRef?.current?.offsetWidth)
@@ -162,96 +158,6 @@ export default function CustomizeImage() {
     // else setControler({});
   }
 
-  // useEffect(() => {
-  //   if (!canvasRef.current || !controler.rbgSrc || !controler.imageSrc) return;
-
-  //   const canvas = canvasRef.current;
-  //   const ctx = canvas.getContext("2d");
-  //   if (!ctx) return;
-
-  //   const imgRatio = controler.imageSrc.width / controler.imageSrc.height;
-
-  //   canvas.width = controler?.imageWrapperSize || 300;
-  //   canvas.height = (controler?.imageWrapperSize || 300) / imgRatio;
-
-  //   const canvasRatio = canvas.width / canvas.height;
-
-  //   let drawWidth, drawHeight, offsetX, offsetY;
-
-  //   if (imgRatio > canvasRatio) {
-  //     // Image is wider than canvas
-  //     drawWidth = canvas.width;
-  //     drawHeight = canvas.width / imgRatio;
-  //     offsetX = 0;
-  //     offsetY = (canvas.height - drawHeight) / 2; // Center vertically
-  //   } else {
-  //     // Image is taller than canvas
-  //     drawWidth = canvas.height * imgRatio;
-  //     drawHeight = canvas.height;
-  //     offsetX = (canvas.width - drawWidth) / 2; // Center horizontally
-  //     offsetY = 0;
-  //   }
-
-  //   ctx.filter = `
-  //                 brightness(${controler.bgBrightness}%)
-  //                 contrast(${controler.bgContrast}%)
-  //                 saturate(${controler.bgSaturate}%)
-  //                 hue-rotate(${controler.bgHueRotate}deg)
-  //                 grayscale(${controler.bgGrayscale}%)
-  //                 sepia(${controler.bgSepia}%)
-  //                 invert(${controler.bgInvert}%)
-  //                 blur(${controler.bgBlur}px)
-  //               `;
-  //   ctx.drawImage(controler.imageSrc, offsetX, offsetY, drawWidth, drawHeight);
-  //   ctx.filter = "none"; // Reset filter for future drawings
-
-  //   (controler.texts || []).forEach((textSet) => {
-  //     ctx.save();
-
-  //     // Set up text properties
-  //     ctx.font = `${textSet.fontWeight} ${textSet.fontSize * 3}px ${
-  //       textSet.fontFamily
-  //     }`;
-  //     ctx.fillStyle = textSet.color;
-  //     ctx.globalAlpha = textSet.opacity;
-  //     ctx.textAlign = "center";
-  //     ctx.textBaseline = "middle";
-
-  //     const x = (canvas.width * (textSet.left + 50)) / 100;
-  //     const y = (canvas.height * (50 - textSet.top)) / 100;
-
-  //     // Move to position first
-  //     ctx.translate(x, y);
-
-  //     // Apply 3D transforms
-  //     const tiltXRad = (-textSet.tiltX * Math.PI) / 180;
-  //     const tiltYRad = (-textSet.tiltY * Math.PI) / 180;
-
-  //     // Use a simpler transform that maintains the visual tilt
-  //     ctx.transform(
-  //       Math.cos(tiltYRad), // Horizontal scaling
-  //       Math.sin(0), // Vertical skewing
-  //       -Math.sin(0), // Horizontal skewing
-  //       Math.cos(tiltXRad), // Vertical scaling
-  //       0, // Horizontal translation
-  //       0 // Vertical translation
-  //     );
-
-  //     // Apply rotation last
-  //     ctx.rotate((textSet.rotation * Math.PI) / 180);
-
-  //     // Draw text at transformed position
-  //     ctx.fillText(textSet.text, 0, 0);
-  //     ctx.restore();
-  //   });
-
-  //   ctx.drawImage(controler.rbgSrc, offsetX, offsetY, drawWidth, drawHeight);
-
-  //   // return () => {
-  //   //   localStorage.setItem("savedValue", JSON.stringify(controler));
-  //   // };
-  // }, [controler]);
-
   function downloadImage() {
     // const canvas = canvasRef.current;
     // if (!canvas || !controler.rbgSrc) return;
@@ -281,6 +187,17 @@ export default function CustomizeImage() {
     // URL.revokeObjectURL(url);
   }
 
+  function addNewText() {
+    let { texts = [] } = { ...controler };
+    const randomWord = getUniqueRandomWord(texts.map((i) => i.text));
+    texts.push(addText({ text: randomWord || "Edit" }));
+    updateControler({ texts });
+  }
+
+  useEffect(() => {
+    // if ((controler.texts?.length ?? 0) < 1) addNewText();
+  }, []);
+
   console.log(controler, "image123");
   const disabled = globalLoader || !controler.imageSrc;
 
@@ -288,10 +205,10 @@ export default function CustomizeImage() {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6">
         <div>
-          <div className="bg-[url('/images/grid.svg')] drop-shadow-xl border bg-background">
+          <div className="bg-[url('/images/grid.svg')] drop-shadow-xl border border-input bg-background">
             <div ref={imageWrapperRef} className="relative">
               {controler.imageSrc ? (
-                <div className="flex items-center justify-center w-full h-full overflow-hidden w-full outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]">
+                <div className="md:min-h-[64vh] flex items-center justify-center w-full h-full overflow-hidden w-full outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]">
                   <CanvaEditor
                     elements={controler}
                     canvaWidth={controler.imageWrapperSize}
@@ -315,59 +232,14 @@ export default function CustomizeImage() {
               )}
             </div>
           </div>
-          {/* <div className="bg-[url('/images/grid.svg')] drop-shadow-xl border bg-background">
-            <div className="relative overflow-hidden">
-              <Image
-                src={controler.imageSrc || ""}
-                alt="Uploaded"
-                width={800}
-                height={800}
-                objectPosition="center"
-              />
-              {(controler.texts || []).map((textSet) => (
-                <div
-                  key={textSet.id}
-                  style={{
-                    position: "absolute",
-                    top: `${50 - textSet.top}%`,
-                    left: `${textSet.left + 50}%`,
-                    transform: `
-                                  translate(-50%, -50%) 
-                                  rotate(${textSet.rotation}deg)
-                                  perspective(1000px)
-                                  rotateX(${textSet.tiltX}deg)
-                                  rotateY(${textSet.tiltY}deg)
-                              `,
-                    color: textSet.color,
-                    textAlign: "center",
-                    fontSize: `${textSet.fontSize * 3}px`,
-                    fontWeight: textSet.fontWeight,
-                    fontFamily: textSet.fontFamily,
-                    opacity: textSet.opacity,
-                    transformStyle: "preserve-3d",
-                  }}
-                >
-                  {textSet.text}
-                </div>
-              ))}
-              <Image
-                src={controler.rbgSrc || ""}
-                alt="Removed bg"
-                layout="fill"
-                objectFit="contain"
-                objectPosition="center"
-                className="absolute top-0 left-0 w-full h-full"
-              />
-            </div>
-          </div> */}
 
-          <div className="drop-shadow-xl border bg-background p-2 md:p-4 mt-4 flex justify-between items-center">
+          <div className="drop-shadow-xl bg-background border border-input p-2 md:p-4 mt-4 flex justify-between items-center">
             <Button
               onClick={downloadImage}
               variant="outline"
               className={cn(
                 "relative rounded-md text-sm md:mr-2",
-                disabled ? "cursor-progress" : ""
+                disabled ? "cursor-not-allowed" : ""
               )}
               disabled={disabled}
             >
@@ -376,47 +248,55 @@ export default function CustomizeImage() {
               <Download className="ml-2 w-5 h-5 text-violet-500" />
             </Button>
             <Button
-              onClick={() => updateControler(getDefaultControler(controler))}
+              onClick={() => updateControler({ imageSrc: "", rbgSrc: "" })}
               variant="outline"
               className={cn(
                 "relative rounded-md text-sm md:ml-2",
-                disabled ? "cursor-progress" : ""
+                disabled ? "cursor-not-allowed" : ""
               )}
               disabled={disabled}
             >
-              Reset <span className="hidden md:inline-block">&nbsp;Image</span>
+              Reset
               <RotateCcw className="ml-2 w-5 h-5 text-violet-500" />
             </Button>
           </div>
         </div>
-        <div className="drop-shadow-xl border bg-background p-2 md:p-4">
-          <Tabs defaultValue="TEXT" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              {MENU_ITEMS.map((item) => (
-                <TabsTrigger value={item.code} key={item.code}>
-                  {item.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            <TabsContent value="TEXT">
-              <ScrollArea className="h-80 w-full text-left">
-                <Text
-                  controler={controler}
-                  disabled={disabled}
-                  updateControler={updateControler}
-                />
-              </ScrollArea>
-            </TabsContent>
-            <TabsContent value="IMAGE">
-              <ScrollArea className="h-80 w-full">
-                <ImageSettings
-                  controler={controler}
-                  disabled={disabled}
-                  updateControler={updateControler}
-                />
-              </ScrollArea>
-            </TabsContent>
-          </Tabs>
+        <div className="drop-shadow-xl bg-background border border-input p-2 md:p-4">
+          <div className="flex justify-between items-center">
+            <div className="mt-2 flex-1 ">
+              <label className="text-sm font-medium flex justify-between items-center w-full">
+                <span>Background Blur</span>
+                <span>{controler.bgBlur}</span>
+              </label>
+              <Slider
+                value={[controler.bgBlur || 0]}
+                min={0}
+                max={10}
+                onValueChange={(value) => updateControler({ bgBlur: value[0] })}
+                disabled={disabled}
+                className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 mt-2"
+              />
+            </div>
+
+            <Button
+              variant="outline"
+              className={cn(
+                "flex-none relative rounded-md text-sm mx-2",
+                disabled ? "cursor-not-allowed" : ""
+              )}
+              disabled={disabled}
+              onClick={addNewText}
+            >
+              Add Text
+              {/* <Plus className="ml-2 w-5 h-5 text-violet-500" /> */}
+            </Button>
+          </div>
+
+          <Text
+            controler={controler}
+            disabled={disabled}
+            updateControler={updateControler}
+          />
         </div>
       </div>
     </>

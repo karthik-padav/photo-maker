@@ -194,11 +194,6 @@ export default function CustomizeImage() {
     updateControler({ texts });
   }
 
-  useEffect(() => {
-    // if ((controler.texts?.length ?? 0) < 1) addNewText();
-  }, []);
-
-  console.log(controler, "image123");
   const disabled = globalLoader || !controler.imageSrc;
 
   return (
@@ -274,7 +269,6 @@ export default function CustomizeImage() {
                 max={10}
                 onValueChange={(value) => updateControler({ bgBlur: value[0] })}
                 disabled={disabled}
-                className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 mt-2"
               />
             </div>
 

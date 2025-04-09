@@ -32,7 +32,7 @@ export default function TextBehindImage() {
           <ADS />
         </div>
         <div className="col-span-8">
-          <section className="text-center px-5 md:px-0 flex flex-col justify-center mx-auto pb-10 md:pb-20">
+          <section className="px-5 md:px-0 flex flex-col justify-center mx-auto pb-10 md:pb-20">
             <h2 className="title-font pb-4 md:pb-8 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
               Design in Just 4 Easy Steps
             </h2>
@@ -62,16 +62,14 @@ export default function TextBehindImage() {
                   <p className="rounded-md text-2xl md:text-4xl bg-violet-500 font-bold text-white flex justify-center items-center h-10 w-10 md:h-12 md:w-12 mb-2">
                     {index + 1}
                   </p>
-                  <div className="text-left">
-                    <h3 className="text-xl font-medium">{item.title}</h3>
-                    <p>{item.subtitle}</p>
-                  </div>
+                  <h3 className="text-xl font-medium">{item.title}</h3>
+                  <p>{item.subtitle}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          <section className="px-0 flex flex-col justify-center mx-auto pb-10 md:pb-20">
+          <section className="px-5 md:px-0 flex flex-col justify-center mx-auto pb-10 md:pb-20">
             <CustomizeImage />
           </section>
         </div>

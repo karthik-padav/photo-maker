@@ -200,7 +200,6 @@ export default function Text({
                       }
                       disabled={disabled}
                       aria-label={i.label}
-                      className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4 mt-2"
                     />
                   </div>
                 ))}

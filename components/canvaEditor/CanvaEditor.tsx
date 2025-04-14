@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef } from "react";
 import { Stage, Layer, Text, Image as KonvaImage } from "react-konva";
 import Konva from "konva";
 import { Stage as StageType } from "konva/lib/Stage";
@@ -48,8 +48,6 @@ const CanvaEditor = forwardRef<StageType, any>(
                   fill={item.color}
                   x={item.left === 0 ? canvaWidth / 2 : item.left}
                   y={item.top === 0 ? scaledHeight / 2 : item.top}
-                  // offsetX={width / 2}
-                  // offsetY={height / 2}
                   draggable
                   opacity={item.opacity || 1}
                   onDragStart={() => {

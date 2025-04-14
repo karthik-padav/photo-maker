@@ -77,9 +77,9 @@ export default function GenerateImageBtn({
       };
       let promises: Promise<Blob | null | string>[] = [];
       if (process.env.NEXT_PUBLIC_ENABLE_HF === "true")
-        promises.push(onHfImageGenerate(e));
+        promises.push(onHfImageGenerate(file));
       if (process.env.NEXT_PUBLIC_ENABLE_IMGL === "true")
-        promises.push(onImageGenerate(e));
+        promises.push(onImageGenerate(file));
       let resp = (await Promise.any(promises)) as Blob | string | null;
 
       if (!resp) {

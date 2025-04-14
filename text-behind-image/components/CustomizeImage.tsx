@@ -41,6 +41,7 @@ import {
 import CanvaEditor from "@/components/canvaEditor";
 import { Stage as StageType } from "konva/lib/Stage";
 import { Slider } from "@/components/ui/slider";
+import { uid } from "uid";
 
 const MENU_ITEMS = [
   {
@@ -77,8 +78,8 @@ export default function CustomizeImage() {
       });
   }, [imageWrapperRef?.current?.offsetWidth]);
 
-  async function onImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e?.target?.files?.[0];
+  async function onImageChange(files: React.ChangeEvent<HTMLInputElement>) {
+    const file = files?.[0];
 
     let loaderToast;
 
@@ -112,10 +113,10 @@ export default function CustomizeImage() {
         return;
       }
       let promises: Promise<Blob | null | string>[] = [];
-      // if (process.env.NEXT_PUBLIC_ENABLE_HF === "true")
-      //   promises.push(onHfImageGenerate(e));
+      if (process.env.NEXT_PUBLIC_ENABLE_HF === "true")
+        promises.push(onHfImageGenerate(file));
       if (process.env.NEXT_PUBLIC_ENABLE_IMGL === "true")
-        promises.push(onImageGenerate(e));
+        promises.push(onImageGenerate(file));
       let resp = (await Promise.any(promises)) as Blob | string | null;
 
       if (!resp) {
@@ -158,32 +159,13 @@ export default function CustomizeImage() {
   }
 
   function downloadImage() {
-    // const canvas = canvasRef.current;
-    // if (!canvas || !controler.rbgSrc) return;
-    // const dataUrl = canvas.toDataURL("image/png");
-    // const link = document.createElement("a");
-    // link.download = "text-behind-image.png";
-    // link.href = dataUrl;
-    // link.click();
-
     const stage = stageRef.current;
     if (!stage) return;
-
     const dataURL = stage.toDataURL({ pixelRatio: 2, mimeType: "image/png" });
     const link = document.createElement("a");
-    link.download = "text-behind-image";
+    link.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}`;
     link.href = dataURL;
     link.click();
-
-    // const json = stageRef.current?.toJSON();
-    // const blob = new Blob([json || ""], { type: "application/json" });
-    // const url = URL.createObjectURL(blob);
-
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = "canvas.json";
-    // a.click();
-    // URL.revokeObjectURL(url);
   }
 
   function addNewText() {
@@ -216,10 +198,10 @@ export default function CustomizeImage() {
                     <Dropzone
                       onChange={onImageChange}
                       disabled={disabled}
-                      otherAttr={{
-                        loading: globalLoader,
-                        requireLogin: true,
-                      }}
+                      loading={globalLoader}
+                      requireLogin={true}
+                      session={session}
+                      toggleLogin={toggleLogin}
                     />
                   </div>
                 </div>
@@ -238,7 +220,6 @@ export default function CustomizeImage() {
               disabled={disabled}
             >
               Download
-              <span className="hidden md:inline-block">&nbsp;Image</span>
               <Download className="ml-2 w-5 h-5 text-violet-500" />
             </Button>
             <Button

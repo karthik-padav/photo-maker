@@ -33,7 +33,7 @@ export default function TextBehindImage() {
         </div>
         <div className="col-span-8">
           <section className="px-5 md:px-0 flex flex-col justify-center mx-auto pb-10 md:pb-20">
-            <h2 className="title-font pb-4 md:pb-8 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
+            <h2 className="title-font pb-4 md:pb-8 text-center font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
               Design in Just 4 Easy Steps
             </h2>
             <div className="grid md:grid-cols-4 grid-cols-1 gap-4">
@@ -86,14 +86,12 @@ export default function TextBehindImage() {
               "text-behind-image-2",
               "text-behind-image-3",
             ].map((item, index) => (
-              <div
-                key={index}
-                className="relative drop-shadow-xl rounded-lg overflow-hidden"
-              >
+              <div key={index} className="relative drop-shadow-xl">
                 <Image
                   alt="banner-dp"
                   src={`/images/${item}.webp`}
                   style={{ objectFit: "contain" }}
+                  className="rounded-lg overflow-hidden"
                   priority
                   width={800}
                   height={800}
@@ -103,18 +101,16 @@ export default function TextBehindImage() {
           </div>
           <div className="grid grid-cols-1 gap-4">
             {[
-              "text-behind-image-3",
-              "text-behind-image-1",
-              "text-behind-image-2",
+              "text-behind-image-4",
+              "text-behind-image-5",
+              "text-behind-image-6",
             ].map((item, index) => (
-              <div
-                key={index}
-                className="relative drop-shadow-xl rounded-lg overflow-hidden"
-              >
+              <div key={index} className="relative drop-shadow-xl">
                 <Image
                   alt="banner-dp"
                   src={`/images/${item}.webp`}
                   style={{ objectFit: "contain" }}
+                  className="rounded-lg overflow-hidden"
                   priority
                   width={800}
                   height={800}
@@ -125,16 +121,14 @@ export default function TextBehindImage() {
           <div className="grid grid-cols-1 gap-4">
             {[
               "text-behind-image-2",
-              "text-behind-image-3",
-              "text-behind-image-1",
+              "text-behind-image-7",
+              "text-behind-image-8",
             ].map((item, index) => (
-              <div
-                key={index}
-                className="relative drop-shadow-xl rounded-lg overflow-hidden"
-              >
+              <div key={index} className="relative drop-shadow-xl">
                 <Image
                   alt="banner-dp"
                   src={`/images/${item}.webp`}
+                  className="rounded-lg overflow-hidden"
                   style={{ objectFit: "contain" }}
                   priority
                   width={800}

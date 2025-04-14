@@ -59,7 +59,6 @@ const constants = {
     },
   ],
   landingPage: {
-    login_title: `Join ${process.env.NEXT_PUBLIC_WEBSITE_NAME} To Create Stunning Images In Seconds`,
     title: "AI-Powered Profile Picture Maker",
     subtitle:
       "Remove Background, Edit, And Customize Your Profile Picture in Seconds!",

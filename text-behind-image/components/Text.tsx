@@ -59,8 +59,6 @@ export default function Text({
   updateControler: (value) => void;
   disabled: boolean;
 }) {
-  console.log("rederning Text");
-
   function deleteText(id: string) {
     let { texts = [] } = { ...controler };
     updateControler({ texts: texts.filter((i) => i.id != id) });
@@ -148,7 +146,7 @@ export default function Text({
                 colorList={[
                   {
                     label: "Color",
-                    list: constants.solidColorCollection,
+                    list: constants.solidColorCollection.filter((i) => i.color),
                     type: "bg",
                   },
                 ]}

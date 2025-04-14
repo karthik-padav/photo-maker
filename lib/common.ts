@@ -215,10 +215,7 @@ export function downloadBlob(blob: Blob, filename: string) {
   URL.revokeObjectURL(url);
 }
 
-export async function onHfImageGenerate(
-  e: React.ChangeEvent<HTMLInputElement>
-) {
-  const file = e?.target?.files?.[0];
+export async function onHfImageGenerate(file: Blob) {
   const app = await client("https://briaai-bria-rmbg-1-4.hf.space/");
   const result = (await app.predict("/predict", [file])) as {
     data: { path: string };
@@ -230,12 +227,7 @@ export async function onHfImageGenerate(
   return null;
 }
 
-export async function onImageGenerate(
-  e: React.ChangeEvent<HTMLInputElement>
-): Promise<Blob | null> {
-  const file = e?.target?.files?.[0];
-  if (!file) return null;
-
+export async function onImageGenerate(file: Blob): Promise<Blob | null> {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = async () => {

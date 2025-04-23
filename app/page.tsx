@@ -31,7 +31,7 @@ export default async function Home() {
                     code: string;
                     external?: boolean;
                   }) => (
-                    <div key={l.code}>
+                    <React.Fragment key={l.code}>
                       <GradientCard className="backdrop-blur-lg shadow-sm hover:shadow-lg p-4 rounded-md">
                         <div className="flex flex-col justify-between h-full">
                           <div className="mb-2 md:mb-4">
@@ -62,7 +62,7 @@ export default async function Home() {
                           </div>
                         </div>
                       </GradientCard>
-                    </div>
+                    </React.Fragment>
                   )
                 )}
               </React.Fragment>

@@ -54,7 +54,7 @@ const MENU_ITEMS = [
   },
 ];
 
-export default function CustomizeImage() {
+export default function TBI() {
   const router = useRouter();
   const inputFileRef = useRef<HTMLInputElement>(null);
   const stageRef = useRef<StageType | null>(null);
@@ -179,7 +179,7 @@ export default function CustomizeImage() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-6">
         <div>
           <div className="bg-[url('/images/grid.svg')] drop-shadow-xl border border-input bg-background">
             <div ref={imageWrapperRef} className="relative">
@@ -214,8 +214,7 @@ export default function CustomizeImage() {
               onClick={downloadImage}
               variant="outline"
               className={cn(
-                "relative rounded-md text-sm md:mr-2",
-                disabled ? "cursor-not-allowed" : ""
+                "hover:bg-violet-500 hover:text-white text-violet-500 relative rounded-full text-sm md:mr-2"
               )}
               disabled={disabled}
             >
@@ -226,8 +225,7 @@ export default function CustomizeImage() {
               onClick={() => updateControler({ imageSrc: "", rbgSrc: "" })}
               variant="outline"
               className={cn(
-                "relative rounded-md text-sm md:ml-2",
-                disabled ? "cursor-not-allowed" : ""
+                "hover:bg-violet-500 hover:text-white text-violet-500 relative rounded-full text-sm md:ml-2"
               )}
               disabled={disabled}
             >
@@ -255,8 +253,7 @@ export default function CustomizeImage() {
             <Button
               variant="outline"
               className={cn(
-                "flex-none relative rounded-md text-sm mx-2",
-                disabled ? "cursor-not-allowed" : ""
+                "hover:bg-violet-500 hover:text-white text-violet-500 flex-none relative rounded-full text-sm mx-2"
               )}
               disabled={disabled}
               onClick={addNewText}

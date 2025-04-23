@@ -1,38 +1,52 @@
-import { myPhotoControlers } from "@/lib/common";
-import { useAppProvider } from "../../lib/app-provider";
 import ColorPicker from "../colorPicker";
 import constants from "@/lib/constants";
+import { ControlerValue } from "@/lib/interfaces";
+import { Slider } from "../ui/slider";
+import { myPhotoControlers } from "@/profile-picture-maker/components/utils/common";
 
-export default function MyPhotoControler() {
-  const { controlerValue, setControlerValue } = useAppProvider();
-
-  const controler: any = myPhotoControlers(controlerValue);
+export default function MyPhotoControler({
+  controler = {},
+  disabled = false,
+  updateControler,
+}: {
+  controler?: ControlerValue;
+  disabled?: boolean;
+  updateControler: (data) => void;
+}) {
+  const _controler: any = myPhotoControlers();
 
   return (
     <>
-      {Object.keys(controler).map((key: string) => {
-        const data = controler[key];
+      {Object.keys(_controler).map((key: string) => {
+        const data = _controler[key];
         return (
           <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
             <p className="flex justify-between mb-1">
               {data.label}
               <span>
-                {data?.attr?.value || 0}
-                {data.valuePrefix}
+                {controler[data.attr.name] || 0}
+                {data.postfix}
               </span>
             </p>
-            <input
-              onChange={(e) => setControlerValue({ [key]: e.target.value })}
+
+            <Slider
               {...data.attr}
+              defaultValue={[controler[data.attr.name]]}
+              value={[controler[data.attr.name]]}
+              onValueChange={(value) =>
+                updateControler({ [data.attr.name]: value[0] })
+              }
+              disabled={disabled}
+              aria-label={data.label}
             />
           </div>
         );
       })}
-
       <ColorPicker
         onClick={(obj: { [key: string]: string }) =>
-          setControlerValue({ pngBorderColor: obj.color })
+          updateControler({ pngBorderColor: obj.color })
         }
+        disabled={disabled}
         colorList={[
           {
             label: "Outline Solid",

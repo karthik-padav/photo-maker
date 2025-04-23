@@ -6,21 +6,24 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { calcPercentage, calcPx } from "@/lib/common";
 
 interface Params {
-  image: SelectedImage;
   controler?: ControlerValue;
   disabled?: boolean;
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  updateControler: (data) => void;
 }
 
-export default function DownloadImage({ image, controler, canvasRef }: Params) {
+export default function DownloadImage({
+  controler,
+  canvasRef,
+  updateControler,
+}: Params) {
   const imageWrapperRef = useRef<HTMLDivElement>(null);
-  const { setControlerValue } = useAppProvider();
 
   const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
     if (imageWrapperRef?.current?.offsetWidth)
-      setControlerValue({
+      updateControler({
         imageWrapperSize: imageWrapperRef.current.offsetWidth,
       });
   }, [imageWrapperRef?.current?.offsetWidth]);
@@ -33,19 +36,11 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     y: calcPx(imageWrapperWidth, controler?.transformY || 0),
   };
 
-  const [_image, setImage] = useState<HTMLImageElement | null>(null);
   const [bgImage, setBgImage] = useState<HTMLImageElement | null>(null);
 
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    if (image.imagePath) {
-      const img = new Image();
-      img.src = image.imagePath;
-      img.crossOrigin = "anonymous";
-      img.onload = () => setImage(img);
-    }
-  }, [image.imagePath]);
+  const _image: HTMLImageElement | null = controler?.imageSrc ?? null;
 
   useEffect(() => {
     if (controler?.backgroundImagePath) {
@@ -74,8 +69,9 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!_image || !ctx || !canvas) return;
-    const borderRadiusPercent = controler?.border ? controler.border.value : 50;
-
+    const borderRadiusPercent = controler?.outerBorderRadius
+      ? Number(controler.outerBorderRadius)
+      : 0;
     const parentWidth = canvas.parentElement?.clientWidth || _image.width;
 
     // Get scale & rotation for image and background
@@ -96,7 +92,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
       // ✅ Clip to a circle
       const radius = canvas.width / 2;
       ctx.arc(canvas.width / 2, canvas.height / 2, radius, 0, Math.PI * 2);
-    } else if (borderRadiusPercent > -1) {
+    } else {
       // ✅ Clip to a rounded rectangle
       const adjustedBorderRadius =
         (borderRadiusPercent / 100) * (canvas.width / 2);
@@ -194,9 +190,9 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
 
     // OUTER BORDER START
     if (
-      controler?.outerBorderWidth ||
-      controler?.outerBorderColor ||
-      (controler?.outerBorderWidth && controler.outerBorderWidth !== "0")
+      (controler?.outerBorderWidth || controler?.outerBorderColor) &&
+      controler?.outerBorderWidth &&
+      controler.outerBorderWidth !== "0"
     ) {
       const borderWidth = Number(controler.outerBorderWidth);
       const borderOpacity = controler.outerBorderOpacity
@@ -374,7 +370,7 @@ export default function DownloadImage({ image, controler, canvasRef }: Params) {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left - offset.x;
     const y = e.clientY - rect.top - offset.y;
-    setControlerValue({
+    updateControler({
       transformX: calcPercentage(imageWrapperWidth, x),
       transformY: calcPercentage(imageWrapperWidth, y),
     });

@@ -27,6 +27,21 @@ import coinImage from "@/assets/lottiefiles/coin.json";
 import Lottie from "lottie-react";
 import { Config, preload } from "@imgly/background-removal";
 import Image from "next/image";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -77,63 +92,46 @@ export default function Header() {
       });
   }, []);
 
-  function renderList(isNav = false) {
+  function renderList(
+    list: {
+      code: string;
+      title: string;
+      description: string;
+      href: string;
+      external?: boolean;
+    }[] = []
+  ) {
+    if (list.length === 0) return null;
     return (
-      <>
-        {constants.headerMenuList
-          .filter((i) => {
-            switch (i.code) {
-              case "GENERATE":
-              case "CUSTOMIZE":
-              case "MY_PHOTOS":
-                return !!session;
-              default:
-                return true;
-            }
-          })
-          .map((item, index) => (
-            <div
-              key={item.code}
-              className={`${
-                isNav
-                  ? `${
-                      index != constants.headerMenuList.length - 1 && "border-b"
-                    } px-2 py-1 dark:border-gray-800`
-                  : "inline-block"
-              }`}
-            >
-              {item?.requireSelectedImage ? (
-                <Button
-                  variant="ghost"
-                  className={`w-full text-left p-0 hover:bg-transparent hover:text-violet-500 md:mr-6 md:inline block md:py-0 py-2 h-auto ${
-                    pathname === item.href && "text-violet-500"
-                  }`}
-                  onClick={() => {
-                    setNavbarOpen(false);
-                    selectedImage
-                      ? router.push(item.href)
-                      : toast({
-                          description:
-                            "Please Upload An Image Before Proceeding.",
-                        });
-                  }}
-                >
-                  {item.title}
-                </Button>
+      <ul className="grid w-[350px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+        {list.map((item) => (
+          <li key={item.code}>
+            <NavigationMenuLink asChild>
+              {item.external ? (
+                <a href={item.href} target="_blank">
+                  <p className="text-sm font-medium leading-none mb-2">
+                    {item.title}
+                  </p>
+                  <span className="line-clamp-1 text-sm leading-snug text-muted-foreground">
+                    {item.description}
+                  </span>
+                </a>
               ) : (
-                <Link
-                  onClick={() => setNavbarOpen(false)}
-                  className={`md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500 font-medium ${
-                    pathname === item.href && "text-violet-500"
-                  }`}
-                  href={item.href}
-                >
-                  {item.title}
+                <Link href={item.href} className="py-2 block">
+                  <>
+                    <p className="text-sm font-medium leading-none mb-2">
+                      {item.title}
+                    </p>
+                    <span className="line-clamp-1 text-sm leading-snug text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </>
                 </Link>
               )}
-            </div>
-          ))}
-      </>
+            </NavigationMenuLink>
+          </li>
+        ))}
+      </ul>
     );
   }
 
@@ -154,10 +152,31 @@ export default function Header() {
               height={130}
             />
           </Link>
-          <div className="flex items-center">
-            <nav className="text-base justify-center font-semibold md:block hidden">
-              {renderList()}
-            </nav>
+          <div className="items-center flex">
+            <NavigationMenu className="hidden md:block mr-4">
+              <NavigationMenuList>
+                {constants.headerMenuList.map((item) => (
+                  <NavigationMenuItem key={item.code}>
+                    {item.list ? (
+                      <>
+                        <NavigationMenuTrigger>
+                          {item.title}
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          {renderList(item.list)}
+                        </NavigationMenuContent>
+                      </>
+                    ) : (
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        <Link href={item.href}>{item.title}</Link>
+                      </NavigationMenuLink>
+                    )}
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
             {showCoin && (
               <div className="md:mr-6 pl-2 flex justify-center items-center bg-background drop-shadow-md rounded-full">
                 <p className="-mr-2 text-violet-500 dark:text-white">
@@ -180,9 +199,65 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="min-w-[100vw] border-0 px-4"
+                  className="min-w-[100vw] border-0"
                 >
-                  {renderList(true)}
+                  <ul className="max-h-[80vh] overflow-y-auto px-4">
+                    {constants.headerMenuList.map((item) => (
+                      <li key={item.code}>
+                        {item.list ? (
+                          <>
+                            <Accordion
+                              type="single"
+                              collapsible
+                              className="w-full"
+                            >
+                              <AccordionItem
+                                value={item.code}
+                                className="border-0"
+                              >
+                                <AccordionTrigger className="py-2">
+                                  {item.title}
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                  <ul className="pl-4">
+                                    {item.list.map((l) => (
+                                      <li key={l.code}>
+                                        {l.external ? (
+                                          <a
+                                            href={l.href}
+                                            target="_blank"
+                                            className="py-2 block"
+                                          >
+                                            {l.title}
+                                          </a>
+                                        ) : (
+                                          <Link
+                                            href={l.href}
+                                            onClick={() => setNavbarOpen(false)}
+                                            className="py-2 block"
+                                          >
+                                            {l.title}
+                                          </Link>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </AccordionContent>
+                              </AccordionItem>
+                            </Accordion>
+                          </>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="py-2 block"
+                            onClick={() => setNavbarOpen(false)}
+                          >
+                            {item.title}
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

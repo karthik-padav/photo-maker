@@ -1,5 +1,8 @@
+import textBehindImageConstants from "@/text-behind-image/utils/constants";
 import { ControlerValue } from "./interfaces";
 import { client } from "@gradio/client";
+import constants from "./constants";
+import ppmConstants from "@/profile-picture-maker/components/utils/ppmConstants";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -23,64 +26,6 @@ const createRangeControl = (
     className: `w-full slider bg-violet-500 rounded-full ${extraClass}`,
   },
 });
-
-export function myPhotoControlers(controlerValue: ControlerValue | null) {
-  return {
-    rotate: createRangeControl(
-      "Rotate",
-      0,
-      360,
-      10,
-      controlerValue?.rotate || 0
-    ),
-    scale: createRangeControl("Zoom", 0.5, 2, 0.1, controlerValue?.scale || 1),
-    pngShadow: createRangeControl(
-      "Outline",
-      0,
-      5,
-      1,
-      controlerValue?.pngShadow || 0
-    ),
-  };
-}
-
-export function borderControlers(controlerValue: ControlerValue | null) {
-  return {
-    outerBorderWidth: createRangeControl(
-      "Border Thickness",
-      0,
-      100,
-      10,
-      controlerValue?.outerBorderWidth || 0
-    ),
-    outerBorderOpacity: createRangeControl(
-      "Border Opacity",
-      0,
-      1,
-      0.1,
-      controlerValue?.outerBorderOpacity || 1
-    ),
-  };
-}
-
-export function bgControlers(controlerValue: ControlerValue | null) {
-  return {
-    backgroundRotate: createRangeControl(
-      "Background Rotate",
-      0,
-      360,
-      20,
-      controlerValue?.backgroundRotate || 0
-    ),
-    backgroundScale: createRangeControl(
-      "Zoom",
-      0.5,
-      3,
-      0.1,
-      controlerValue?.backgroundScale || 1
-    ),
-  };
-}
 
 export const hexToRgb = (hex: string) => {
   hex = hex.replace(/^#/, "");
@@ -258,4 +203,105 @@ export async function onImageGenerate(file: Blob): Promise<Blob | null> {
 
     reader.readAsArrayBuffer(file);
   });
+}
+
+export function getMetaData(key?: string) {
+  const openGraphImages = {
+    url: "/images/logo.png",
+    width: 1200,
+    height: 375,
+  };
+  const twitter = {
+    card: "summary_large_image",
+    images: ["/images/logo.png"],
+  };
+  switch (key) {
+    case "text-behind-image":
+      return {
+        metadataBase: new URL(
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/text-behind-image` ||
+            "https://dpg.vercel.app/text-behind-image"
+        ),
+        title: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: textBehindImageConstants.landingPage.subtitle,
+        keywords:
+          "photo editing, background remover, image editor, customize images",
+        openGraph: {
+          title: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: textBehindImageConstants.landingPage.subtitle,
+          url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/text-behind-image`,
+          siteName: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: textBehindImageConstants.landingPage.subtitle,
+        },
+      };
+    case "profile-picture-maker":
+      return {
+        metadataBase: new URL(
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/profile-picture-maker` ||
+            "https://dpg.vercel.app/profile-picture-maker"
+        ),
+        title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: ppmConstants.landingPage.subtitle,
+        keywords:
+          "photo editing, background remover, image editor, customize images",
+        openGraph: {
+          title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: ppmConstants.landingPage.subtitle,
+          url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/profile-picture-maker`,
+          siteName: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: ppmConstants.landingPage.subtitle,
+        },
+      };
+
+    default:
+      return {
+        metadataBase: new URL(
+          process.env.NEXT_PUBLIC_WEBSITE_URL || "https://dpg.vercel.app/"
+        ),
+        title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: constants.landingPage.subtitle,
+        keywords:
+          "photo editing, background remover, image editor, customize images",
+        openGraph: {
+          title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: constants.landingPage.subtitle,
+          url: process.env.NEXT_PUBLIC_WEBSITE_URL,
+          siteName: process.env.NEXT_PUBLIC_WEBSITE_NAME,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: constants.landingPage.subtitle,
+        },
+      };
+  }
 }

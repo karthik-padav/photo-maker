@@ -15,6 +15,8 @@ export interface ControlerValue {
   backgroundRotate?: string;
   backgroundImagePath?: string;
   backgroundScale?: string;
+  imageSrc?: HTMLImageElement | null;
+  outerBorderRadius?: string;
 }
 
 export interface SelectedImage {

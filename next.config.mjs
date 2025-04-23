@@ -18,6 +18,11 @@ const nextConfig = {
         hostname: "briaai-bria-rmbg-1-4.hf.space",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "avatar.vercel.sh",
+        pathname: "/**",
+      },
     ],
   },
 

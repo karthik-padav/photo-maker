@@ -70,7 +70,9 @@ export default function ImageSettings({
             {...i.attr}
             type="range"
             disabled={disabled}
-            onChange={(e) => updateControler({ [i.attr.name]: e.target.value })}
+            onChange={(e) =>
+              updateControler({ [i.attr.name]: parseInt(e.target.value) })
+            }
           />
         </div>
       ))}

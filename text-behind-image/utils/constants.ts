@@ -247,52 +247,52 @@ const textBehindImageConstants = {
     subtitle:
       "Create stunning text behind image designs in seconds—free, unlimited, and hassle-free!",
     whyOurWebsite: {
-      heading: `Why ${process.env.NEXT_PUBLIC_WEBSITE_NAME}?`,
+      heading: `Why Text Behind Image?`,
       list: [
         {
-          title: "AI Background Removal",
-          desc: "Instantly erase backgrounds with precision.",
+          title: "Effortless Creativity",
+          desc: "Easily place text behind objects in your image without complex editing tools.",
         },
         {
-          title: "Custom Backgrounds",
-          desc: "Choose from solid colors, gradients, and templates to match your style.",
+          title: "Full Customization",
+          desc: "Adjust fonts, colors, sizes, and styles to match your vision.",
         },
         {
-          title: "Outline & Borders",
-          desc: "Add creative glowing, colored, or gradient outlines to highlight your image.",
+          title: "Smart Text Positioning",
+          desc: "Seamlessly layer text within your photo with intuitive controls.",
         },
         {
-          title: "Rotate & Scale",
-          desc: "Adjust your photo size and angle for the perfect fit.",
+          title: "High-Quality Results",
+          desc: "Export professional-looking visuals in sharp, clear resolution.",
         },
         {
-          title: "High-Quality Download",
-          desc: "Get HD profile pictures for any platform.",
+          title: "Fast & User-Friendly",
+          desc: "Create stunning designs in minutes—no experience required.",
         },
       ],
     },
-    howItWorks: {
-      heading: `How it works`,
+    faq: {
+      heading: `Frequently Asked Questions`,
       list: [
         {
-          title: "Upload Your Image",
-          desc: "Drag and drop or select an image to start editing.",
+          q: "Do I need design experience to use this tool?",
+          a: "Not at all! The tool is designed to be intuitive and beginner-friendly.",
         },
         {
-          title: "Remove Background",
-          desc: "Our AI automatically removes the background in seconds.",
+          q: "Can I use any image format?",
+          a: "Yes, popular formats like JPG, PNG, and WebP are supported.",
         },
         {
-          title: "Customize Your Profile Picture",
-          desc: "Apply borders, outlines, colors, and backgrounds to match your aesthetic.",
+          q: "Can I edit the text after placing it behind the image?",
+          a: "Yes, you can adjust or reposition the text anytime before downloading your design.",
         },
         {
-          title: "Enhance & Adjust",
-          desc: "Rotate, scale, and fine-tune your image for the perfect look.",
+          q: "Can I change font styles and colors?",
+          a: "Definitely! You can choose from a variety of fonts, colors, and text styles to match your vision.",
         },
         {
-          title: "Download & Share",
-          desc: "Save your new profile picture in high resolution and use it anywhere!",
+          q: "What kind of images work best with this tool?",
+          a: "Images with clear subjects and backgrounds give the best results when placing text behind objects.",
         },
       ],
     },
@@ -316,32 +316,6 @@ const textBehindImageConstants = {
       {
         title: "Perfect for all uses",
         desc: `Whether you need a logo for your business, personal project, or event, ${process.env.NEXT_PUBLIC_WEBSITE_NAME} provides the quality and flexibility you need.`,
-      },
-    ],
-    faq: [
-      {
-        q: `Do I need any design experience to use ${process.env.NEXT_PUBLIC_WEBSITE_NAME}?`,
-        a: `No, ${process.env.NEXT_PUBLIC_WEBSITE_NAME} is designed for users of all skill levels. Our intuitive interface and easy-to-use tools make it simple for anyone to create a professional logo.`,
-      },
-
-      {
-        q: "Can I upload my own icons?",
-        a: "Yes, you can upload your own icons and customize them using our platform.",
-      },
-
-      {
-        q: "What formats are available for download?",
-        a: "You can download your finished logo in SVG or PNG formats, ensuring high-quality results for any use.",
-      },
-
-      {
-        q: "Is there a limit to the number of logos I can create?",
-        a: `No, there are no limits on the number of logos you can create and download with ${process.env.NEXT_PUBLIC_WEBSITE_NAME}.`,
-      },
-
-      {
-        q: "Can I use the logos I create for commercial purposes?",
-        a: "Yes, once you download your logo, you have full rights to use it for any commercial or personal projects.",
       },
     ],
   },

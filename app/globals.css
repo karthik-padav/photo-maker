@@ -35,6 +35,42 @@
     border:1px solid #94a3b8;
     cursor: pointer;
   }
+  
+
+  
+  @keyframes borderSpin {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+  
+
+  @keyframes marquee-r-l {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  .animate-marquee-r-l {
+    animation: marquee-r-l 240s linear infinite;
+  }
+
+  @keyframes marquee-l-r {
+    100% {
+      transform: translateX(0%);
+    }
+    0% {
+      transform: translateX(-50%);
+    }
+  }
+  .animate-marquee-l-r {
+    animation: marquee-l-r 240s linear infinite;
+  }
 
 
   @layer base {

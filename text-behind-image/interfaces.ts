@@ -10,11 +10,7 @@ interface Text {
   fontSize: number;
   fontWeight: number;
   opacity: number;
-  shadowColor: string;
-  shadowSize: number;
   rotation: number;
-  tiltX: number;
-  tiltY: number;
 }
 
 export interface TBIControlerValue {
@@ -23,11 +19,4 @@ export interface TBIControlerValue {
   texts?: Text[];
   imageWrapperSize: number;
   bgBlur: number;
-  bgBrightness: number;
-  bgContrast: number;
-  bgSaturate: number;
-  bgHueRotate: number;
-  bgGrayscale: number;
-  bgSepia: number;
-  bgInvert: number;
 }

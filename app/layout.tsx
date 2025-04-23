@@ -14,41 +14,14 @@ import Script from "next/script";
 import GlobalLoader from "@/components/globalLoader";
 import { getAllBgImage, getWebsiteData } from "@/lib/actions/services";
 import Analytics from "@/components/Analytics";
+import { getMetaData } from "@/lib/common";
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
 
-export const metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_WEBSITE_URL || "https://dpg.vercel.app/"
-  ),
-  title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
-  description: constants.landingPage.subtitle,
-  keywords: "photo editing, background remover, image editor, customize images",
-  openGraph: {
-    title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
-    description: constants.landingPage.subtitle,
-    url: process.env.NEXT_PUBLIC_WEBSITE_URL,
-    siteName: process.env.NEXT_PUBLIC_WEBSITE_NAME,
-    images: [
-      {
-        url: "/images/logo.png",
-        width: 1200,
-        height: 375,
-        alt: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
-    description: constants.landingPage.subtitle,
-    images: ["/images/logo.png"],
-  },
-};
+export const metadata = getMetaData();
 
 export default async function RootLayout({
   children,
@@ -57,7 +30,6 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   const { data: websiteDate } = await getWebsiteData();
-  const { data: bgImages } = await getAllBgImage();
   return (
     <html lang="en">
       <body
@@ -89,7 +61,7 @@ export default async function RootLayout({
           </>
         )}
         <SessionProvider session={session}>
-          <AppProvider bgImages={bgImages}>
+          <AppProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"

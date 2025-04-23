@@ -27,9 +27,9 @@ export default function LoginPopup() {
     <Dialog open={showLogin} onOpenChange={toggleLogin}>
       <DialogContent className="sm:max-w-md md:w-2/4">
         <DialogHeader>
-          <DialogTitle>Sign In</DialogTitle>
+          <DialogTitle>Let's Flex Some Images!</DialogTitle>
           <DialogDescription>
-            {constants.landingPage.login_title}
+            Log in to edit, design, and express with Image Flex Studio.
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">

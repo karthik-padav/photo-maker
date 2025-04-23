@@ -1,12 +1,10 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef } from "react";
 import { Stage, Layer, Text, Image as KonvaImage } from "react-konva";
 import Konva from "konva";
 import { Stage as StageType } from "konva/lib/Stage";
 
 const CanvaEditor = forwardRef<StageType, any>(
   ({ elements, canvaWidth }, ref) => {
-    console.log("elements", elements);
-
     const aspectRatio = elements.imageSrc.height / elements.imageSrc.width;
     const scaledHeight = canvaWidth * aspectRatio;
 
@@ -21,55 +19,62 @@ const CanvaEditor = forwardRef<StageType, any>(
                 y={0}
                 width={canvaWidth}
                 height={scaledHeight}
-                filters={[
-                  Konva.Filters.Blur,
-                  Konva.Filters.Brighten,
-                  Konva.Filters.Contrast,
-                ]}
-                blurRadius={100}
-                brightness={10}
+                ref={(node) => {
+                  if (node) node.cache();
+                }}
+                filters={[Konva.Filters.Blur]}
+                blurRadius={elements.bgBlur}
               />
             )}
-            {(elements.texts || []).map((item: any) => (
-              <Text
-                key={item.id}
-                text={item.text}
-                fontSize={item.fontSize * 3}
-                fontFamily={item.fontFamily}
-                rotation={item.rotation || 0}
-                textDecoration={item.textDecoration}
-                align="center"
-                verticalAlign="middle"
-                fontStyle={`${item.fontStyle} ${item.fontWeight}`}
-                fill={item.color}
-                x={item.left === 0 ? canvaWidth / 2 : item.left}
-                y={item.top === 0 ? scaledHeight / 2 : item.top}
-                draggable
-                opacity={item.opacity || 1}
-                onDragStart={() => {
-                  // setIsDragging(true);
-                }}
-                onDragEnd={(e) => {
-                  // setIsDragging(false);
-                  // setPosition({
-                  //   x: e.target.x(),
-                  //   y: e.target.y(),
-                  // });
-                }}
-                onMouseOver={(e) => {
-                  const stage = e.target.getStage();
-                  if (stage) {
-                    stage.container().style.cursor = "move";
-                  }
-                }}
-                onMouseOut={(e) => {
-                  const stage = e.target.getStage();
-                  if (stage) {
-                    stage.container().style.cursor = "default";
-                  }
-                }}
-              />
-            ))}
+            {(elements.texts || []).map((item: any) => {
+              return (
+                <Text
+                  ref={(node) => {
+                    if (node) {
+                      node.offsetX(node.width() / 2);
+                      node.offsetY(node.height() / 2);
+                      node.cache();
+                    }
+                  }}
+                  key={item.id}
+                  text={item.text}
+                  fontSize={item.fontSize * 3}
+                  fontFamily={item.fontFamily}
+                  rotation={item.rotation || 0}
+                  textDecoration={item.textDecoration}
+                  align="center"
+                  verticalAlign="middle"
+                  fontStyle={`${item.fontStyle} ${item.fontWeight}`}
+                  fill={item.color}
+                  x={item.left === 0 ? canvaWidth / 2 : item.left}
+                  y={item.top === 0 ? scaledHeight / 2 : item.top}
+                  draggable
+                  opacity={item.opacity || 1}
+                  onDragStart={() => {
+                    // setIsDragging(true);
+                  }}
+                  onDragEnd={(e) => {
+                    // setIsDragging(false);
+                    // setPosition({
+                    //   x: e.target.x(),
+                    //   y: e.target.y(),
+                    // });
+                  }}
+                  onMouseOver={(e) => {
+                    const stage = e.target.getStage();
+                    if (stage) {
+                      stage.container().style.cursor = "move";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    const stage = e.target.getStage();
+                    if (stage) {
+                      stage.container().style.cursor = "default";
+                    }
+                  }}
+                />
+              );
+            })}
             {elements.rbgSrc && (
               <KonvaImage
                 image={elements.rbgSrc}

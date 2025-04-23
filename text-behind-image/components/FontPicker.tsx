@@ -62,7 +62,10 @@ const FontPicker: React.FC<FontFamilyPickerProps> = ({
                   value={font}
                   key={font}
                   onSelect={() => handleAttributeChange(font)}
-                  className={cn("hover:cursor-pointer")}
+                  className={cn(
+                    "hover:cursor-pointer",
+                    currentFont === font && "bg-violet-500 text-white"
+                  )}
                   style={{ fontFamily: font }}
                 >
                   {font}

@@ -1,117 +1,156 @@
 import constants from "@/lib/constants";
 import Link from "next/link";
-import BannerSection from "@/components/bannerSection";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import Image from "next/image";
+import React from "react";
+import { cn } from "@/lib/utils";
+import GradientCard from "@/components/gradientCard";
+import HeroBanner from "@/components/heroBanner";
 
 export default async function Home() {
   return (
-    <main className="body-font min-h-[75vh]">
-      <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto py-10 md:py-20">
-        <h1 className="bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text text-4xl font-bold tracking-tighter lg:text-8xl md:text-7xl text-center">
-          {constants.landingPage.title}
-        </h1>
-        <p className="mx-auto my-4 lg:text-2xl md:text-xl font-normal leading-relaxed  lg:w-2/3 text-center">
-          {constants.landingPage.subtitle}
-        </p>
-        <BannerSection />
-        <div className="flex justify-center">
-          <div className="grid grid-cols-5 md:w-3/5 w-full ml-10">
-            {["dp-1", "dp-3", "dp-2", "dp-4", "dp-5"].map((i) => (
-              <div
-                key={i}
-                className="-ml-10 border-4 border-white drop-shadow-2xl rounded-full overflow-hidden relative"
-              >
-                <div className="aspect-w-1 aspect-h-1 w-full bg-cover">
-                  <div className="drop-shadow-2xl rounded-full overflow-hidden">
-                    <Image
-                      alt="banner-dp"
-                      src={`/images/${i}.webp`}
-                      style={{ objectFit: "contain" }}
-                      priority
-                      width={200}
-                      height={200}
-                    />
-                  </div>
-                </div>
-              </div>
+    <main className="body-font">
+      <HeroBanner
+        title={constants.landingPage.title}
+        subtitle={constants.landingPage.subtitle}
+      />
+
+      <section className="px-5 md:px-0 md:container pb-10 md:py-20">
+        <h2 className="text-center title-font pb-2 md:pb-12 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
+          Explore Our Tools
+        </h2>
+        <div className="grid md:grid-cols-4 grid-cols-1 gap-4">
+          {constants.headerMenuList
+            .filter((l) => l.code === "OUR_TOOLS")
+            .map((item) => (
+              <React.Fragment key={item.code}>
+                {(item.list || []).map(
+                  (l: {
+                    title: string;
+                    href: string;
+                    description: string;
+                    code: string;
+                    external?: boolean;
+                  }) => (
+                    <div key={l.code}>
+                      <GradientCard className="backdrop-blur-lg shadow-sm hover:shadow-lg p-4 rounded-md">
+                        <div className="flex flex-col justify-between h-full">
+                          <div className="mb-2 md:mb-4">
+                            <h3 className="text-md md:text-xl font-medium">
+                              {l.title}
+                            </h3>
+                            <p className="text-muted-foreground">
+                              {l.description}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            {l?.external ? (
+                              <a
+                                href={l.href}
+                                className="inline-block border-2 relative rounded-full text-sm border border-violet-500 px-4 py-2"
+                                target="_blank"
+                              >
+                                Try Now
+                              </a>
+                            ) : (
+                              <Link
+                                href={l.href}
+                                className="inline-block border-2 relative rounded-full text-sm border border-violet-500 px-4 py-2"
+                              >
+                                Try Now
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      </GradientCard>
+                    </div>
+                  )
+                )}
+              </React.Fragment>
             ))}
-          </div>
+
+          <GradientCard className="backdrop-blur-lg shadow-sm hover:shadow-lg p-4 rounded-md">
+            <div className="flex flex-col justify-center items-center text-center h-full">
+              <h3 className="text-md md:text-xl font-medium">
+                More Tools Coming Soon!
+              </h3>
+              <p className="text-muted-foreground">
+                From image converters to advanced background editing — stay
+                tuned!
+              </p>
+            </div>
+          </GradientCard>
         </div>
       </section>
 
-      <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto pb-10 md:pb-20">
-        <p className="mx-auto my-10 lg:text-2xl md:text-xl font-normal leading-relaxed  text-center">
-          Are you looking for the perfect profile picture maker to enhance your
-          online presence? Our advanced AI-powered tool helps you remove
-          backgrounds, add stylish outlines, change backgrounds, and customize
-          your profile photo effortlessly. Whether it&apos;s for social media,
-          LinkedIn, gaming avatars, or professional use,{" "}
-          <Link
-            href={process.env.NEXT_PUBLIC_WEBSITE_URL || "/"}
-            className="text-violet-500"
-          >
-            {process.env.NEXT_PUBLIC_WEBSITE_LABEL}
-          </Link>{" "}
-          ensures your profile picture stands out.
+      <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto pb-10 md:py-20">
+        <h2 className="pb-2 md:pb-12 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
+          {`Why ${process.env.NEXT_PUBLIC_WEBSITE_NAME}?`}
+        </h2>
+        <p className="mx-auto lg:text-2xl md:text-xl font-normal leading-relaxed text-center text-muted-foreground">
+          Image Flex Studio is a powerful, user-friendly platform built to
+          simplify creative workflows and enhance productivity. Whether you're
+          crafting visuals, optimizing content, or working on design projects,
+          it offers a growing range of smart tools to help you get things done
+          faster and better. Its clean interface, smooth performance, and
+          versatility make it ideal for creators, professionals, and everyday
+          users alike. With consistently high-quality results and features that
+          evolve with your needs, Image Flex Studio empowers you to bring your
+          ideas to life effortlessly — all in one place.
         </p>
       </section>
 
-      <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto pb-10 md:pb-20">
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-8">
-          <div className="pb-2 text-left">
-            <h2 className="title-font pb-2 md:pb-4 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
-              {constants.landingPage.whyOurWebsite.heading}
-            </h2>
+      <section className="text-center px-5 md:px-0 flex flex-col justify-center mx-auto pb-10 md:py-20">
+        <div className="md:container pb-2 md:pb-12 ">
+          <h2 className="pb-2 md:pb-4 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
+            What People Are Saying
+          </h2>
+          <p className="mx-auto lg:text-2xl md:text-xl font-normal leading-relaxed text-muted-foreground">
+            Don’t just take our word for it. Here’s what real people are saying
+            about Saasfly.
+          </p>
+        </div>
 
-            <Accordion
-              type="multiple"
-              defaultValue={constants.landingPage.whyOurWebsite.list.map(
-                (i, index) => `index_${index}`
-              )}
-              className="w-full"
-            >
-              {constants.landingPage.whyOurWebsite.list.map((item, index) => (
-                <AccordionItem value={`index_${index}`} key={`index_${index}`}>
-                  <AccordionTrigger className="text-left ">
-                    {item.title}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-left ">
-                    {item.desc}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-          <div className="pb-2 text-left">
-            <h2 className="title-font pb-2 md:pb-4 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
-              {constants.landingPage.howItWorks.heading}
-            </h2>
+        <div className="overflow-hidden whitespace-nowrap relative max-w-[2560px] w-full mx-auto">
+          {["animate-marquee-l-r", "animate-marquee-r-l"].map(
+            (animation, aIndex) => (
+              <div
+                key={aIndex}
+                className={cn(
+                  "flex w-max hover:[animation-play-state:paused]",
+                  animation
+                )}
+              >
+                <div className="flex space-x-4 px-4">
+                  {constants.testimonials.map((item, index) => (
+                    <div
+                      key={index}
+                      className="w-64 my-2 md:my-4 relative border border-input bg-background backdrop-blur-lg rounded-xl transition-all duration-300 shadow-sm hover:shadow-lg p-4"
+                    >
+                      <div className="flex items-center mb-2">
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                          <Image
+                            alt="avatar"
+                            src={`https://avatar.vercel.sh/${item.name}`}
+                            priority
+                            width={200}
+                            height={200}
+                          />
+                        </div>
+                        <p className="ml-2">{item.name}</p>
+                      </div>
 
-            <Accordion
-              type="multiple"
-              defaultValue={constants.landingPage.howItWorks.list.map(
-                (i, index) => `index_${index}`
-              )}
-              className="w-full"
-            >
-              {constants.landingPage.howItWorks.list.map((item, index) => (
-                <AccordionItem value={`index_${index}`} key={`index_${index}`}>
-                  <AccordionTrigger className="text-left ">
-                    {item.title}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-left ">
-                    {item.desc}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+                      <p className="text-left whitespace-normal line-clamp-2 text-ellipsis">
+                        {item.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          )}
+
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-gray-900" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-gray-900" />
         </div>
       </section>
     </main>

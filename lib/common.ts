@@ -225,7 +225,7 @@ export function getMetaData(key?: string) {
         title: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
         description: textBehindImageConstants.landingPage.subtitle,
         keywords:
-          "photo editing, background remover, image editor, customize images",
+          "text behind image, text behind image ai, text behind the image, textbehindimage, text behind image app",
         openGraph: {
           title: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: textBehindImageConstants.landingPage.subtitle,
@@ -254,7 +254,7 @@ export function getMetaData(key?: string) {
         title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
         description: ppmConstants.landingPage.subtitle,
         keywords:
-          "photo editing, background remover, image editor, customize images",
+          "profile picture maker, profile picture maker free, image editor, background remover",
         openGraph: {
           title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: ppmConstants.landingPage.subtitle,

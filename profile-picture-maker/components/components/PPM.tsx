@@ -227,7 +227,7 @@ export default function PPM() {
               disabled={disabled}
             >
               Download
-              <Download className="ml-2 w-5 h-5" />
+              <Download className="ml-2 w-5 h-5 hover:text-white" />
             </Button>
             <Button
               onClick={() => updateControler({ imageSrc: "" })}
@@ -238,7 +238,7 @@ export default function PPM() {
               disabled={disabled}
             >
               Reset
-              <RotateCcw className="ml-2 w-5 h-5" />
+              <RotateCcw className="ml-2 w-5 h-5 hover:text-white" />
             </Button>
           </div>
         </div>

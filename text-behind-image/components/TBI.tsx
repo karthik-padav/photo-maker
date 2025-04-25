@@ -219,7 +219,7 @@ export default function TBI() {
               disabled={disabled}
             >
               Download
-              <Download className="ml-2 w-5 h-5 text-violet-500" />
+              <Download className="ml-2 w-5 h-5 text-violet-500 hover:text-white" />
             </Button>
             <Button
               onClick={() => updateControler({ imageSrc: "", rbgSrc: "" })}
@@ -230,7 +230,7 @@ export default function TBI() {
               disabled={disabled}
             >
               Reset
-              <RotateCcw className="ml-2 w-5 h-5 text-violet-500" />
+              <RotateCcw className="ml-2 w-5 h-5 text-violet-500 hover:text-white" />
             </Button>
           </div>
         </div>

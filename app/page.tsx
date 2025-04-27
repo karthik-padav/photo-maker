@@ -14,7 +14,7 @@ export default async function Home() {
         subtitle={constants.landingPage.subtitle}
       />
 
-      <section className="px-5 md:px-0 md:container pb-10 md:py-20">
+      <section className="px-5 md:px-0 md:container pb-20 md:py-20">
         <h2 className="text-center title-font pb-2 md:pb-12 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
           Explore Our Tools
         </h2>
@@ -82,7 +82,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto pb-10 md:py-20">
+      <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto pb-20 md:py-20">
         <h2 className="pb-2 md:pb-12 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
           {`Why ${process.env.NEXT_PUBLIC_WEBSITE_NAME}?`}
         </h2>
@@ -99,7 +99,7 @@ export default async function Home() {
         </p>
       </section>
 
-      <section className="text-center px-5 md:px-0 flex flex-col justify-center mx-auto pb-10 md:py-20">
+      <section className="text-center px-5 md:px-0 flex flex-col justify-center mx-auto pb-20 md:py-20">
         <div className="md:container pb-2 md:pb-12 ">
           <h2 className="pb-2 md:pb-4 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
             What People Are Saying

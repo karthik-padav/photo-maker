@@ -30,12 +30,12 @@ export default function TextBehindImage() {
         subtitle="The ultimate toolkit for creators, professionals, and everyday users."
       />
 
-      <section className="grid md:grid-cols-12 grid-cols-1 gap-4 md:container mx-auto pb-10 md:py-20">
+      <section className="grid md:grid-cols-12 grid-cols-1 gap-4 md:container mx-auto pb-20 md:py-20">
         <div className="md:col-span-2">
           <ADS />
         </div>
         <div className="md:col-span-8">
-          <div className="px-5 md:px-0 flex flex-col justify-center mx-auto pb-10 md:pb-20">
+          <div className="px-5 md:px-0 flex flex-col justify-center mx-auto pb-20 md:pb-20">
             <h2 className="title-font pb-4 md:pb-8 text-center font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
               Design in Just 4 Easy Steps
             </h2>
@@ -76,7 +76,7 @@ export default function TextBehindImage() {
             </div>
           </div>
 
-          <div className="px-5 md:px-0 flex flex-col justify-center mx-auto pb-10 md:py-20">
+          <div className="px-5 md:px-0 flex flex-col justify-center mx-auto">
             <TBI />
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function TextBehindImage() {
         </div>
       </section>
 
-      <section className="px-5 md:px-0 md:container mx-auto pb-10 md:py-20">
+      <section className="px-5 md:px-0 md:container mx-auto pb-20 md:py-20">
         <div className="grid grid-cols-3 gap-1 md:gap-4">
           <div className="grid grid-cols-1 gap-1 md:gap-4">
             {[
@@ -147,7 +147,7 @@ export default function TextBehindImage() {
         </div>
       </section>
 
-      <section className="px-5 md:px-0 md:container mx-auto pb-10 md:py-20">
+      <section className="px-5 md:px-0 md:container mx-auto pb-20 md:py-20">
         <div className="grid md:grid-cols-2 grid-cols-1 gap-8">
           <div className="pb-2 text-left">
             <h2 className="title-font pb-2 md:pb-4 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">

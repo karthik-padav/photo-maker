@@ -6,7 +6,7 @@ export default function HeroBanner({
   subtitle?: string;
 }) {
   return (
-    <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto md:min-h-[65vh] min-h-[50vh]">
+    <section className="text-center px-5 md:px-0 md:container flex flex-col justify-center mx-auto md:min-h-[65vh]">
       <div className="py-10 md:py-20">
         <h1 className="bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 md:leading-relaxed inline-block text-transparent bg-clip-text font-bold tracking-tighter lg:text-8xl md:text-7xl text-5xl text-center">
           {title}

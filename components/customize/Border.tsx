@@ -1,4 +1,4 @@
-import { borderControlers } from "@/profile-picture-maker/components/utils/common";
+import { borderControlers } from "@/tools/profile-picture-maker/components/utils/common";
 import ColorPicker from "../colorPicker";
 import constants from "@/lib/constants";
 import { ControlerValue } from "@/lib/interfaces";
@@ -21,14 +21,18 @@ export default function Border({
         const data = _controler[key];
         return (
           <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
-            <p className="flex justify-between mb-1">
+            <label
+              htmlFor={data.attr.name}
+              className="flex justify-between mb-1"
+            >
               {data.label}
               <span>
                 {controler[data.attr.name] || 0}
                 {data.postfix}
               </span>
-            </p>
+            </label>
             <Slider
+              id={data.attr.name}
               {...data.attr}
               defaultValue={[controler[data.attr.name]]}
               value={[controler[data.attr.name]]}

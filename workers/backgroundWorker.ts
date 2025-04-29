@@ -1,9 +1,11 @@
-import { removeBackground } from "@imgly/background-removal";
+// import { removeBackground } from "@imgly/background-removal";
 
 self.onmessage = async (event) => {
   const { imageData } = event.data;
 
   try {
+    const { removeBackground } = await import("@imgly/background-removal");
+
     const blob = new Blob([imageData], { type: "image/png" });
     const resultBlob = await removeBackground(blob);
     self.postMessage({ success: true, blob: resultBlob });

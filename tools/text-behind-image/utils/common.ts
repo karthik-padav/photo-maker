@@ -1,16 +1,20 @@
 import { uid } from "uid";
-import constants from "./constants";
-import {
-  Bold,
-  Copy,
-  Italic,
-  LoaderCircle,
-  Palette,
-  Square,
-  Trash2,
-  Underline,
-} from "lucide-react";
-import React from "react"; // Import ReactNode for proper typing
+import constants from "./TBIConstants";
+import React from "react";
+import dynamic from "next/dynamic";
+
+const Underline = dynamic(
+  () => import("lucide-react").then((mod) => mod.Underline),
+  {
+    loading: () => React.createElement("span", null, "Loading..."),
+  }
+);
+const Bold = dynamic(() => import("lucide-react").then((mod) => mod.Bold), {
+  loading: () => React.createElement("span", null, "Loading..."),
+});
+const Italic = dynamic(() => import("lucide-react").then((mod) => mod.Italic), {
+  loading: () => React.createElement("span", null, "Loading..."),
+});
 
 export function addText(data: { [key: string]: string | number }) {
   return {

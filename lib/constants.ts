@@ -1,4 +1,7 @@
 import { Google, Github, Facebook, LinkedIn } from "@/assets/icons";
+import CIConstants from "@/tools/compress-image/utils/CIConstants";
+import ppmConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
+import TBIConstants from "@/tools/text-behind-image/utils/TBIConstants";
 import { uid } from "uid";
 
 const constants = {
@@ -15,20 +18,27 @@ const constants = {
           code: "PROFILE_PICTURE_MAKER",
           title: "Profile Picture Maker",
           href: "/profile-picture-maker",
-          description: "AI-Powered Profile Picture Maker",
+          description: ppmConstants.landingPage.subtitle,
         },
         {
           code: "TEXT-BEHIND-IMAGE",
           title: "Text Behind Image",
           href: "/text-behind-image",
-          description: "Effortless Text Behind Image Design With AI",
+          description: TBIConstants.landingPage.subtitle,
+        },
+        {
+          code: "COMPRESS-IMAGE",
+          title: "Compress Image",
+          href: "/compress-image",
+          description: CIConstants.landingPage.subtitle,
         },
         {
           code: "QUICK-LOGO",
           title: "Quick Logo",
-          href: "https://quicklogo.vercel.app/",
+          href: "https://www.quicklogo.imageflexstudio.com/",
           external: true,
-          description: "Create Stunning Logo In Seconds",
+          description:
+            "Design Your Perfect Logo Instantly - No Design Skills Required!",
         },
       ],
     },

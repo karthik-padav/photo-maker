@@ -1,5 +1,4 @@
 import Link from "next/link";
-import BannerSection from "@/components/bannerSection";
 import {
   Accordion,
   AccordionContent,
@@ -7,13 +6,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Image from "next/image";
-import PPM from "@/profile-picture-maker/components/components/PPM";
 import ADS from "@/components/ads";
 import BreadcrumbWrapper from "@/components/breadcrumbWrapper";
 import HeroBanner from "@/components/heroBanner";
-import { get } from "http";
 import { getMetaData } from "@/lib/common";
-import PPMConstants from "@/profile-picture-maker/components/utils/ppmConstants";
+import PPMConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
+import dynamic from "next/dynamic";
+
+const PPM = dynamic(
+  () => import("@/tools/profile-picture-maker/components/components/PPM"),
+  { loading: () => <p>Loading...</p> }
+);
+
+const BannerSection = dynamic(() => import("@/components/bannerSection"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export const metadata = getMetaData("profile-picture-maker");
 
@@ -53,7 +60,6 @@ export default function ProfilePictureMaker() {
                           alt="banner-dp"
                           src={`/images/${i}.webp`}
                           style={{ objectFit: "contain" }}
-                          priority
                           width={300}
                           height={300}
                         />
@@ -70,7 +76,7 @@ export default function ProfilePictureMaker() {
               remove backgrounds, add stylish outlines, change backgrounds, and
               customize your profile photo effortlessly. Whether it&apos;s for
               social media, LinkedIn, gaming avatars, or professional use,{" "}
-              <Link href={PPMConstants.url || "/"} className="text-violet-500">
+              <Link href={PPMConstants.url || "/"} className="text-violet-700">
                 {PPMConstants.url}
               </Link>{" "}
               ensures your profile picture stands out.

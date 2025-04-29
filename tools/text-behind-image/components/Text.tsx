@@ -1,54 +1,32 @@
 "use client";
 
-import {
-  Bold,
-  Copy,
-  Italic,
-  Image as LImage,
-  LoaderCircle,
-  Palette,
-  Plus,
-  Square,
-  Trash2,
-  Underline,
-} from "lucide-react";
-import { useAppProvider } from "@/lib/app-provider";
-import { useSession } from "next-auth/react";
-import { useRef, useState, useCallback, useEffect } from "react";
-import {
-  downloadBlob,
-  onHfImageGenerate,
-  onImageGenerate,
-  resizedImage,
-} from "@/lib/common";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import constants from "@/lib/constants";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ADS from "@/components/ads";
-import { useToast } from "@/hooks/use-toast";
-import { SessionData } from "@/lib/interfaces";
-import { cn } from "@/lib/utils";
-import { TBIControlerValue } from "@/text-behind-image/interfaces";
-import {
-  addText,
-  getUniqueRandomWord,
-  renderFontStyles,
-} from "@/text-behind-image/utils/common";
+import { TBIControlerValue } from "@/tools/text-behind-image/interfaces";
+import { renderFontStyles } from "@/tools/text-behind-image/utils/common";
+import { uid } from "uid";
+import { renderTextRange } from "../utils/common";
+import { Slider } from "@/components/ui/slider";
+import ColorPicker from "@/components/colorPicker";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../../components/ui/accordion";
-import { uid } from "uid";
-import FontPicker from "./FontPicker";
-import { renderTextRange } from "../utils/common";
-import { Slider } from "@/components/ui/slider";
-import ColorPicker from "@/components/colorPicker";
+} from "@/components/ui/accordion";
+import dynamic from "next/dynamic";
+
+const Trash2 = dynamic(() => import("lucide-react").then((mod) => mod.Trash2), {
+  loading: () => <span>Loading...</span>,
+});
+
+const Copy = dynamic(() => import("lucide-react").then((mod) => mod.Copy), {
+  loading: () => <span>Loading...</span>,
+});
+
+const FontPicker = dynamic(() => import("./FontPicker"), {
+  loading: () => <span>Loading...</span>,
+});
 
 export default function Text({
   controler,
@@ -101,6 +79,7 @@ export default function Text({
               <div className="pl-2">
                 <Button
                   variant="ghost"
+                  aria-label="Copy"
                   onClick={() => duplicate(index)}
                   disabled={disabled}
                   className="p-2 mx-1 border border-input hover:text-violet-500 dark:text-white drop-shadow-2xl bg-transparent"
@@ -109,6 +88,7 @@ export default function Text({
                 </Button>
                 <Button
                   variant="ghost"
+                  aria-label="Delete"
                   onClick={() => deleteText(item.id)}
                   disabled={disabled}
                   className="p-2 mx-1 border border-input hover:text-red-500 dark:text-white drop-shadow-2xl bg-transparent"
@@ -129,6 +109,7 @@ export default function Text({
                 {renderFontStyles(item).map((b, index) => (
                   <Button
                     key={index}
+                    aria-label={b.name}
                     variant={b?.variant as "ghost" | undefined}
                     className="p-2 mx-1 border border-input dark:text-white drop-shadow-2xl"
                     onClick={() => handleField(b.value, b.name, item)}
@@ -153,8 +134,11 @@ export default function Text({
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 mt-2">
-                  <label className="text-sm font-medium">Font Size</label>
+                  <label htmlFor="font-size" className="text-sm font-medium">
+                    Font Size
+                  </label>
                   <input
+                    id="font-size"
                     className="flex rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-b-violet-500 disabled:cursor-not-allowed disabled:opacity-50 w-full"
                     min="10"
                     type="number"
@@ -168,19 +152,26 @@ export default function Text({
 
                 <div className="space-y-2 mt-2">
                   <label className="text-sm font-medium">Font Family</label>
-                  <FontPicker
-                    currentFont={item.fontFamily}
-                    disabled={disabled}
-                    handleAttributeChange={(data) =>
-                      handleField(data, "fontFamily", item)
-                    }
-                  />
+                  {disabled ? (
+                    <div className="w-full h-8 opacity-50 border border-input rounded-md" />
+                  ) : (
+                    <FontPicker
+                      currentFont={item.fontFamily}
+                      disabled={disabled}
+                      handleAttributeChange={(data) =>
+                        handleField(data, "fontFamily", item)
+                      }
+                    />
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4">
                 {renderTextRange(item).map((i, index) => (
                   <div className="space-y-2 mt-2" key={index}>
-                    <label className="text-sm font-medium flex justify-between items-center w-full">
+                    <label
+                      htmlFor={i.attr.name}
+                      className="text-sm font-medium flex justify-between items-center w-full"
+                    >
                       <span>{i.label}</span>
                       <span>
                         {i.postfix
@@ -190,6 +181,7 @@ export default function Text({
                     </label>
 
                     <Slider
+                      id={i.attr.name}
                       {...i.attr}
                       defaultValue={[item[i.attr.name]]}
                       value={[item[i.attr.name]]}

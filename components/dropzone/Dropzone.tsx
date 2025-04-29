@@ -1,5 +1,11 @@
-import { Upload, LoaderCircle } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useCallback, useRef, useState } from "react";
+
+const Upload = dynamic(() => import("lucide-react").then((mod) => mod.Upload));
+
+const LoaderCircle = dynamic(() =>
+  import("lucide-react").then((mod) => mod.LoaderCircle)
+);
 
 export default function Dropzone(props) {
   const {
@@ -7,9 +13,10 @@ export default function Dropzone(props) {
     loading = false,
     session,
     toggleLogin = () => {},
+    inputProps = {},
+    description = null,
   } = props;
 
-  const maxSize = Number(process.env.NEXT_PUBLIC_MAX_IMAGE_UPLOAD_SIZE);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -75,13 +82,15 @@ export default function Dropzone(props) {
             <span className="font-semibold">Click to upload</span> or drag and
             drop
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            SVG, PNG, JPG or GIF {maxSize ? `(MAX. ${maxSize}MB)` : ""}
-          </p>
+          {description && (
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {description}
+            </p>
+          )}
         </div>
         <input
-          type="file"
           ref={inputRef}
+          {...inputProps}
           hidden
           disabled={loading}
           onChange={(e) => handleChange(e.target.files)}

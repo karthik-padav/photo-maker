@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer({ data }: any) {
-  const products = data.ourProducts.find(
+  const products = data?.ourProducts.find(
     (item) => item.code === "IMAGE_FLEX_STUDIO"
   );
 
@@ -27,7 +27,7 @@ export default function Footer({ data }: any) {
           </div>
 
           <div className="py-2">
-            <p className="text-violet-500 pb-2 font-bold">Company</p>
+            <p className="text-violet-700 pb-2 font-bold">Company</p>
             <ul>
               {constants.footerCompanyList.map((item) => (
                 <li key={item.code} className="pb-2 text-md">
@@ -41,7 +41,7 @@ export default function Footer({ data }: any) {
 
           {data?.ourProducts && (
             <div className="py-2">
-              <p className="text-violet-500 pb-2 font-bold">Our products</p>
+              <p className="text-violet-700 pb-2 font-bold">Our products</p>
 
               <ul>
                 {(products.tools || []).map((item) => (

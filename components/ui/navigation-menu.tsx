@@ -1,9 +1,15 @@
 import * as React from "react";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { cva } from "class-variance-authority";
-import { ChevronDown } from "lucide-react";
-
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
+
+const ChevronDown = dynamic(
+  () => import("lucide-react").then((mod) => mod.ChevronDown),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 const NavigationMenu = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Root>,

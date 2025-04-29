@@ -1,6 +1,4 @@
-import { useAppProvider } from "../../lib/app-provider";
 import constants from "@/lib/constants";
-import { Image as LImage } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import {
   Drawer,
@@ -15,7 +13,12 @@ import ColorPicker from "../colorPicker";
 import Image from "next/image";
 import { ControlerValue } from "@/lib/interfaces";
 import { Slider } from "../ui/slider";
-import { bgControlers } from "@/profile-picture-maker/components/utils/common";
+import { bgControlers } from "@/tools/profile-picture-maker/components/utils/common";
+import dynamic from "next/dynamic";
+
+const LImage = dynamic(() => import("lucide-react").then((mod) => mod.Image), {
+  loading: () => <span>Loading...</span>,
+});
 
 export default function Background({
   controler = {},
@@ -71,7 +74,11 @@ export default function Background({
           <div className="px-4 md:container ">
             <DrawerHeader className="flex justify-between items-center">
               <DrawerTitle className="">Background Images</DrawerTitle>
-              <Button variant="ghost" onClick={() => setIsOpen(false)}>
+              <Button
+                aria-label="Cancel"
+                variant="ghost"
+                onClick={() => setIsOpen(false)}
+              >
                 Cancel
               </Button>
             </DrawerHeader>
@@ -115,15 +122,19 @@ export default function Background({
         const data = _controler[key];
         return (
           <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
-            <p className="flex justify-between mb-1">
+            <label
+              htmlFor={data.attr.name}
+              className="flex justify-between mb-1"
+            >
               {data.label}
               <span>
                 {controler[data.attr.name] || 0}
                 {data.postfix}
               </span>
-            </p>
+            </label>
 
             <Slider
+              id={data.attr.name}
               {...data.attr}
               defaultValue={[controler[data.attr.name]]}
               value={[controler[data.attr.name]]}

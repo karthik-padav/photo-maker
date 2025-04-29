@@ -1,75 +1,85 @@
 "use client";
 
-import {
-  Download,
-  Image as LImage,
-  LoaderCircle,
-  Plus,
-  RotateCcw,
-  Square,
-} from "lucide-react";
 import { useAppProvider } from "@/lib/app-provider";
 import { useSession } from "next-auth/react";
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   downloadBlob,
   onHfImageGenerate,
   onImageGenerate,
   resizedImage,
 } from "@/lib/common";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import constants from "@/lib/constants";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ADS from "@/components/ads";
 import { useToast } from "@/hooks/use-toast";
-import { SessionData } from "@/lib/interfaces";
+import { ControlerValue, SessionData } from "@/lib/interfaces";
 import { cn } from "@/lib/utils";
-import { TBIControlerValue } from "@/text-behind-image/interfaces";
-import ImageSettings from "./ImageSettings";
-import Text from "./Text";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import Dropzone from "@/components/dropzone";
-import {
-  addText,
-  getDefaultControler,
-  getUniqueRandomWord,
-} from "../utils/common";
-import CanvaEditor from "@/components/canvaEditor";
-import { Stage as StageType } from "konva/lib/Stage";
-import { Slider } from "@/components/ui/slider";
 import { uid } from "uid";
+import MyPhotoControler from "@/components/customize/MyPhotoControler";
+import Border from "@/components/customize/Border";
+import Background from "@/components/customize/Background";
+import DownloadImage from "@/components/downloadImage";
+import { getAllBgImage } from "@/lib/actions/services";
+import { preload } from "@imgly/background-removal";
+import dynamic from "next/dynamic";
+
+const RotateCcw = dynamic(
+  () => import("lucide-react").then((mod) => mod.RotateCcw),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
+const Download = dynamic(
+  () => import("lucide-react").then((mod) => mod.Download),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 const MENU_ITEMS = [
   {
-    label: "Text",
-    code: "TEXT",
+    label: "Image",
+    code: "MY_PHOTO",
   },
   {
-    label: "Image",
-    code: "IMAGE",
+    label: "Border",
+    code: "BORDER",
+  },
+  {
+    label: "Background",
+    code: "BACKGROUND",
   },
 ];
 
-export default function TBI() {
-  const router = useRouter();
+export default function PPM() {
   const inputFileRef = useRef<HTMLInputElement>(null);
-  const stageRef = useRef<StageType | null>(null);
   const { data: session } = useSession() as { data: SessionData | null };
   const { globalLoader, setGlobalLoader, toggleLogin } = useAppProvider();
   const { toast } = useToast();
   const imageWrapperRef = useRef<HTMLDivElement>(null);
+  const [bgImages, setBgImages] = useState<{ key: string; url: string }[]>([]);
 
-  const [controler, setControler] = useState<TBIControlerValue>({
-    texts: [addText({ text: "TEXT" })],
+  const [controler, setControler] = useState<ControlerValue>(() => ({
+    pngBorderColor: "rgb(0, 0, 0)",
+    outerBorderColor: "rgb(0, 0, 0)",
     imageWrapperSize: 0,
-    bgBlur: 0,
+    rotate: 0,
+    scale: 1,
+    pngShadow: "0",
+    transformX: 0,
+    transformY: 0,
+    backgroundColorType: "",
+    backgroundColor: "",
+    outerBorderOpacity: "1",
+    outerBorderWidth: "0",
+    outerBorderRadius: "0",
+    backgroundRotate: "0",
+    backgroundImagePath: "",
+    backgroundScale: "1",
     imageSrc: null,
-    rbgSrc: null,
-  });
+  }));
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     if (imageWrapperRef?.current?.offsetWidth)
@@ -131,14 +141,9 @@ export default function TBI() {
         typeof resp === "string" ? resp : URL.createObjectURL(resp);
 
       const imageSrc = new window.Image();
-      imageSrc.src = URL.createObjectURL(file);
+      imageSrc.src = imagePath;
       imageSrc.crossOrigin = "anonymous";
       imageSrc.onload = () => updateControler({ imageSrc });
-
-      const rbgSrc = new window.Image();
-      rbgSrc.src = imagePath;
-      rbgSrc.crossOrigin = "anonymous";
-      rbgSrc.onload = () => updateControler({ rbgSrc });
     } catch (error) {
       console.log("Error", error);
       toast({
@@ -155,41 +160,45 @@ export default function TBI() {
 
   function updateControler(data) {
     if (data) setControler((prev) => ({ ...prev, ...data }));
-    // else setControler({});
   }
 
-  function downloadImage() {
-    const stage = stageRef.current;
-    if (!stage) return;
-    const dataURL = stage.toDataURL({ pixelRatio: 2, mimeType: "image/png" });
-    const link = document.createElement("a");
-    link.download = `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}`;
-    link.href = dataURL;
-    link.click();
+  async function downloadImage() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const blob = (await resizedImage(canvas)) as Blob;
+    downloadBlob(blob, `${process.env.NEXT_PUBLIC_WEBSITE_CODE}-${uid(16)}`);
   }
 
-  function addNewText() {
-    let { texts = [] } = { ...controler };
-    const randomWord = getUniqueRandomWord(texts.map((i) => i.text));
-    texts.push(addText({ text: randomWord || "Edit" }));
-    updateControler({ texts });
-  }
+  useEffect(() => {
+    async function init() {
+      preload()
+        .then(() => {
+          console.log("Assets preloaded successfully");
+        })
+        .catch((error) => {
+          console.error("Error preloading assets:", error);
+        });
+      const { data } = await getAllBgImage();
+      if (data) setBgImages(data);
+    }
+    init();
+  }, []);
 
   const disabled = globalLoader || !controler.imageSrc;
+  const maxSize = Number(process.env.NEXT_PUBLIC_MAX_IMAGE_UPLOAD_SIZE);
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:pb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6">
         <div>
-          <div className="bg-[url('/images/grid.svg')] drop-shadow-xl border border-input bg-background">
-            <div ref={imageWrapperRef} className="relative">
+          <div className="bg-[url('/images/grid.svg')] outline-dashed outline-[#9C92AC20] drop-shadow-2xl bg-background">
+            <div id="wrapper" ref={imageWrapperRef} className="w-full h-full">
               {controler.imageSrc ? (
-                <div className="md:min-h-[64vh] flex items-center justify-center w-full h-full overflow-hidden w-full outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]">
-                  <CanvaEditor
-                    elements={controler}
-                    canvaWidth={controler.imageWrapperSize}
+                <div className="flex items-center justify-center w-full h-full overflow-hidden w-full outline-dashed outline-[#9C92AC20] hover:outline-[#9C92AC50] bg-[#9C92AC15] hover:bg-[#9C92AC25]">
+                  <DownloadImage
+                    controler={controler ?? undefined}
+                    canvasRef={canvasRef}
                     updateControler={updateControler}
-                    ref={stageRef as React.RefObject<StageType>}
                   />
                 </div>
               ) : (
@@ -202,6 +211,10 @@ export default function TBI() {
                       requireLogin={true}
                       session={session}
                       toggleLogin={toggleLogin}
+                      description={`PNG, JPG or WEBP ${
+                        maxSize ? `(MAX.${maxSize}MB)` : ""
+                      }`}
+                      inputProps={{ accept: "image/*", type: "file" }}
                     />
                   </div>
                 </div>
@@ -212,6 +225,7 @@ export default function TBI() {
           <div className="drop-shadow-xl bg-background border border-input p-2 md:p-4 mt-4 flex justify-between items-center">
             <Button
               onClick={downloadImage}
+              aria-label="Download"
               variant="outline"
               className={cn(
                 "hover:bg-violet-500 hover:text-white text-violet-500 relative rounded-full text-sm md:mr-2"
@@ -219,10 +233,11 @@ export default function TBI() {
               disabled={disabled}
             >
               Download
-              <Download className="ml-2 w-5 h-5 text-violet-500 hover:text-white" />
+              <Download className="ml-2 w-5 h-5" />
             </Button>
             <Button
-              onClick={() => updateControler({ imageSrc: "", rbgSrc: "" })}
+              aria-label="Rest"
+              onClick={() => updateControler({ imageSrc: "" })}
               variant="outline"
               className={cn(
                 "hover:bg-violet-500 hover:text-white text-violet-500 relative rounded-full text-sm md:ml-2"
@@ -230,44 +245,46 @@ export default function TBI() {
               disabled={disabled}
             >
               Reset
-              <RotateCcw className="ml-2 w-5 h-5 text-violet-500 hover:text-white" />
+              <RotateCcw className="ml-2 w-5 h-5 hover:text-white" />
             </Button>
           </div>
         </div>
         <div className="drop-shadow-xl bg-background border border-input p-2 md:p-4">
-          <div className="flex justify-between items-center">
-            <div className="mt-2 flex-1">
-              <label className="text-sm font-medium flex justify-between items-center w-full">
-                <span>Background Blur</span>
-                <span>{controler.bgBlur}</span>
-              </label>
-              <Slider
-                value={[controler.bgBlur || 0]}
-                min={0}
-                max={10}
-                onValueChange={(value) => updateControler({ bgBlur: value[0] })}
+          <Tabs defaultValue="MY_PHOTO" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              {MENU_ITEMS.map((item) => (
+                <TabsTrigger
+                  value={item.code}
+                  key={item.code}
+                  className="data-[state=active]:bg-violet-500 data-[state=active]:text-white"
+                >
+                  {item.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <TabsContent value="MY_PHOTO">
+              <MyPhotoControler
+                controler={controler}
+                updateControler={updateControler}
                 disabled={disabled}
               />
-            </div>
-
-            <Button
-              variant="outline"
-              className={cn(
-                "hover:bg-violet-500 hover:text-white text-violet-500 flex-none relative rounded-full text-sm mx-2"
-              )}
-              disabled={disabled}
-              onClick={addNewText}
-            >
-              Add Text
-              {/* <Plus className="ml-2 w-5 h-5 text-violet-500" /> */}
-            </Button>
-          </div>
-
-          <Text
-            controler={controler}
-            disabled={disabled}
-            updateControler={updateControler}
-          />
+            </TabsContent>
+            <TabsContent value="BORDER">
+              <Border
+                controler={controler}
+                updateControler={updateControler}
+                disabled={disabled}
+              />
+            </TabsContent>
+            <TabsContent value="BACKGROUND">
+              <Background
+                controler={controler}
+                updateControler={updateControler}
+                bgImages={bgImages}
+                disabled={disabled}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </>

@@ -1,7 +1,3 @@
-import { useAppProvider } from "@/lib/app-provider";
-import textBehindImageConstants from "@/text-behind-image/utils/constants";
-import TBI from "@/text-behind-image/components/TBI";
-import "@/app/fonts.css";
 import BreadcrumbWrapper from "@/components/breadcrumbWrapper";
 import ADS from "@/components/ads";
 import Image from "next/image";
@@ -12,8 +8,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import constants from "@/text-behind-image/utils/constants";
+import constants from "@/tools/text-behind-image/utils/TBIConstants";
 import { getMetaData } from "@/lib/common";
+import dynamic from "next/dynamic";
+import TBIConstants from "@/tools/text-behind-image/utils/TBIConstants";
+
+const TBI = dynamic(() => import("@/tools/text-behind-image/components/TBI"), {
+  loading: () => <span>Loading...</span>,
+});
 
 export const metadata = getMetaData("text-behind-image");
 
@@ -26,8 +28,8 @@ export default function TextBehindImage() {
       />
 
       <HeroBanner
-        title="Create, Customize & Convert Images Effortlessly."
-        subtitle="The ultimate toolkit for creators, professionals, and everyday users."
+        title={TBIConstants.landingPage.title}
+        subtitle={TBIConstants.landingPage.subtitle}
       />
 
       <section className="grid md:grid-cols-12 grid-cols-1 gap-4 md:container mx-auto pb-20 md:py-20">
@@ -97,9 +99,7 @@ export default function TextBehindImage() {
                 <Image
                   alt="banner-dp"
                   src={`/images/${item}.webp`}
-                  style={{ objectFit: "contain" }}
-                  className="rounded-lg overflow-hidden"
-                  priority
+                  className="rounded-lg overflow-hidden object-contain"
                   width={800}
                   height={800}
                 />
@@ -116,9 +116,7 @@ export default function TextBehindImage() {
                 <Image
                   alt="banner-dp"
                   src={`/images/${item}.webp`}
-                  style={{ objectFit: "contain" }}
-                  className="rounded-lg overflow-hidden"
-                  priority
+                  className="rounded-lg overflow-hidden object-contain"
                   width={800}
                   height={800}
                 />
@@ -135,9 +133,7 @@ export default function TextBehindImage() {
                 <Image
                   alt="banner-dp"
                   src={`/images/${item}.webp`}
-                  className="rounded-lg overflow-hidden"
-                  style={{ objectFit: "contain" }}
-                  priority
+                  className="rounded-lg overflow-hidden object-contain"
                   width={800}
                   height={800}
                 />

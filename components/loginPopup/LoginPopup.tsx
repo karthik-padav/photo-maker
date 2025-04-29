@@ -11,7 +11,14 @@ import { signIn } from "next-auth/react";
 import { useAppProvider } from "@/lib/app-provider";
 import constants from "@/lib/constants";
 import { useState } from "react";
-import { LoaderCircle } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const LoaderCircle = dynamic(
+  () => import("lucide-react").then((mod) => mod.LoaderCircle),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 export default function LoginPopup() {
   const [loader, setLoader] = useState<string>("");
@@ -42,6 +49,7 @@ export default function LoginPopup() {
               onClick={() => signinHandler(item.code)}
               disabled={!!loader}
               variant="secondary"
+              aria-label={item.label}
             >
               {loader == item.code && (
                 <span className="absolute top-0 bottom-0 left-o right-0 w-full flex justify-center items-center">

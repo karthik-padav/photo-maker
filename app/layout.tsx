@@ -9,10 +9,8 @@ import { auth } from "@/app/api/auth/[...nextauth]";
 import { SessionProvider } from "next-auth/react";
 import { AppProvider } from "@/lib/app-provider";
 import LoginPopup from "@/components/loginPopup";
-import constants from "@/lib/constants";
 import Script from "next/script";
-import GlobalLoader from "@/components/globalLoader";
-import { getAllBgImage, getWebsiteData } from "@/lib/actions/services";
+import { getWebsiteData } from "@/lib/actions/services";
 import Analytics from "@/components/Analytics";
 import { getMetaData } from "@/lib/common";
 
@@ -80,7 +78,6 @@ export default async function RootLayout({
                 </div>
               </div>
               <LoginPopup />
-              {/* <GlobalLoader /> */}
             </ThemeProvider>
           </AppProvider>
         </SessionProvider>

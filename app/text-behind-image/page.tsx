@@ -62,7 +62,7 @@ export default function TextBehindImage() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="relative border border-input bg-background backdrop-blur-lg rounded-xl transition-all duration-300 shadow-sm hover:shadow-lg p-4"
+                  className="relative border border-input bg-background backdrop-blur-lg rounded-xl transition-all duration-500 shadow-sm hover:shadow-lg p-4"
                 >
                   <p className="rounded-md text-2xl md:text-4xl bg-violet-500 font-bold text-white flex justify-center items-center h-10 w-10 md:h-12 md:w-12 mb-2">
                     {index + 1}
@@ -97,11 +97,12 @@ export default function TextBehindImage() {
             ].map((item, index) => (
               <div key={index} className="relative drop-shadow-xl">
                 <Image
+                  loading="lazy"
                   alt="banner-dp"
                   src={`/images/${item}.webp`}
                   className="rounded-lg overflow-hidden object-contain"
-                  width={800}
-                  height={800}
+                  width={500}
+                  height={500}
                 />
               </div>
             ))}
@@ -114,11 +115,12 @@ export default function TextBehindImage() {
             ].map((item, index) => (
               <div key={index} className="relative drop-shadow-xl">
                 <Image
+                  loading="lazy"
                   alt="banner-dp"
                   src={`/images/${item}.webp`}
                   className="rounded-lg overflow-hidden object-contain"
-                  width={800}
-                  height={800}
+                  width={500}
+                  height={500}
                 />
               </div>
             ))}
@@ -132,10 +134,11 @@ export default function TextBehindImage() {
               <div key={index} className="relative drop-shadow-xl">
                 <Image
                   alt="banner-dp"
+                  loading="lazy"
                   src={`/images/${item}.webp`}
                   className="rounded-lg overflow-hidden object-contain"
-                  width={800}
-                  height={800}
+                  width={500}
+                  height={500}
                 />
               </div>
             ))}

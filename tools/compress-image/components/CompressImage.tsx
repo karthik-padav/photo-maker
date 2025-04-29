@@ -4,7 +4,6 @@ import { useAppProvider } from "@/lib/app-provider";
 import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { SessionData } from "@/lib/interfaces";
@@ -54,7 +53,6 @@ interface IImage {
 }
 
 export default function CompressImage() {
-  const router = useRouter();
   const inputFileRef = useRef<HTMLInputElement>(null);
   const { data: session } = useSession() as { data: SessionData | null };
   const { toggleLogin } = useAppProvider();

@@ -57,6 +57,7 @@ export default function ProfilePictureMaker() {
                     <div className="aspect-w-1 aspect-h-1 w-full bg-cover">
                       <div className="drop-shadow-2xl rounded-full overflow-hidden">
                         <Image
+                          loading="lazy"
                           alt="banner-dp"
                           src={`/images/${i}.webp`}
                           style={{ objectFit: "contain" }}

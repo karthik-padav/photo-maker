@@ -308,7 +308,7 @@ export default function Header() {
                       </Link>
                       <DropdownMenuItem
                         onClick={() => {
-                          signOut({ callbackUrl: "/" });
+                          signOut();
                           setSelectedImage(null);
                           setControlerValue(null);
                         }}

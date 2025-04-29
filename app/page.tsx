@@ -129,6 +129,7 @@ export default async function Home() {
                       <div className="flex items-center mb-2">
                         <div className="relative w-8 h-8 rounded-full overflow-hidden">
                           <Image
+                            loading="lazy"
                             alt="avatar"
                             src={`https://avatar.vercel.sh/${item.name}`}
                             width={200}

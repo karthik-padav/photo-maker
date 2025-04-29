@@ -2,9 +2,21 @@
 
 import * as React from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { Check, ChevronRight, Circle } from "lucide-react";
-
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const Check = dynamic(() => import("lucide-react").then((mod) => mod.Check), {
+  loading: () => <span>Loading...</span>,
+});
+const ChevronRight = dynamic(
+  () => import("lucide-react").then((mod) => mod.ChevronRight),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
+const Circle = dynamic(() => import("lucide-react").then((mod) => mod.Circle), {
+  loading: () => <span>Loading...</span>,
+});
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 

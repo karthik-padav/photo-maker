@@ -1,8 +1,9 @@
-import textBehindImageConstants from "@/text-behind-image/utils/constants";
+import textBehindImageConstants from "@/tools/text-behind-image/utils/TBIConstants";
 import { ControlerValue } from "./interfaces";
 import { client } from "@gradio/client";
 import constants from "./constants";
-import ppmConstants from "@/profile-picture-maker/components/utils/ppmConstants";
+import ppmConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
+import CIConstants from "@/tools/compress-image/utils/CIConstants";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -272,6 +273,35 @@ export function getMetaData(key?: string) {
           ...twitter,
           title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: ppmConstants.landingPage.subtitle,
+        },
+      };
+
+    case "compress-image":
+      return {
+        metadataBase: new URL(
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/compress-image` ||
+            "https://dpg.vercel.app/compress-image"
+        ),
+        title: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: CIConstants.landingPage.subtitle,
+        keywords: CIConstants.landingPage.keywords.join(", "),
+        openGraph: {
+          title: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: CIConstants.landingPage.subtitle,
+          url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/compress-image`,
+          siteName: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: CIConstants.landingPage.subtitle,
         },
       };
 

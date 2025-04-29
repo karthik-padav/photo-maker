@@ -38,7 +38,7 @@ export default async function Home() {
                             <h3 className="text-md md:text-xl font-medium">
                               {l.title}
                             </h3>
-                            <p className="text-muted-foreground">
+                            <p className="text-muted-foreground line-clamp-2 text-ellipsis">
                               {l.description}
                             </p>
                           </div>
@@ -73,7 +73,7 @@ export default async function Home() {
               <h3 className="text-md md:text-xl font-medium">
                 More Tools Coming Soon!
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground line-clamp-2 text-ellipsis">
                 From image converters to advanced background editing — stay
                 tuned!
               </p>
@@ -131,7 +131,6 @@ export default async function Home() {
                           <Image
                             alt="avatar"
                             src={`https://avatar.vercel.sh/${item.name}`}
-                            priority
                             width={200}
                             height={200}
                           />

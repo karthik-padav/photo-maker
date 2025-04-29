@@ -8,8 +8,7 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./text-behind-image/**/*.{ts,tsx}",
-    "./profile-picture-maker/**/*.{ts,tsx}",
+    "./tools/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {

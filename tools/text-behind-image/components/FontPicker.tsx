@@ -1,8 +1,7 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+import "@/app/fonts.css";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverTrigger,
@@ -18,17 +17,22 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { ALL_FONTS } from "../utils/fonts";
-import { ChevronDown } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const ChevronDown = dynamic(
+  () => import("lucide-react").then((mod) => mod.ChevronDown),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 interface FontFamilyPickerProps {
-  // attribute: string;
   currentFont: string;
   handleAttributeChange: (value: string) => void;
   disabled: boolean;
 }
 
 const FontPicker: React.FC<FontFamilyPickerProps> = ({
-  // attribute,
   currentFont,
   handleAttributeChange,
   disabled = true,
@@ -40,6 +44,7 @@ const FontPicker: React.FC<FontFamilyPickerProps> = ({
           <Button
             variant="outline"
             role="combobox"
+            aria-label={currentFont || "Font"}
             disabled={disabled}
             className={cn(
               "w-full justify-between hover:bg-background py-1.5",

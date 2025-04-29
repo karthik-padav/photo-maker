@@ -1,16 +1,7 @@
 "use client";
 
-import {
-  Moon,
-  Sun,
-  Camera,
-  AlignJustify,
-  LaptopMinimal,
-  Settings,
-} from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,11 +12,7 @@ import Link from "next/link";
 import constants from "@/lib/constants";
 import { signOut, useSession } from "next-auth/react";
 import { useAppProvider } from "@/lib/app-provider";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import coinImage from "@/assets/lottiefiles/coin.json";
-import Lottie from "lottie-react";
-import { Config, preload } from "@imgly/background-removal";
+import { useState } from "react";
 import Image from "next/image";
 import {
   NavigationMenu,
@@ -42,6 +29,32 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import dynamic from "next/dynamic";
+
+const Moon = dynamic(() => import("lucide-react").then((mod) => mod.Moon), {
+  loading: () => <span>Loading...</span>,
+});
+const Sun = dynamic(() => import("lucide-react").then((mod) => mod.Sun), {
+  loading: () => <span>Loading...</span>,
+});
+const AlignJustify = dynamic(
+  () => import("lucide-react").then((mod) => mod.AlignJustify),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
+const LaptopMinimal = dynamic(
+  () => import("lucide-react").then((mod) => mod.LaptopMinimal),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
+const Settings = dynamic(
+  () => import("lucide-react").then((mod) => mod.Settings),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -71,26 +84,8 @@ export default function Header() {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [dropDownMenu, setDropdownMenu] = useState(false);
   const { data: session } = useSession();
-  const {
-    toggleLogin,
-    setSelectedImage,
-    setControlerValue,
-    selectedImage,
-    user,
-  } = useAppProvider();
-  const pathname = usePathname();
-  const router = useRouter();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    preload()
-      .then(() => {
-        console.log("Assets preloaded successfully");
-      })
-      .catch((error) => {
-        console.error("Error preloading assets:", error);
-      });
-  }, []);
+  const { toggleLogin, setSelectedImage, setControlerValue, user } =
+    useAppProvider();
 
   function renderList(
     list: {
@@ -108,7 +103,7 @@ export default function Header() {
           <li key={item.code}>
             <NavigationMenuLink asChild>
               {item.external ? (
-                <a href={item.href} target="_blank">
+                <a href={item.href} target="_blank" className="py-2 block">
                   <p className="text-sm font-medium leading-none mb-2">
                     {item.title}
                   </p>
@@ -135,10 +130,10 @@ export default function Header() {
     );
   }
 
-  const showCoin =
-    user &&
-    process.env.NEXT_PUBLIC_ENABLE_PAYMENT == "true" &&
-    (user?.credit || user.credit === 0);
+  // const showCoin =
+  //   user &&
+  //   process.env.NEXT_PUBLIC_ENABLE_PAYMENT == "true" &&
+  //   (user?.credit || user.credit === 0);
   return (
     <header className="body-font py-5">
       <div className="container px-5 md:px-0 mx-auto">
@@ -167,17 +162,18 @@ export default function Header() {
                         </NavigationMenuContent>
                       </>
                     ) : (
-                      <NavigationMenuLink
+                      <Link
+                        href={item.href}
                         className={navigationMenuTriggerStyle()}
                       >
-                        <Link href={item.href}>{item.title}</Link>
-                      </NavigationMenuLink>
+                        {item.title}
+                      </Link>
                     )}
                   </NavigationMenuItem>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
-            {showCoin && (
+            {/* {showCoin && (
               <div className="md:mr-6 pl-2 flex justify-center items-center bg-background drop-shadow-md rounded-full">
                 <p className="-mr-2 text-violet-500 dark:text-white">
                   {user.credit}
@@ -190,7 +186,7 @@ export default function Header() {
                   />
                 </div>
               </div>
-            )}
+            )} */}
 
             <div className="mr-4 md:hidden">
               <DropdownMenu open={navbarOpen} onOpenChange={setNavbarOpen}>
@@ -271,6 +267,7 @@ export default function Header() {
                 ) : (
                   <Button
                     variant="ghost"
+                    aria-label="Settings"
                     size="icon"
                     className="text-accent-foreground hover:text-violet-500 rounded-full"
                   >

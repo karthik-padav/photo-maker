@@ -1,9 +1,23 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { ChevronRight, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const ChevronRight = dynamic(
+  () => import("lucide-react").then((mod) => mod.ChevronRight),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
+
+const MoreHorizontal = dynamic(
+  () => import("lucide-react").then((mod) => mod.MoreHorizontal),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,

@@ -2,9 +2,16 @@
 
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const ChevronDown = dynamic(
+  () => import("lucide-react").then((mod) => mod.ChevronDown),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 const Accordion = AccordionPrimitive.Root;
 

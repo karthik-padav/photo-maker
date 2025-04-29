@@ -2,7 +2,7 @@ import ColorPicker from "../colorPicker";
 import constants from "@/lib/constants";
 import { ControlerValue } from "@/lib/interfaces";
 import { Slider } from "../ui/slider";
-import { myPhotoControlers } from "@/profile-picture-maker/components/utils/common";
+import { myPhotoControlers } from "@/tools/profile-picture-maker/components/utils/common";
 
 export default function MyPhotoControler({
   controler = {},
@@ -21,15 +21,19 @@ export default function MyPhotoControler({
         const data = _controler[key];
         return (
           <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
-            <p className="flex justify-between mb-1">
+            <label
+              htmlFor={data.attr.name}
+              className="flex justify-between mb-1"
+            >
               {data.label}
               <span>
                 {controler[data.attr.name] || 0}
                 {data.postfix}
               </span>
-            </p>
+            </label>
 
             <Slider
+              id={data.attr.name}
               {...data.attr}
               defaultValue={[controler[data.attr.name]]}
               value={[controler[data.attr.name]]}

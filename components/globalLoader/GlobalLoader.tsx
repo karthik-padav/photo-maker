@@ -1,7 +1,14 @@
 "use client";
 
 import { useAppProvider } from "@/lib/app-provider";
-import { LoaderCircle } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const LoaderCircle = dynamic(
+  () => import("lucide-react").then((mod) => mod.LoaderCircle),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 export default function GlobalLoader() {
   const { globalLoader } = useAppProvider();

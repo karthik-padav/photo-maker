@@ -1,5 +1,3 @@
-import constants from "@/lib/constants";
-import { Ban, Pipette } from "lucide-react";
 import { useRef } from "react";
 import { hexToRgb } from "@/lib/common";
 import {
@@ -9,6 +7,17 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import dynamic from "next/dynamic";
+
+const Ban = dynamic(() => import("lucide-react").then((mod) => mod.Ban), {
+  loading: () => <span>Loading...</span>,
+});
+const Pipette = dynamic(
+  () => import("lucide-react").then((mod) => mod.Pipette),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 export default function ColorPicker({
   onClick,

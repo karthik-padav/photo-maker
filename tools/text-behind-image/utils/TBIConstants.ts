@@ -1,4 +1,4 @@
-const textBehindImageConstants = {
+const TBIConstants = {
   randomWords: [
     "apple",
     "orange",
@@ -321,4 +321,4 @@ const textBehindImageConstants = {
   },
 };
 
-export default textBehindImageConstants;
+export default TBIConstants;

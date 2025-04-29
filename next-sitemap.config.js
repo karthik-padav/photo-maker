@@ -9,6 +9,7 @@ export default {
     { loc: "/text-behind-image", lastmod: new Date().toISOString() },
     { loc: "/profile-picture-maker", lastmod: new Date().toISOString() },
     { loc: "/privacy-policy", lastmod: new Date().toISOString() },
+    { loc: "/compress-image", lastmod: new Date().toISOString() },
     { loc: "/terms-and-conditions", lastmod: new Date().toISOString() },
   ],
 };

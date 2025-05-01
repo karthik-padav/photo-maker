@@ -152,11 +152,13 @@ export default function Background({
         colorList={[
           {
             label: "Solid",
+            code: "SOLID",
             list: constants.solidColorCollection,
             type: "bg",
           },
           {
             label: "Gradients",
+            code: "GRADIENTS",
             list: constants.gradientColorCollection,
             type: "bgg",
           },

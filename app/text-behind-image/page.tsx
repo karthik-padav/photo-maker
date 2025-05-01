@@ -12,10 +12,11 @@ import constants from "@/tools/text-behind-image/utils/TBIConstants";
 import { getMetaData } from "@/lib/common";
 import dynamic from "next/dynamic";
 import TBIConstants from "@/tools/text-behind-image/utils/TBIConstants";
+import TBI from "@/tools/text-behind-image/components/TBI";
 
-const TBI = dynamic(() => import("@/tools/text-behind-image/components/TBI"), {
-  loading: () => <span>Loading...</span>,
-});
+// const TBI = dynamic(() => import("@/tools/text-behind-image/components/TBI"), {
+//   loading: () => <span>Loading...</span>,
+// });
 
 export const metadata = getMetaData("text-behind-image");
 

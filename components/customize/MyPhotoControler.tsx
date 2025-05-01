@@ -54,6 +54,7 @@ export default function MyPhotoControler({
         colorList={[
           {
             label: "Outline Solid",
+            code: "OUTLINE_SOLID",
             list: constants.solidColorCollection,
             type: "bg",
           },

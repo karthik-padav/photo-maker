@@ -106,7 +106,7 @@ export default async function Home() {
           </h2>
           <p className="mx-auto lg:text-2xl md:text-xl font-normal leading-relaxed text-muted-foreground">
             Don’t just take our word for it. Here’s what real people are saying
-            about Saasfly.
+            about ${process.env.NEXT_PUBLIC_WEBSITE_NAME}.
           </p>
         </div>
 
@@ -121,29 +121,33 @@ export default async function Home() {
                 )}
               >
                 <div className="flex space-x-4 px-4">
-                  {constants.testimonials.map((item, index) => (
-                    <div
-                      key={index}
-                      className="w-64 my-2 md:my-4 relative border border-input bg-background backdrop-blur-lg rounded-xl transition-all duration-300 shadow-sm hover:shadow-lg p-4"
-                    >
-                      <div className="flex items-center mb-2">
-                        <div className="relative w-8 h-8 rounded-full overflow-hidden">
-                          <Image
-                            loading="lazy"
-                            alt="avatar"
-                            src={`https://avatar.vercel.sh/${item.name}`}
-                            width={200}
-                            height={200}
-                          />
+                  {constants.testimonials.map((item, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="w-64 my-2 md:my-4 relative border border-input bg-background backdrop-blur-lg rounded-xl transition-all duration-300 shadow-sm hover:shadow-lg p-4"
+                      >
+                        <div className="flex items-center mb-2">
+                          <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                            <Image
+                              loading="lazy"
+                              alt="avatar"
+                              src={item.picture.medium}
+                              width={200}
+                              height={200}
+                            />
+                          </div>
+                          <p className="ml-2">
+                            {item.name.first} {item.name.last}
+                          </p>
                         </div>
-                        <p className="ml-2">{item.name}</p>
-                      </div>
 
-                      <p className="text-left whitespace-normal line-clamp-2 text-ellipsis">
-                        {item.desc}
-                      </p>
-                    </div>
-                  ))}
+                        <p className="text-left whitespace-normal line-clamp-2 text-ellipsis">
+                          {item.desc}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )

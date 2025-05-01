@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { hexToRgb } from "@/lib/common";
 import {
   Accordion,
@@ -24,12 +24,14 @@ export default function ColorPicker({
   colorList = [],
   disabled = false,
 }: {
-  onClick: (data: { color?: string; type?: string }) => void;
+  onClick: (data: { color?: string; type?: string; code?: string }) => void;
   disabled?: boolean;
   colorList?: {
     label: string;
     list: { id: string; color: string }[];
     type: string;
+    code: string;
+    component?: React.ReactNode;
   }[];
 }) {
   const colorInput = useRef<HTMLInputElement>(null);
@@ -50,7 +52,9 @@ export default function ColorPicker({
                   disabled ? "pointer-not-allowed" : "cursor-pointer"
                 } rounded-full w-full h-full aspect-w-1 aspect-h-1`}
                 key={i.id}
-                onClick={() => !disabled && onClick({ color: "", type: "" })}
+                onClick={() =>
+                  !disabled && onClick({ color: "", type: "", code: "" })
+                }
               >
                 <Ban className="text-red-500" />
               </div>
@@ -63,7 +67,8 @@ export default function ColorPicker({
               style={style}
               key={i.id}
               onClick={() =>
-                !disabled && onClick({ color: i.color, type: item.type })
+                !disabled &&
+                onClick({ color: i.color, type: item.type, code: item.code })
               }
             />
           );
@@ -86,6 +91,7 @@ export default function ColorPicker({
                   onClick({
                     color: hexToRgb(e.target.value),
                     type: item.type,
+                    code: item.code,
                   })
                 }
                 type="color"
@@ -101,7 +107,7 @@ export default function ColorPicker({
   return (
     <>
       <div className="md:hidden">
-        <Accordion type="multiple" className="w-full">
+        <Accordion type="multiple" className="w-full" disabled={disabled}>
           {colorList.map((item, index) => (
             <AccordionItem value={`index_${index}`} key={`index_${index}`}>
               <AccordionTrigger className="text-left">
@@ -117,17 +123,18 @@ export default function ColorPicker({
 
       <div className="hidden md:block md:pt-4 pt-2">
         {colorList.length > 1 ? (
-          <Tabs defaultValue={colorList[0].type} className="w-full">
+          <Tabs defaultValue={colorList[0].code} className="w-full">
             <TabsList className={`grid w-full grid-cols-${colorList.length}`}>
               {colorList.map((item) => (
-                <TabsTrigger value={item.type} key={item.type}>
+                <TabsTrigger value={item.code} key={item.code}>
                   {item.label}
                 </TabsTrigger>
               ))}
             </TabsList>
             {colorList.map((item) => (
-              <TabsContent value={item.type} key={item.type}>
+              <TabsContent value={item.code} key={item.code}>
                 <div className="mt-4">{colorBox(item)}</div>
+                {item.component && item.component}
               </TabsContent>
             ))}
           </Tabs>

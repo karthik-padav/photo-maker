@@ -7,7 +7,7 @@ const CanvaEditor = forwardRef<StageType, any>(
   ({ elements, canvaWidth }, ref) => {
     const aspectRatio = elements.imageSrc.height / elements.imageSrc.width;
     const scaledHeight = canvaWidth * aspectRatio;
-
+    console.log(elements.texts, "elements.texts");
     return (
       <>
         <Stage width={canvaWidth} height={scaledHeight} ref={ref}>
@@ -36,6 +36,9 @@ const CanvaEditor = forwardRef<StageType, any>(
                       node.cache();
                     }
                   }}
+                  stroke={item.strokeColor}
+                  lineHeight={1.2}
+                  strokeWidth={item.strokeWidth}
                   key={item.id}
                   text={item.text}
                   fontSize={item.fontSize * 3}

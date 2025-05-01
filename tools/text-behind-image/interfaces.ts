@@ -7,6 +7,8 @@ interface Text {
   top: number;
   left: number;
   color: string;
+  strokeColor: string;
+  strokeWidth: number;
   fontSize: number;
   fontWeight: number;
   opacity: number;

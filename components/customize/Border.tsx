@@ -54,6 +54,7 @@ export default function Border({
         colorList={[
           {
             label: "Solid",
+            code: "SOLID",
             list: constants.solidColorCollection,
             type: "bg",
           },

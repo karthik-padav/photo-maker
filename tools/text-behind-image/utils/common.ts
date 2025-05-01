@@ -26,6 +26,8 @@ export function addText(data: { [key: string]: string | number }) {
     top: 0,
     left: 0,
     color: "white",
+    strokeColor: "black",
+    strokeWidth: 1,
     fontSize: 40,
     fontWeight: 400,
     opacity: 1,

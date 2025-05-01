@@ -119,19 +119,6 @@ export default function Text({
                   </Button>
                 ))}
               </div>
-              <ColorPicker
-                onClick={(obj: { [key: string]: string }) =>
-                  handleField(obj.color, "color", item)
-                }
-                disabled={disabled}
-                colorList={[
-                  {
-                    label: "Color",
-                    list: constants.solidColorCollection.filter((i) => i.color),
-                    type: "bg",
-                  },
-                ]}
-              />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 mt-2">
                   <label htmlFor="font-size" className="text-sm font-medium">
@@ -165,6 +152,51 @@ export default function Text({
                   )}
                 </div>
               </div>
+              <ColorPicker
+                onClick={(obj: { [key: string]: string }) =>
+                  handleField(obj.color, obj.code, item)
+                }
+                disabled={disabled}
+                colorList={[
+                  {
+                    label: "Color",
+                    code: "color",
+                    list: constants.solidColorCollection.filter((i) => i.color),
+                    type: "bg",
+                  },
+                  {
+                    label: "Stroke Color",
+                    code: "strokeColor",
+                    list: constants.solidColorCollection.filter((i) => i.color),
+                    type: "bg",
+                    component: (
+                      <div className="space-y-2 mt-2">
+                        <label
+                          htmlFor="strokeWidth"
+                          className="text-sm font-medium flex justify-between items-center w-full"
+                        >
+                          <span>Stroke Width</span>
+                        </label>
+
+                        <Slider
+                          id="strokeWidth"
+                          min={0}
+                          max={10}
+                          step={1}
+                          name="strokeWidth"
+                          defaultValue={[item.strokeWidth]}
+                          value={[item.strokeWidth]}
+                          onValueChange={(value) =>
+                            handleField(value[0], "strokeWidth", item)
+                          }
+                          disabled={disabled}
+                          aria-label="Stroke Width"
+                        />
+                      </div>
+                    ),
+                  },
+                ]}
+              />
               <div className="grid grid-cols-1 gap-4">
                 {renderTextRange(item).map((i, index) => (
                   <div className="space-y-2 mt-2" key={index}>

@@ -10,17 +10,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "utfs.io",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
         hostname: "briaai-bria-rmbg-1-4.hf.space",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "avatar.vercel.sh",
+        hostname: "ik.imagekit.io",
         pathname: "/**",
       },
       {

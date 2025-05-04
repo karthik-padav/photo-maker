@@ -90,27 +90,26 @@ export default function Background({
                 >
                   <p className="flex justify-center items-center">None</p>
                 </div>
-                {bgImages.map((item) => {
-                  if (item?.key)
-                    return (
-                      <div
-                        key={item.key}
-                        className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer bg-white"
-                        onClick={() => handleBg(item.key)}
-                      >
-                        <Image
-                          src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${item.key}`}
-                          placeholder="blur"
-                          blurDataURL={constants.blurDataURL}
-                          fill
-                          sizes="100%"
-                          style={{ objectFit: "cover" }}
-                          alt="Background Picture"
-                          loading="lazy"
-                        />
-                      </div>
-                    );
-                  return null;
+                {Array.from({ length: 65 }, (_, i) => i + 1).map((item) => {
+                  const url = `${item}.webp`;
+                  return (
+                    <div
+                      key={item}
+                      className="aspect-w-1 aspect-h-1 relative hover:cursor-pointer bg-white"
+                      onClick={() => handleBg(url)}
+                    >
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${url}`}
+                        placeholder="blur"
+                        blurDataURL={constants.blurDataURL}
+                        fill
+                        sizes="100%"
+                        style={{ objectFit: "cover" }}
+                        alt="Background Picture"
+                        loading="lazy"
+                      />
+                    </div>
+                  );
                 })}
               </div>
             </ScrollArea>

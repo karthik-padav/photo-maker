@@ -29,32 +29,32 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import dynamic from "next/dynamic";
+import { AlignJustify, LaptopMinimal, Moon, Settings, Sun } from "lucide-react";
 
-const Moon = dynamic(() => import("lucide-react").then((mod) => mod.Moon), {
-  loading: () => <span>Loading...</span>,
-});
-const Sun = dynamic(() => import("lucide-react").then((mod) => mod.Sun), {
-  loading: () => <span>Loading...</span>,
-});
-const AlignJustify = dynamic(
-  () => import("lucide-react").then((mod) => mod.AlignJustify),
-  {
-    loading: () => <span>Loading...</span>,
-  }
-);
-const LaptopMinimal = dynamic(
-  () => import("lucide-react").then((mod) => mod.LaptopMinimal),
-  {
-    loading: () => <span>Loading...</span>,
-  }
-);
-const Settings = dynamic(
-  () => import("lucide-react").then((mod) => mod.Settings),
-  {
-    loading: () => <span>Loading...</span>,
-  }
-);
+// const Moon = dynamic(() => import("lucide-react").then((mod) => mod.Moon), {
+//   loading: () => <span>Loading...</span>,
+// });
+// const Sun = dynamic(() => import("lucide-react").then((mod) => mod.Sun), {
+//   loading: () => <span>Loading...</span>,
+// });
+// const AlignJustify = dynamic(
+//   () => import("lucide-react").then((mod) => mod.AlignJustify),
+//   {
+//     loading: () => <span>Loading...</span>,
+//   }
+// );
+// const LaptopMinimal = dynamic(
+//   () => import("lucide-react").then((mod) => mod.LaptopMinimal),
+//   {
+//     loading: () => <span>Loading...</span>,
+//   }
+// );
+// const Settings = dynamic(
+//   () => import("lucide-react").then((mod) => mod.Settings),
+//   {
+//     loading: () => <span>Loading...</span>,
+//   }
+// );
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -301,11 +301,6 @@ export default function Header() {
                 <>
                   {session ? (
                     <>
-                      <Link href="/myphotos">
-                        <DropdownMenuItem className="cursor-pointer">
-                          <span className="ml-2 text-md">My photos</span>
-                        </DropdownMenuItem>
-                      </Link>
                       <DropdownMenuItem
                         onClick={() => {
                           signOut();

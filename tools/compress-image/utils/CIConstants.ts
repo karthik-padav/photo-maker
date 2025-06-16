@@ -1,5 +1,5 @@
 const CIConstants = {
-  url: `${process.env.NEXT_PUBLIC_WEBSITE_LABEL}/compress-image`,
+  url: `/compress-image`,
   landingPage: {
     title: "Compress Multiple Images Effortlessly",
     subtitle:

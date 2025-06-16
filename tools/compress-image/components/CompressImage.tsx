@@ -60,7 +60,7 @@ export default function CompressImage() {
   const [images, setImages] = useState<{ [key: string]: IImage }>({});
   const [loading, setLoading] = useState(false);
 
-  function deleteText(id: string) {
+  function deleteImage(id: string) {
     setImages((prev) => {
       const newImages = { ...prev };
       delete newImages[id];
@@ -188,7 +188,7 @@ export default function CompressImage() {
                 <Button
                   variant="ghost"
                   aria-label="Delete"
-                  onClick={() => deleteText(key)}
+                  onClick={() => deleteImage(key)}
                   disabled={loading}
                   className={cn(
                     loading ? "cursor-not-allowed" : "cursor-pointer",

@@ -1,5 +1,6 @@
-import { Google, Github, Facebook, LinkedIn } from "@/assets/icons";
+import { Github, Google, LinkedIn } from "@/assets/icons";
 import CIConstants from "@/tools/compress-image/utils/CIConstants";
+import ITPDFConstants from "@/tools/image-to-pdf/utils/ITPDFConstants";
 import ppmConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
 import TBIConstants from "@/tools/text-behind-image/utils/TBIConstants";
 import { uid } from "uid";
@@ -31,6 +32,12 @@ const constants = {
           title: "Compress Image",
           href: "/compress-image",
           description: CIConstants.landingPage.subtitle,
+        },
+        {
+          code: "IMAGE-PDF",
+          title: "Image To PDF",
+          href: "/image-to-pdf",
+          description: ITPDFConstants.landingPage.subtitle,
         },
         {
           code: "QUICK-LOGO",

@@ -36,6 +36,12 @@
     cursor: pointer;
   }
   
+  .draggable-item {
+  touch-action: none; /* Important for iOS Safari to prevent double scrolling */
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
 
   
   @keyframes borderSpin {

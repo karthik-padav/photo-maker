@@ -1,5 +1,5 @@
 const ppmConstants = {
-  url: `${process.env.NEXT_PUBLIC_WEBSITE_LABEL}/profile-picture-maker`,
+  url: `/profile-picture-maker`,
   landingPage: {
     title: "AI-Powered Profile Picture Maker",
     subtitle:

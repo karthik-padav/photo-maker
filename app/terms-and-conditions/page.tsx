@@ -16,10 +16,7 @@ export default function About() {
           These terms and conditions outline the rules and regulations for the
           use of {process.env.NEXT_PUBLIC_WEBSITE_NAME}&apos;s Website, located
           at&nbsp;
-          <Link
-            href={process.env.NEXT_PUBLIC_WEBSITE_URL || "/"}
-            className="text-violet-500"
-          >
+          <Link href="/" className="text-violet-500">
             {process.env.NEXT_PUBLIC_WEBSITE_LABEL}
           </Link>
         </p>

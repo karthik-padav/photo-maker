@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/accordion";
 import constants from "@/tools/text-behind-image/utils/TBIConstants";
 import { getMetaData } from "@/lib/common";
-import dynamic from "next/dynamic";
 import TBIConstants from "@/tools/text-behind-image/utils/TBIConstants";
 import TBI from "@/tools/text-behind-image/components/TBI";
 
@@ -147,7 +146,7 @@ export default function TextBehindImage() {
         </div>
       </section>
 
-      <section className="px-5 md:px-0 md:container mx-auto pb-20 md:py-20">
+      <section className="px-5 md:container mx-auto pb-20 md:py-20">
         <div className="grid md:grid-cols-2 grid-cols-1 gap-8">
           <div className="pb-2 text-left">
             <h2 className="title-font pb-2 md:pb-4 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">

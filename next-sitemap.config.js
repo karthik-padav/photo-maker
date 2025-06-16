@@ -10,7 +10,11 @@ export default {
     { loc: "/profile-picture-maker", lastmod: new Date().toISOString() },
     { loc: "/privacy-policy", lastmod: new Date().toISOString() },
     { loc: "/compress-image", lastmod: new Date().toISOString() },
+    { loc: "/image-to-pdf", lastmod: new Date().toISOString() },
     { loc: "/terms-and-conditions", lastmod: new Date().toISOString() },
+    // Image to Base64
+    // Base64 to Image
+    // Images to Webp
   ],
 };
 

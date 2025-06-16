@@ -4,6 +4,7 @@ import { client } from "@gradio/client";
 import constants from "./constants";
 import ppmConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
 import CIConstants from "@/tools/compress-image/utils/CIConstants";
+import { jsPDF } from "jspdf";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -335,3 +336,62 @@ export function getMetaData(key?: string) {
       };
   }
 }
+
+// Helper: Convert Image to Base64
+export const imageToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+export const convertImagesToPdf = async (base64s: string[]) => {
+  const loadImage = (src: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  };
+
+  const pdf = new jsPDF();
+
+  const _promises: Promise<any>[] = [];
+
+  for (let i = 0; i < base64s.length; i++) {
+    _promises.push(
+      new Promise(async (resolve) => {
+        const base64 = base64s[i];
+        const img = await loadImage(base64);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        const imgWidth = img.width;
+        const imgHeight = img.height;
+
+        // Calculate ratio to fit within PDF page
+        const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+
+        const displayWidth = imgWidth * ratio;
+        const displayHeight = imgHeight * ratio;
+
+        const x = (pageWidth - displayWidth) / 2; // center horizontally
+        const y = (pageHeight - displayHeight) / 2; // center vertically
+        return resolve({ base64, x, y, displayWidth, displayHeight });
+      })
+    );
+  }
+
+  const results = await Promise.all(_promises);
+  results.forEach(({ base64, x, y, displayWidth, displayHeight }, index) => {
+    pdf.addImage(base64, "JPEG", x, y, displayWidth, displayHeight);
+    if (index < results.length - 1) {
+      pdf.addPage();
+    }
+  });
+  pdf.save("images.pdf");
+};

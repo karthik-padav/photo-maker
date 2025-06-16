@@ -1,16 +1,13 @@
 const ITPDFConstants = {
   url: `/compress-image`,
+  title: "Image To PDF Converter",
+  keywords: ["Image to PDF Converter", "Convert JPG to PDF"],
   landingPage: {
     title: "Free Image to PDF Converter – Instantly Turn JPG to PDF Online",
     subtitle:
       "The fastest way to convert JPG to PDF and other image formats like PNG, WEBP into high-quality PDF files without losing quality.",
     description:
       "Welcome to Image Flex Studio’s Free Image to PDF Converter — your ultimate solution to convert images to PDF effortlessly. Whether you need to change JPG to PDF for documents, reports, or online sharing, our tool guarantees fast, reliable, and high-quality conversions. Upload multiple image formats such as JPG, PNG, and WEBP and combine them into a single, professional PDF file for free.",
-    keywords: [
-      "Compress image files",
-      "Compress image online",
-      "Compress Image free",
-    ],
 
     whyOurWebsite: {
       heading: `Why Use Our Image to PDF Converter?`,

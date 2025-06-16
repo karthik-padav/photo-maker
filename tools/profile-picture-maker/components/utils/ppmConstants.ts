@@ -1,5 +1,9 @@
 const ppmConstants = {
   url: `/profile-picture-maker`,
+  title: "Profile Picture Maker",
+  keywords: [
+    "profile picture maker, profile picture maker free, image editor, background remover",
+  ],
   landingPage: {
     title: "AI-Powered Profile Picture Maker",
     subtitle:

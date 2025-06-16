@@ -1,5 +1,6 @@
 const CIConstants = {
   url: `/compress-image`,
+  title: "Compress Image",
   landingPage: {
     title: "Compress Multiple Images Effortlessly",
     subtitle:

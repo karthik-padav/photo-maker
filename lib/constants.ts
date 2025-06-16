@@ -17,24 +17,24 @@ const constants = {
       list: [
         {
           code: "PROFILE_PICTURE_MAKER",
-          title: "Profile Picture Maker",
+          title: ppmConstants.title,
           href: "/profile-picture-maker",
           description: ppmConstants.landingPage.subtitle,
         },
         {
           code: "TEXT-BEHIND-IMAGE",
-          title: "Text Behind Image",
+          title: TBIConstants.title,
           href: "/text-behind-image",
           description: TBIConstants.landingPage.subtitle,
         },
         {
           code: "COMPRESS-IMAGE",
-          title: "Compress Image",
+          title: CIConstants.title,
           href: "/compress-image",
           description: CIConstants.landingPage.subtitle,
         },
         {
-          code: "IMAGE-PDF",
+          code: "IMAGE-TO-PDF",
           title: "Image To PDF",
           href: "/image-to-pdf",
           description: ITPDFConstants.landingPage.subtitle,

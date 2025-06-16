@@ -24,7 +24,7 @@ export default function TextBehindImage() {
     <main className="body-font">
       <BreadcrumbWrapper
         className="md:container md:p-0 px-5"
-        list={[{ href: "/", title: "Home" }, { title: "Text Behind Image" }]}
+        list={[{ href: "/", title: "Home" }, { title: TBIConstants.title }]}
       />
 
       <HeroBanner

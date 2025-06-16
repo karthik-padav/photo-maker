@@ -10,7 +10,7 @@ import ADS from "@/components/ads";
 import BreadcrumbWrapper from "@/components/breadcrumbWrapper";
 import HeroBanner from "@/components/heroBanner";
 import { getMetaData } from "@/lib/common";
-import PPMConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
+import ppmConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
 import dynamic from "next/dynamic";
 
 const PPM = dynamic(
@@ -29,14 +29,11 @@ export default function ProfilePictureMaker() {
     <main className="body-font">
       <BreadcrumbWrapper
         className="md:container md:p-0 px-5"
-        list={[
-          { href: "/", title: "Home" },
-          { title: "Profile Picture Maker" },
-        ]}
+        list={[{ href: "/", title: "Home" }, { title: ppmConstants.title }]}
       />
       <HeroBanner
-        title={PPMConstants.landingPage.title}
-        subtitle={PPMConstants.landingPage.subtitle}
+        title={ppmConstants.landingPage.title}
+        subtitle={ppmConstants.landingPage.subtitle}
       />
 
       <section className="grid md:grid-cols-12 grid-cols-1 gap-4 md:container mx-auto p-0 pb-20 md:py-20">
@@ -77,8 +74,8 @@ export default function ProfilePictureMaker() {
               remove backgrounds, add stylish outlines, change backgrounds, and
               customize your profile photo effortlessly. Whether it&apos;s for
               social media, LinkedIn, gaming avatars, or professional use,{" "}
-              <Link href={PPMConstants.url || "/"} className="text-violet-700">
-                {PPMConstants.url}
+              <Link href={ppmConstants.url || "/"} className="text-violet-700">
+                {ppmConstants.title}
               </Link>{" "}
               ensures your profile picture stands out.
             </p>
@@ -93,17 +90,17 @@ export default function ProfilePictureMaker() {
         <div className="grid md:grid-cols-2 grid-cols-1 gap-8">
           <div className="pb-2 text-left">
             <h2 className="title-font pb-2 md:pb-4 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
-              {PPMConstants.landingPage.whyOurWebsite.heading}
+              {ppmConstants.landingPage.whyOurWebsite.heading}
             </h2>
 
             <Accordion
               type="multiple"
-              defaultValue={PPMConstants.landingPage.whyOurWebsite.list.map(
+              defaultValue={ppmConstants.landingPage.whyOurWebsite.list.map(
                 (i, index) => `index_${index}`
               )}
               className="w-full"
             >
-              {PPMConstants.landingPage.whyOurWebsite.list.map(
+              {ppmConstants.landingPage.whyOurWebsite.list.map(
                 (item, index) => (
                   <AccordionItem
                     value={`index_${index}`}
@@ -122,17 +119,17 @@ export default function ProfilePictureMaker() {
           </div>
           <div className="pb-2 text-left">
             <h2 className="title-font pb-2 md:pb-4 font-medium md:text-4xl text-2xl text-gray-600 dark:text-white">
-              {PPMConstants.landingPage.howItWorks.heading}
+              {ppmConstants.landingPage.howItWorks.heading}
             </h2>
 
             <Accordion
               type="multiple"
-              defaultValue={PPMConstants.landingPage.howItWorks.list.map(
+              defaultValue={ppmConstants.landingPage.howItWorks.list.map(
                 (i, index) => `index_${index}`
               )}
               className="w-full"
             >
-              {PPMConstants.landingPage.howItWorks.list.map((item, index) => (
+              {ppmConstants.landingPage.howItWorks.list.map((item, index) => (
                 <AccordionItem value={`index_${index}`} key={`index_${index}`}>
                   <AccordionTrigger className="text-left ">
                     {item.title}

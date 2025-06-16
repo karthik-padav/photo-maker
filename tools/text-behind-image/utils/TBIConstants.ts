@@ -1,4 +1,8 @@
 const TBIConstants = {
+  title: "Text Behind Image",
+  keywords: [
+    "text behind image, text behind image ai, text behind the image, textbehindimage, text behind image app",
+  ],
   randomWords: [
     "apple",
     "orange",

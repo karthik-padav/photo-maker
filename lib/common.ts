@@ -5,6 +5,7 @@ import constants from "./constants";
 import ppmConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
 import CIConstants from "@/tools/compress-image/utils/CIConstants";
 import { jsPDF } from "jspdf";
+import ITPDFConstants from "@/tools/image-to-pdf/utils/ITPDFConstants";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -224,26 +225,25 @@ export function getMetaData(key?: string) {
           `${process.env.NEXT_PUBLIC_WEBSITE_URL}/text-behind-image` ||
             "https://dpg.vercel.app/text-behind-image"
         ),
-        title: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        title: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
         description: textBehindImageConstants.landingPage.subtitle,
-        keywords:
-          "text behind image, text behind image ai, text behind the image, textbehindimage, text behind image app",
+        keywords: textBehindImageConstants.keywords.join(", "),
         openGraph: {
-          title: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          title: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: textBehindImageConstants.landingPage.subtitle,
           url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/text-behind-image`,
-          siteName: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          siteName: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           images: [
             {
               ...openGraphImages,
-              alt: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+              alt: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
             },
           ],
           type: "website",
         },
         twitter: {
           ...twitter,
-          title: `Text Behind Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          title: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: textBehindImageConstants.landingPage.subtitle,
         },
       };
@@ -253,26 +253,25 @@ export function getMetaData(key?: string) {
           `${process.env.NEXT_PUBLIC_WEBSITE_URL}/profile-picture-maker` ||
             "https://dpg.vercel.app/profile-picture-maker"
         ),
-        title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        title: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
         description: ppmConstants.landingPage.subtitle,
-        keywords:
-          "profile picture maker, profile picture maker free, image editor, background remover",
+        keywords: ppmConstants.keywords.join(", "),
         openGraph: {
-          title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          title: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: ppmConstants.landingPage.subtitle,
           url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/profile-picture-maker`,
-          siteName: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          siteName: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           images: [
             {
               ...openGraphImages,
-              alt: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+              alt: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
             },
           ],
           type: "website",
         },
         twitter: {
           ...twitter,
-          title: `Profile Picture Maker | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          title: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: ppmConstants.landingPage.subtitle,
         },
       };
@@ -283,26 +282,55 @@ export function getMetaData(key?: string) {
           `${process.env.NEXT_PUBLIC_WEBSITE_URL}/compress-image` ||
             "https://dpg.vercel.app/compress-image"
         ),
-        title: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        title: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
         description: CIConstants.landingPage.subtitle,
         keywords: CIConstants.landingPage.keywords.join(", "),
         openGraph: {
-          title: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          title: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: CIConstants.landingPage.subtitle,
           url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/compress-image`,
-          siteName: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          siteName: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           images: [
             {
               ...openGraphImages,
-              alt: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+              alt: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
             },
           ],
           type: "website",
         },
         twitter: {
           ...twitter,
-          title: `Compress Image | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          title: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
           description: CIConstants.landingPage.subtitle,
+        },
+      };
+
+    case "image-to-pdf":
+      return {
+        metadataBase: new URL(
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/image-to-pdf` ||
+            "https://dpg.vercel.app/image-to-pdf"
+        ),
+        title: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: ITPDFConstants.landingPage.subtitle,
+        keywords: ITPDFConstants.keywords.join(", "),
+        openGraph: {
+          title: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: ITPDFConstants.landingPage.subtitle,
+          url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/image-to-pdf`,
+          siteName: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: ITPDFConstants.landingPage.subtitle,
         },
       };
 

@@ -16,7 +16,6 @@ type Theme = {
   selectedImage: SelectedImage | null;
   globalLoader: boolean;
   user: User | null;
-  bgImages: { key: string; url: string }[];
 };
 
 const defaultValue: Theme = {
@@ -29,22 +28,16 @@ const defaultValue: Theme = {
   controlerValue: {
     border: { title: "Round", value: 50 },
     pngBorderColor: "rgb(0, 0, 0)",
+    outerBorderColor: "rgb(0, 0, 0)",
   },
   selectedImage: null,
   globalLoader: false,
   user: null,
-  bgImages: [] as { key: string; url: string }[],
 };
 
 const ThemeContext = createContext<Theme>(defaultValue);
 
-export const AppProvider = ({
-  children,
-  bgImages = [],
-}: {
-  children: React.ReactNode;
-  bgImages: { key: string; url: string }[];
-}) => {
+export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   let localStoredData: {
     selectedImage: SelectedImage | null;
     controlerValue: ControlerValue | null;
@@ -125,7 +118,6 @@ export const AppProvider = ({
         setGlobalLoader,
         user,
         setUserValue,
-        bgImages,
       }}
     >
       {children}

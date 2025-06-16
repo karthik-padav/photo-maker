@@ -1,8 +1,11 @@
+import textBehindImageConstants from "@/tools/text-behind-image/utils/TBIConstants";
 import { ControlerValue } from "./interfaces";
-import { toPng, toJpeg } from "html-to-image";
 import { client } from "@gradio/client";
-import { removeBackground } from "@imgly/background-removal";
-import html2canvas from "html2canvas";
+import constants from "./constants";
+import ppmConstants from "@/tools/profile-picture-maker/components/utils/ppmConstants";
+import CIConstants from "@/tools/compress-image/utils/CIConstants";
+import { jsPDF } from "jspdf";
+import ITPDFConstants from "@/tools/image-to-pdf/utils/ITPDFConstants";
 
 export const calcPercentage = (width: number, v: number) => (v / width) * 100;
 export const calcPx = (width: number, v: number) => (v * width) / 100;
@@ -23,68 +26,9 @@ const createRangeControl = (
     max,
     step,
     value,
-    className: `w-full slider dark:bg-accent bg-gray-200 ${extraClass}`,
+    className: `w-full slider bg-violet-500 rounded-full ${extraClass}`,
   },
 });
-
-export function myPhotoControlers(controlerValue: ControlerValue | null) {
-  return {
-    rotate: createRangeControl(
-      "Rotate",
-      0,
-      360,
-      10,
-      controlerValue?.rotate || 0
-    ),
-    scale: createRangeControl("Scale", 0.5, 2, 0.1, controlerValue?.scale || 1),
-    pngShadow: createRangeControl(
-      "Outline",
-      0,
-      5,
-      1,
-      controlerValue?.pngShadow || 0,
-      "col-span-4"
-    ),
-  };
-}
-
-export function borderControlers(controlerValue: ControlerValue | null) {
-  return {
-    outerBorderWidth: createRangeControl(
-      "Border Thickness",
-      0,
-      40,
-      5,
-      controlerValue?.outerBorderWidth || 0
-    ),
-    outerBorderOpacity: createRangeControl(
-      "Border Opacity",
-      0,
-      1,
-      0.1,
-      controlerValue?.outerBorderOpacity || 1
-    ),
-  };
-}
-
-export function bgControlers(controlerValue: ControlerValue | null) {
-  return {
-    backgroundRotate: createRangeControl(
-      "Background Rotate",
-      0,
-      360,
-      20,
-      controlerValue?.backgroundRotate || 0
-    ),
-    backgroundScale: createRangeControl(
-      "Background Scale",
-      0.5,
-      3,
-      0.1,
-      controlerValue?.backgroundScale || 1
-    ),
-  };
-}
 
 export const hexToRgb = (hex: string) => {
   hex = hex.replace(/^#/, "");
@@ -94,15 +38,17 @@ export const hexToRgb = (hex: string) => {
   )}, ${parseInt(hex.substring(4, 6), 16)})`;
 };
 
-const rgbToRgba = (rgb: string = "", opacity: string = "1") => {
-  const rgbValues = rgb.match(/\d+/g);
-  return rgbValues?.length ? `rgba(${rgbValues.join(", ")}, ${opacity})` : "";
-};
+export function rgbToRgba(rgbGradient, opacity = "1") {
+  return rgbGradient.replace(/rgb\((\d+), (\d+), (\d+)\)/g, (_, r, g, b) => {
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  });
+}
 
 export function getBorderColor(controlerValue: ControlerValue) {
   const rgbColors = (controlerValue?.pngBorderColor || "").match(
     /rgb\(\d{1,3}, \d{1,3}, \d{1,3}\)/g
   );
+
   const px = controlerValue?.pngShadow;
   if (!px || px === "0" || !rgbColors?.length) return {};
 
@@ -121,10 +67,10 @@ export function getBorderColor(controlerValue: ControlerValue) {
     "var(--stroke-neg) var(--stroke-pos)",
     "var(--stroke-neg) var(--stroke-neg)",
   ]
-    .map(
-      (shadow, index) =>
-        `drop-shadow(${shadow} 0 ${rgbColors[index % rgbColors.length]})`
-    )
+    .map((shadow, index) => {
+      const rgba = rgbToRgba(rgbColors[index % rgbColors.length], "1");
+      return `drop-shadow(${shadow} 0 ${rgba})`;
+    })
     .join(" ");
 
   return { ...strokeVars, filter: dropShadows };
@@ -134,42 +80,51 @@ export function getImageStyle(controlerValue?: ControlerValue) {
   return controlerValue
     ? {
         scale: controlerValue.scale,
-        transform: `rotate(${controlerValue.rotate}deg)`,
+        transform: `rotate(${
+          controlerValue?.rotate || 0
+        }deg) translate(${calcPx(
+          controlerValue?.imageWrapperSize || 100,
+          controlerValue?.transformX || 0
+        )}px, ${calcPx(
+          controlerValue?.imageWrapperSize || 100,
+          controlerValue?.transformY || 0
+        )}px)`,
+
         ...getBorderColor(controlerValue),
       }
     : {};
 }
 
-export function getBorderStyles(
-  controlerValue?: ControlerValue,
-  currentWidth?: number
-) {
-  const outerBorderWidth =
-    controlerValue?.outerBorderWidth &&
-    currentWidth &&
-    controlerValue?.imageWrapperSize
-      ? (Number(controlerValue.outerBorderWidth) * currentWidth) /
-        controlerValue.imageWrapperSize
-      : controlerValue?.outerBorderWidth;
+export function getOuterBorderStyle(controlerValue?: ControlerValue) {
+  if (
+    !controlerValue?.outerBorderWidth ||
+    controlerValue.outerBorderWidth === "0" ||
+    controlerValue?.outerBorderOpacity === "0"
+  )
+    return {};
+  let style = { backgroundColor: "transparent" };
+  if (controlerValue?.outerBorderWidth) {
+    style["borderWidth"] = `${controlerValue.outerBorderWidth}px`;
+    style["borderStyle"] = "solid";
+  }
+  if (
+    controlerValue?.outerBorderColor &&
+    controlerValue.outerBorderColor.includes("linear-gradient")
+  ) {
+    style["borderImageSource"] = rgbToRgba(
+      controlerValue.outerBorderColor,
+      controlerValue?.outerBorderOpacity || "1"
+    );
+    style["borderImageSlice"] = "1";
+  } else
+    style["borderColor"] =
+      rgbToRgba(
+        controlerValue.outerBorderColor,
+        controlerValue?.outerBorderOpacity || "1"
+      ) || "white";
 
-  return outerBorderWidth && outerBorderWidth !== "0"
-    ? {
-        borderWidth: `${outerBorderWidth}px`,
-        borderColor: rgbToRgba(
-          controlerValue?.outerBorderColor || "",
-          controlerValue?.outerBorderOpacity || "1"
-        ),
-      }
-    : {};
+  return style;
 }
-
-export const getClientSideCookie = (name: string) => document.cookie;
-
-export const extractValues = (input: string) =>
-  input
-    .match(/translate\(([-\d.]+)%, ([-\d.]+)%\)/)
-    ?.slice(1)
-    .map(parseFloat) || [];
 
 export const resizedImage = async (originalCanvas) => {
   if (!originalCanvas) return;
@@ -208,10 +163,7 @@ export function downloadBlob(blob: Blob, filename: string) {
   URL.revokeObjectURL(url);
 }
 
-export async function onHfImageGenerate(
-  e: React.ChangeEvent<HTMLInputElement>
-) {
-  const file = e?.target?.files?.[0];
+export async function onHfImageGenerate(file: Blob) {
   const app = await client("https://briaai-bria-rmbg-1-4.hf.space/");
   const result = (await app.predict("/predict", [file])) as {
     data: { path: string };
@@ -219,20 +171,11 @@ export async function onHfImageGenerate(
   if (result?.data?.[0]?.path) {
     console.log("HF triggered");
     return `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`;
-    const response = await fetch(
-      `https://briaai-bria-rmbg-1-4.hf.space/file=${result.data[0].path}`
-    );
-    return await response.blob();
   }
   return null;
 }
 
-export async function onImageGenerate(
-  e: React.ChangeEvent<HTMLInputElement>
-): Promise<Blob | null> {
-  const file = e?.target?.files?.[0];
-  if (!file) return null;
-
+export async function onImageGenerate(file: Blob): Promise<Blob | null> {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = async () => {
@@ -265,9 +208,218 @@ export async function onImageGenerate(
   });
 }
 
-const base64ToBlob = (base64: string, mimeType: string) => {
-  const byteString = atob(base64.split(",")[1] || base64);
-  return new Blob([Uint8Array.from(byteString, (c) => c.charCodeAt(0))], {
-    type: mimeType,
+export function getMetaData(key?: string) {
+  const openGraphImages = {
+    url: "/images/logo.png",
+    width: 1200,
+    height: 375,
+  };
+  const twitter = {
+    card: "summary_large_image",
+    images: ["/images/logo.png"],
+  };
+  switch (key) {
+    case "text-behind-image":
+      return {
+        metadataBase: new URL(
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/text-behind-image` ||
+            "https://dpg.vercel.app/text-behind-image"
+        ),
+        title: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: textBehindImageConstants.landingPage.subtitle,
+        keywords: textBehindImageConstants.keywords.join(", "),
+        openGraph: {
+          title: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: textBehindImageConstants.landingPage.subtitle,
+          url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/text-behind-image`,
+          siteName: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `${textBehindImageConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: textBehindImageConstants.landingPage.subtitle,
+        },
+      };
+    case "profile-picture-maker":
+      return {
+        metadataBase: new URL(
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/profile-picture-maker` ||
+            "https://dpg.vercel.app/profile-picture-maker"
+        ),
+        title: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: ppmConstants.landingPage.subtitle,
+        keywords: ppmConstants.keywords.join(", "),
+        openGraph: {
+          title: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: ppmConstants.landingPage.subtitle,
+          url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/profile-picture-maker`,
+          siteName: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `${ppmConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: ppmConstants.landingPage.subtitle,
+        },
+      };
+
+    case "compress-image":
+      return {
+        metadataBase: new URL(
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/compress-image` ||
+            "https://dpg.vercel.app/compress-image"
+        ),
+        title: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: CIConstants.landingPage.subtitle,
+        keywords: CIConstants.landingPage.keywords.join(", "),
+        openGraph: {
+          title: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: CIConstants.landingPage.subtitle,
+          url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/compress-image`,
+          siteName: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `${CIConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: CIConstants.landingPage.subtitle,
+        },
+      };
+
+    case "image-to-pdf":
+      return {
+        metadataBase: new URL(
+          `${process.env.NEXT_PUBLIC_WEBSITE_URL}/image-to-pdf` ||
+            "https://dpg.vercel.app/image-to-pdf"
+        ),
+        title: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: ITPDFConstants.landingPage.subtitle,
+        keywords: ITPDFConstants.keywords.join(", "),
+        openGraph: {
+          title: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: ITPDFConstants.landingPage.subtitle,
+          url: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/image-to-pdf`,
+          siteName: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `${ITPDFConstants.title} | ${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: ITPDFConstants.landingPage.subtitle,
+        },
+      };
+
+    default:
+      return {
+        metadataBase: new URL(
+          process.env.NEXT_PUBLIC_WEBSITE_URL || "https://dpg.vercel.app/"
+        ),
+        title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+        description: constants.landingPage.subtitle,
+        keywords:
+          "photo editing, background remover, image editor, customize images",
+        openGraph: {
+          title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: constants.landingPage.subtitle,
+          url: process.env.NEXT_PUBLIC_WEBSITE_URL,
+          siteName: process.env.NEXT_PUBLIC_WEBSITE_NAME,
+          images: [
+            {
+              ...openGraphImages,
+              alt: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+            },
+          ],
+          type: "website",
+        },
+        twitter: {
+          ...twitter,
+          title: `${process.env.NEXT_PUBLIC_WEBSITE_NAME}`,
+          description: constants.landingPage.subtitle,
+        },
+      };
+  }
+}
+
+// Helper: Convert Image to Base64
+export const imageToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
   });
+};
+
+export const convertImagesToPdf = async (base64s: string[]) => {
+  const loadImage = (src: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  };
+
+  const pdf = new jsPDF();
+
+  const _promises: Promise<any>[] = [];
+
+  for (let i = 0; i < base64s.length; i++) {
+    _promises.push(
+      new Promise(async (resolve) => {
+        const base64 = base64s[i];
+        const img = await loadImage(base64);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        const imgWidth = img.width;
+        const imgHeight = img.height;
+
+        // Calculate ratio to fit within PDF page
+        const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+
+        const displayWidth = imgWidth * ratio;
+        const displayHeight = imgHeight * ratio;
+
+        const x = (pageWidth - displayWidth) / 2; // center horizontally
+        const y = (pageHeight - displayHeight) / 2; // center vertically
+        return resolve({ base64, x, y, displayWidth, displayHeight });
+      })
+    );
+  }
+
+  const results = await Promise.all(_promises);
+  results.forEach(({ base64, x, y, displayWidth, displayHeight }, index) => {
+    pdf.addImage(base64, "JPEG", x, y, displayWidth, displayHeight);
+    if (index < results.length - 1) {
+      pdf.addPage();
+    }
+  });
+  pdf.save("images.pdf");
 };

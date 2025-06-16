@@ -30,7 +30,7 @@ export async function createControler(body: Params) {
     backgroundRotate,
     backgroundImagePath,
     backgroundScale,
-  } = { ...rest, ...rest.controler };
+  } = { ...rest.controler, ...rest };
 
   let payload = {
     imageWrapperSize,

@@ -10,12 +10,17 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "utfs.io",
+        hostname: "briaai-bria-rmbg-1-4.hf.space",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "briaai-bria-rmbg-1-4.hf.space",
+        hostname: "ik.imagekit.io",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "randomuser.me",
         pathname: "/**",
       },
     ],

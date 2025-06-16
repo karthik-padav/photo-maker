@@ -1,31 +1,46 @@
-import { borderControlers } from "@/lib/common";
-import { useAppProvider } from "../../lib/app-provider";
+import { borderControlers } from "@/tools/profile-picture-maker/components/utils/common";
 import ColorPicker from "../colorPicker";
 import constants from "@/lib/constants";
+import { ControlerValue } from "@/lib/interfaces";
+import { Slider } from "../ui/slider";
 
-export default function Border() {
-  const { controlerValue, setControlerValue } = useAppProvider();
-
-  const controler: any = borderControlers(controlerValue);
+export default function Border({
+  controler = {},
+  disabled = false,
+  updateControler,
+}: {
+  controler?: ControlerValue;
+  disabled?: boolean;
+  updateControler: (data) => void;
+}) {
+  const _controler: any = borderControlers();
 
   return (
     <>
-      {Object.keys(controler).map((key: string) => {
-        const data = controler[key];
+      {Object.keys(_controler).map((key: string) => {
+        const data = _controler[key];
         return (
           <div className="border-white drop-shadow-md md:pt-4 pt-2" key={key}>
-            <p className="flex justify-between mb-1 text-sm md:lg">
+            <label
+              htmlFor={data.attr.name}
+              className="flex justify-between mb-1"
+            >
               {data.label}
               <span>
-                {data?.attr?.value || 0}
-                {data.valuePrefix}
+                {controler[data.attr.name] || 0}
+                {data.postfix}
               </span>
-            </p>
-            <input
-              onChange={(e) => {
-                setControlerValue({ ...controlerValue, [key]: e.target.value });
-              }}
+            </label>
+            <Slider
+              id={data.attr.name}
               {...data.attr}
+              defaultValue={[controler[data.attr.name]]}
+              value={[controler[data.attr.name]]}
+              onValueChange={(value) =>
+                updateControler({ [data.attr.name]: value[0] })
+              }
+              disabled={disabled}
+              aria-label={data.label}
             />
           </div>
         );
@@ -33,14 +48,13 @@ export default function Border() {
 
       <ColorPicker
         onClick={(obj: { [key: string]: string }) =>
-          setControlerValue({
-            ...controlerValue,
-            outerBorderColor: obj.color,
-          })
+          updateControler({ outerBorderColor: obj.color })
         }
+        disabled={disabled}
         colorList={[
           {
-            label: "Border Color",
+            label: "Solid",
+            code: "SOLID",
             list: constants.solidColorCollection,
             type: "bg",
           },

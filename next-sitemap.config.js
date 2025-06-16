@@ -6,11 +6,15 @@ export default {
   additionalPaths: async (config) => [
     { loc: "/", lastmod: new Date().toISOString() },
     { loc: "/about-us", lastmod: new Date().toISOString() },
-    // { loc: "/customize", lastmod: new Date().toISOString() },
-    // { loc: "/generate", lastmod: new Date().toISOString() },
-    // { loc: "/myphotos", lastmod: new Date().toISOString() },
+    { loc: "/text-behind-image", lastmod: new Date().toISOString() },
+    { loc: "/profile-picture-maker", lastmod: new Date().toISOString() },
     { loc: "/privacy-policy", lastmod: new Date().toISOString() },
+    { loc: "/compress-image", lastmod: new Date().toISOString() },
+    { loc: "/image-to-pdf", lastmod: new Date().toISOString() },
     { loc: "/terms-and-conditions", lastmod: new Date().toISOString() },
+    // Image to Base64
+    // Base64 to Image
+    // Images to Webp
   ],
 };
 

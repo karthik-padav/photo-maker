@@ -1,20 +1,22 @@
 export interface ControlerValue {
   border?: { title: string; value: number };
+  imageWrapperSize?: number;
   rotate?: number | string;
   scale?: number | string;
+  pngShadow?: string;
   transformX?: number;
   transformY?: number;
-  pngShadow?: string;
   pngBorderColor?: string;
+  backgroundColorType?: string;
+  backgroundColor?: string;
+  outerBorderColor?: string;
   outerBorderOpacity?: string;
   outerBorderWidth?: string;
-  outerBorderColor?: string;
-  imageWrapperSize?: number;
-  backgroundColor?: string;
-  backgroundColorType?: string;
   backgroundRotate?: string;
   backgroundImagePath?: string;
   backgroundScale?: string;
+  imageSrc?: HTMLImageElement | null;
+  outerBorderRadius?: string;
 }
 
 export interface SelectedImage {

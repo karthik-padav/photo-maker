@@ -1,6 +1,4 @@
-import constants from "@/lib/constants";
-import { Ban, Pipette } from "lucide-react";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { hexToRgb } from "@/lib/common";
 import {
   Accordion,
@@ -8,23 +6,39 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import dynamic from "next/dynamic";
+
+const Ban = dynamic(() => import("lucide-react").then((mod) => mod.Ban), {
+  loading: () => <span>Loading...</span>,
+});
+const Pipette = dynamic(
+  () => import("lucide-react").then((mod) => mod.Pipette),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 export default function ColorPicker({
   onClick,
   colorList = [],
+  disabled = false,
 }: {
-  onClick: (data: { color?: string; type?: string }) => void;
+  onClick: (data: { color?: string; type?: string; code?: string }) => void;
+  disabled?: boolean;
   colorList?: {
     label: string;
     list: { id: string; color: string }[];
     type: string;
+    code: string;
+    component?: React.ReactNode;
   }[];
 }) {
   const colorInput = useRef<HTMLInputElement>(null);
 
   function colorBox(item) {
     return (
-      <div className={`grid grid-cols-8 md:grid-cols-8 gap-2`}>
+      <div className={`grid grid-cols-8 md:grid-cols-8 lg:grid-cols-12 gap-2`}>
         {item.list.map((i) => {
           let style = {
             background: i.color,
@@ -34,37 +48,50 @@ export default function ColorPicker({
           if (!i.color)
             return (
               <div
-                className="rounded-full w-full h-full aspect-w-1 aspect-h-1 cursor-pointer"
+                className={`${
+                  disabled ? "pointer-not-allowed" : "cursor-pointer"
+                } rounded-full w-full h-full aspect-w-1 aspect-h-1`}
                 key={i.id}
-                onClick={() => onClick({ color: "", type: "" })}
+                onClick={() =>
+                  !disabled && onClick({ color: "", type: "", code: "" })
+                }
               >
                 <Ban className="text-red-500" />
               </div>
             );
           return (
             <div
-              className="rounded-full w-full h-full aspect-w-1 aspect-h-1 cursor-pointer"
+              className={`${
+                disabled ? "pointer-not-allowed" : "cursor-pointer"
+              } rounded-full w-full h-full aspect-w-1 aspect-h-1`}
               style={style}
               key={i.id}
-              onClick={() => onClick({ color: i.color, type: item.type })}
+              onClick={() =>
+                !disabled &&
+                onClick({ color: i.color, type: item.type, code: item.code })
+              }
             />
           );
         })}
         {item.type === "bg" && (
           <>
             <div
-              className="rounded-full aspect-w-1 aspect-h-1 cursor-pointer border border-slate-200 dark:border-gray-800"
-              onClick={() => colorInput.current?.click()}
+              className={`${
+                disabled ? "pointer-not-allowed" : "cursor-pointer"
+              } rounded-full aspect-w-1 aspect-h-1`}
+              onClick={() => !disabled && colorInput.current?.click()}
             >
               <div className="flex justify-center items-center h-full w-full">
-                <Pipette className="h-[1.5rem] w-[1.5rem]" />
+                <Pipette className="h-[1.3rem] w-[1.3rem]" />
               </div>
               <input
                 ref={colorInput}
                 onChange={(e) =>
+                  !disabled &&
                   onClick({
                     color: hexToRgb(e.target.value),
                     type: item.type,
+                    code: item.code,
                   })
                 }
                 type="color"
@@ -80,13 +107,13 @@ export default function ColorPicker({
   return (
     <>
       <div className="md:hidden">
-        <Accordion type="multiple" className="w-full text-sm md:text-lg">
+        <Accordion type="multiple" className="w-full" disabled={disabled}>
           {colorList.map((item, index) => (
             <AccordionItem value={`index_${index}`} key={`index_${index}`}>
-              <AccordionTrigger className="text-left text-gray-600 dark:text-gray-300">
+              <AccordionTrigger className="text-left">
                 {item.label}
               </AccordionTrigger>
-              <AccordionContent className="text-left text-gray-600 dark:text-gray-300">
+              <AccordionContent className="text-left">
                 {colorBox(item)}
               </AccordionContent>
             </AccordionItem>
@@ -94,13 +121,29 @@ export default function ColorPicker({
         </Accordion>
       </div>
 
-      <div className="hidden md:block">
-        {colorList.map((item) => (
-          <div key={item.type} className="py-2">
-            <p className="pb-4">{item.label}</p>
-            {colorBox(item)}
+      <div className="hidden md:block md:pt-4 pt-2">
+        {colorList.length > 1 ? (
+          <Tabs defaultValue={colorList[0].code} className="w-full">
+            <TabsList className={`grid w-full grid-cols-${colorList.length}`}>
+              {colorList.map((item) => (
+                <TabsTrigger value={item.code} key={item.code}>
+                  {item.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {colorList.map((item) => (
+              <TabsContent value={item.code} key={item.code}>
+                <div className="mt-4">{colorBox(item)}</div>
+                {item.component && item.component}
+              </TabsContent>
+            ))}
+          </Tabs>
+        ) : (
+          <div className="border-white drop-shadow-md">
+            <p className="mb-2">{colorList[0].label}</p>
+            {colorBox(colorList[0])}
           </div>
-        ))}
+        )}
       </div>
     </>
   );

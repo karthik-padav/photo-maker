@@ -1,16 +1,7 @@
 "use client";
 
-import {
-  Moon,
-  Sun,
-  Camera,
-  AlignJustify,
-  LaptopMinimal,
-  Settings,
-} from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,12 +12,49 @@ import Link from "next/link";
 import constants from "@/lib/constants";
 import { signOut, useSession } from "next-auth/react";
 import { useAppProvider } from "@/lib/app-provider";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import coinImage from "@/assets/lottiefiles/coin.json";
-import Lottie from "lottie-react";
-import { Config, preload } from "@imgly/background-removal";
+import { useState } from "react";
 import Image from "next/image";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+import dynamic from "next/dynamic";
+
+const Moon = dynamic(() => import("lucide-react").then((mod) => mod.Moon), {
+  loading: () => <span>Loading...</span>,
+});
+const Sun = dynamic(() => import("lucide-react").then((mod) => mod.Sun), {
+  loading: () => <span>Loading...</span>,
+});
+const AlignJustify = dynamic(
+  () => import("lucide-react").then((mod) => mod.AlignJustify),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
+const LaptopMinimal = dynamic(
+  () => import("lucide-react").then((mod) => mod.LaptopMinimal),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
+const Settings = dynamic(
+  () => import("lucide-react").then((mod) => mod.Settings),
+  {
+    loading: () => <span>Loading...</span>,
+  }
+);
 
 export default function Header() {
   const { setTheme } = useTheme();
@@ -56,91 +84,56 @@ export default function Header() {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [dropDownMenu, setDropdownMenu] = useState(false);
   const { data: session } = useSession();
-  const {
-    toggleLogin,
-    setSelectedImage,
-    setControlerValue,
-    selectedImage,
-    user,
-  } = useAppProvider();
-  const pathname = usePathname();
-  const router = useRouter();
-  const { toast } = useToast();
+  const { toggleLogin, setSelectedImage, setControlerValue, user } =
+    useAppProvider();
 
-  useEffect(() => {
-    preload()
-      .then(() => {
-        console.log("Assets preloaded successfully");
-      })
-      .catch((error) => {
-        console.error("Error preloading assets:", error);
-      });
-  }, []);
-
-  function renderList(isNav = false) {
+  function renderList(
+    list: {
+      code: string;
+      title: string;
+      description: string;
+      href: string;
+      external?: boolean;
+    }[] = []
+  ) {
+    if (list.length === 0) return null;
     return (
-      <>
-        {constants.headerMenuList
-          .filter((i) => {
-            switch (i.code) {
-              case "GENERATE":
-              case "CUSTOMIZE":
-              case "MY_PHOTOS":
-                return !!session;
-              default:
-                return true;
-            }
-          })
-          .map((item, index) => (
-            <div
-              key={item.code}
-              className={`text-lg ${
-                isNav
-                  ? `${
-                      index != constants.headerMenuList.length - 1 && "border-b"
-                    } px-2 py-1 dark:border-gray-800`
-                  : "inline-block"
-              }`}
-            >
-              {item?.requireSelectedImage ? (
-                <Button
-                  variant="ghost"
-                  className={`w-full text-left p-0 hover:bg-transparent hover:text-violet-500 md:mr-6 md:inline block md:py-0 py-2 h-auto ${
-                    pathname === item.href && "text-violet-500"
-                  }`}
-                  onClick={() => {
-                    setNavbarOpen(false);
-                    selectedImage
-                      ? router.push(item.href)
-                      : toast({
-                          description:
-                            "Please Upload An Image Before Proceeding.",
-                        });
-                  }}
-                >
-                  {item.title}
-                </Button>
+      <ul className="grid w-[350px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+        {list.map((item) => (
+          <li key={item.code}>
+            <NavigationMenuLink asChild>
+              {item.external ? (
+                <a href={item.href} target="_blank" className="py-2 block">
+                  <p className="text-sm font-medium leading-none mb-2">
+                    {item.title}
+                  </p>
+                  <span className="line-clamp-1 text-sm leading-snug text-muted-foreground">
+                    {item.description}
+                  </span>
+                </a>
               ) : (
-                <Link
-                  onClick={() => setNavbarOpen(false)}
-                  className={`md:mr-6 md:inline md:py-0 py-2 block hover:text-violet-500 font-medium ${
-                    pathname === item.href && "text-violet-500"
-                  }`}
-                  href={item.href}
-                >
-                  {item.title}
+                <Link href={item.href} className="py-2 block">
+                  <>
+                    <p className="text-sm font-medium leading-none mb-2">
+                      {item.title}
+                    </p>
+                    <span className="line-clamp-1 text-sm leading-snug text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </>
                 </Link>
               )}
-            </div>
-          ))}
-      </>
+            </NavigationMenuLink>
+          </li>
+        ))}
+      </ul>
     );
   }
 
-  const showCoin =
-    user &&
-    process.env.NEXT_PUBLIC_ENABLE_PAYMENT == "true" &&
-    (user?.credit || user.credit === 0);
+  // const showCoin =
+  //   user &&
+  //   process.env.NEXT_PUBLIC_ENABLE_PAYMENT == "true" &&
+  //   (user?.credit || user.credit === 0);
   return (
     <header className="body-font py-5">
       <div className="container px-5 md:px-0 mx-auto">
@@ -154,11 +147,33 @@ export default function Header() {
               height={130}
             />
           </Link>
-          <div className="flex items-center">
-            <nav className="text-base justify-center font-semibold md:block hidden text-gray-600 dark:text-gray-300">
-              {renderList()}
-            </nav>
-            {showCoin && (
+          <div className="items-center flex">
+            <NavigationMenu className="hidden md:block mr-4">
+              <NavigationMenuList>
+                {constants.headerMenuList.map((item) => (
+                  <NavigationMenuItem key={item.code}>
+                    {item.list ? (
+                      <>
+                        <NavigationMenuTrigger>
+                          {item.title}
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          {renderList(item.list)}
+                        </NavigationMenuContent>
+                      </>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        {item.title}
+                      </Link>
+                    )}
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+            {/* {showCoin && (
               <div className="md:mr-6 pl-2 flex justify-center items-center bg-background drop-shadow-md rounded-full">
                 <p className="-mr-2 text-violet-500 dark:text-white">
                   {user.credit}
@@ -171,7 +186,7 @@ export default function Header() {
                   />
                 </div>
               </div>
-            )}
+            )} */}
 
             <div className="mr-4 md:hidden">
               <DropdownMenu open={navbarOpen} onOpenChange={setNavbarOpen}>
@@ -180,9 +195,65 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="min-w-[100vw] border-0 px-4"
+                  className="min-w-[100vw] border-0"
                 >
-                  {renderList(true)}
+                  <ul className="max-h-[80vh] overflow-y-auto px-4">
+                    {constants.headerMenuList.map((item) => (
+                      <li key={item.code}>
+                        {item.list ? (
+                          <>
+                            <Accordion
+                              type="single"
+                              collapsible
+                              className="w-full"
+                            >
+                              <AccordionItem
+                                value={item.code}
+                                className="border-0"
+                              >
+                                <AccordionTrigger className="py-2">
+                                  {item.title}
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                  <ul className="pl-4">
+                                    {item.list.map((l) => (
+                                      <li key={l.code}>
+                                        {l.external ? (
+                                          <a
+                                            href={l.href}
+                                            target="_blank"
+                                            className="py-2 block"
+                                          >
+                                            {l.title}
+                                          </a>
+                                        ) : (
+                                          <Link
+                                            href={l.href}
+                                            onClick={() => setNavbarOpen(false)}
+                                            className="py-2 block"
+                                          >
+                                            {l.title}
+                                          </Link>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </AccordionContent>
+                              </AccordionItem>
+                            </Accordion>
+                          </>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="py-2 block"
+                            onClick={() => setNavbarOpen(false)}
+                          >
+                            {item.title}
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -196,6 +267,7 @@ export default function Header() {
                 ) : (
                   <Button
                     variant="ghost"
+                    aria-label="Settings"
                     size="icon"
                     className="text-accent-foreground hover:text-violet-500 rounded-full"
                   >
@@ -210,7 +282,7 @@ export default function Header() {
                       <p className="">{session.user.name}</p>
                       <p className="text-sm">{session.user.email}</p>
                     </div>
-                    <hr className="my-2 border border-slate-200 dark:border-gray-800" />
+                    <hr className="my-2 border border-input dark:border-gray-800" />
                   </>
                 )}
                 <>
@@ -225,7 +297,7 @@ export default function Header() {
                     </DropdownMenuItem>
                   ))}
                 </>
-                <hr className="my-2 border border-slate-200 dark:border-gray-800" />
+                <hr className="my-2 border border-input dark:border-gray-800" />
                 <>
                   {session ? (
                     <>
@@ -236,7 +308,7 @@ export default function Header() {
                       </Link>
                       <DropdownMenuItem
                         onClick={() => {
-                          signOut({ callbackUrl: "/" });
+                          signOut();
                           setSelectedImage(null);
                           setControlerValue(null);
                         }}

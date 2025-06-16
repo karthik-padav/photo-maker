@@ -2,9 +2,12 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
-
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+
+const X = dynamic(() => import("lucide-react").then((mod) => mod.X), {
+  loading: () => <span>Loading...</span>,
+});
 
 const Dialog = DialogPrimitive.Root;
 
